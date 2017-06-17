@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://andrewliu.in/"/>
-  <updated>2017-06-17T23:11:25.000Z</updated>
+  <updated>2017-06-17T23:13:10.000Z</updated>
   <id>http://andrewliu.in/</id>
   
   <author>
@@ -20,15 +20,14 @@
     <link href="http://andrewliu.in/2017/06/18/Mac%E9%87%8D%E8%A3%85%E5%B0%8F%E8%AE%A1/"/>
     <id>http://andrewliu.in/2017/06/18/Mac重装小计/</id>
     <published>2017-06-17T22:52:41.000Z</published>
-    <updated>2017-06-17T23:11:25.000Z</updated>
+    <updated>2017-06-17T23:13:10.000Z</updated>
     
     <content type="html"><![CDATA[<div class="tip"><br>    本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh" target="_blank" rel="external">署名-非商业用途-保持一致</a>的创作共用协议.<br></div>
 
 <blockquote>
 <p>很久没有更新博客了, 前段时间迷上了王者农药, 戒了农药后又重新入了暴雪爸爸<code>暗黑3</code>的大坑, 呵呵.<br>除此之外, 公司离职回来一直准备毕业论文、毕业答辩、毕业相关材料, 真是焦头烂额.<br>不过想想十九年求学生涯就要结束了, 即将AFK了, 简直幸福.</p>
 </blockquote>
-<p>##系统偏好设置</p>
-<ul>
+<h2 id="系统偏好设置"><a href="#系统偏好设置" class="headerlink" title="系统偏好设置"></a>系统偏好设置</h2><ul>
 <li>允许安装任何来源的APP: <code>安全性与隐私-&gt;通用</code>. 若无该选项，请命令行执行<code>sudo spctl --master-disable</code></li>
 <li>设置快捷键: <code>键盘-&gt;快捷键</code> 更改输入法切换快捷键</li>
 <li>设置触摸板: 选取全部触摸板设置</li>
@@ -39,8 +38,8 @@
 </li>
 </ul>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">/usr/local/bin</div><div class="line">/usr/local/sbin</div><div class="line">/usr/bin</div><div class="line">/usr/sbin</div><div class="line">/bin</div><div class="line">/sbin</div></pre></td></tr></table></figure>
-<p>##软件安装</p>
-<blockquote>
+<a id="more"></a>
+<h2 id="软件安装"><a href="#软件安装" class="headerlink" title="软件安装"></a>软件安装</h2><blockquote>
 <p>若不需要Xcode可直接跳过该步骤, 安装Homebrew时同样会自动安装<code>Command Line Tools</code></p>
 </blockquote>
 <ul>
@@ -141,7 +140,22 @@
     
     <summary type="html">
     
-      &lt;div class=&quot;tip&quot;&gt;&lt;br&gt;    本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循&lt;a href=&quot;http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh&quot; targ
+      &lt;div class=&quot;tip&quot;&gt;&lt;br&gt;    本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循&lt;a href=&quot;http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;署名-非商业用途-保持一致&lt;/a&gt;的创作共用协议.&lt;br&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;很久没有更新博客了, 前段时间迷上了王者农药, 戒了农药后又重新入了暴雪爸爸&lt;code&gt;暗黑3&lt;/code&gt;的大坑, 呵呵.&lt;br&gt;除此之外, 公司离职回来一直准备毕业论文、毕业答辩、毕业相关材料, 真是焦头烂额.&lt;br&gt;不过想想十九年求学生涯就要结束了, 即将AFK了, 简直幸福.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;系统偏好设置&quot;&gt;&lt;a href=&quot;#系统偏好设置&quot; class=&quot;headerlink&quot; title=&quot;系统偏好设置&quot;&gt;&lt;/a&gt;系统偏好设置&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;允许安装任何来源的APP: &lt;code&gt;安全性与隐私-&amp;gt;通用&lt;/code&gt;. 若无该选项，请命令行执行&lt;code&gt;sudo spctl --master-disable&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;设置快捷键: &lt;code&gt;键盘-&amp;gt;快捷键&lt;/code&gt; 更改输入法切换快捷键&lt;/li&gt;
+&lt;li&gt;设置触摸板: 选取全部触摸板设置&lt;/li&gt;
+&lt;li&gt;设置触发角: &lt;code&gt;桌面与屏幕保护程序-&amp;gt;触发角&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;设置密码验证: &lt;code&gt;系统偏好设置-&amp;gt;安全性与隐私-&amp;gt;选择 进入休眠或屏保后立即要求输入密码&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;编辑 /etc/paths(&lt;code&gt;sudo /etc/paths&lt;/code&gt;)&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight c&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;4&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;5&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;6&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;/usr/local/bin&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;/usr/local/sbin&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;/usr/bin&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;/usr/sbin&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;/bin&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;/sbin&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
     
     </summary>
     
