@@ -1,0 +1,116 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Mac重装小计 · Snow Memory | Andrew Liu</title><meta name="description" content="Mac重装小计 - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">Mac重装小计</h1><div class="post-info">Jun 18, 2017</div><div class="post-content"><div class="tip"><br>    本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh" target="_blank" rel="external">署名-非商业用途-保持一致</a>的创作共用协议.<br></div>
+
+<blockquote>
+<p>很久没有更新博客了, 前段时间迷上了王者农药, 戒了农药后又重新入了暴雪爸爸<code>暗黑3</code>的大坑, 呵呵.<br>除此之外, 公司离职回来一直准备毕业论文、毕业答辩、毕业相关材料, 真是焦头烂额.<br>不过想想十九年求学生涯就要结束了, 即将AFK了, 简直幸福.</p>
+</blockquote>
+<p>##系统偏好设置</p>
+<ul>
+<li>允许安装任何来源的APP: <code>安全性与隐私-&gt;通用</code>. 若无该选项，请命令行执行<code>sudo spctl --master-disable</code></li>
+<li>设置快捷键: <code>键盘-&gt;快捷键</code> 更改输入法切换快捷键</li>
+<li>设置触摸板: 选取全部触摸板设置</li>
+<li>设置触发角: <code>桌面与屏幕保护程序-&gt;触发角</code></li>
+<li><p>设置密码验证: <code>系统偏好设置-&gt;安全性与隐私-&gt;选择 进入休眠或屏保后立即要求输入密码</code></p>
+</li>
+<li><p>编辑 /etc/paths(<code>sudo /etc/paths</code>)</p>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">/usr/local/bin</div><div class="line">/usr/local/sbin</div><div class="line">/usr/bin</div><div class="line">/usr/sbin</div><div class="line">/bin</div><div class="line">/sbin</div></pre></td></tr></table></figure>
+<p>##软件安装</p>
+<blockquote>
+<p>若不需要Xcode可直接跳过该步骤, 安装Homebrew时同样会自动安装<code>Command Line Tools</code></p>
+</blockquote>
+<ul>
+<li>通过App Store 安装Xcode</li>
+<li>安装Command Line Tools</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ xcode-select --install</div></pre></td></tr></table></figure>
+<h3 id="安装Homebrew"><a href="#安装Homebrew" class="headerlink" title="安装Homebrew"></a>安装<a href="http://brew.sh/" target="_blank" rel="external">Homebrew</a></h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ ruby -e <span class="string">"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"</span></div></pre></td></tr></table></figure>
+<h3 id="安装Git"><a href="#安装Git" class="headerlink" title="安装Git"></a>安装Git</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">$$ brew install git</div><div class="line"></div><div class="line"># SSH-KeyGen, 设置SSH密钥</div><div class="line">$ ssh-keygen -t rsa -C <span class="string">"your_email@youremail.com"</span> </div><div class="line"></div><div class="line"># 在Github中添加新生成的公钥, 验证是否成功请执行以下命令</div><div class="line">$ ssh -T git@github.com</div></pre></td></tr></table></figure>
+<ul>
+<li>参考<a href="http://andrewliu.in/2014/09/09/2014-09-09-Install-SSH-Use-Github/">Install-SSH-Use-Github</a></li>
+</ul>
+<h3 id="安装nodejs"><a href="#安装nodejs" class="headerlink" title="安装nodejs"></a>安装nodejs</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ brew install nodejs</div><div class="line"></div><div class="line"># 安装nvm或者n作为nodejs版本控制工具</div><div class="line">$ (sudo) npm install -g n</div><div class="line"># 如果不行, 则使用nvm进行版本控制</div><div class="line">$ n <span class="number">4.2</span><span class="number">.4</span></div></pre></td></tr></table></figure>
+<ul>
+<li><a href="https://npm.taobao.org/" target="_blank" rel="external">设置淘宝npm镜像</a></li>
+</ul>
+<h3 id="安装-Ruby"><a href="#安装-Ruby" class="headerlink" title="安装 Ruby"></a>安装 Ruby</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ brew install ruby</div><div class="line"></div><div class="line">$ rbenv install -l     <span class="meta"># list all available versions</span></div><div class="line">$ rbenv install <span class="number">2.2</span><span class="number">.1</span>  <span class="meta"># install a Ruby version</span></div><div class="line">$ rbenv global <span class="number">2.2</span><span class="number">.1</span>   <span class="meta"># set the global version</span></div><div class="line">$ rbenv versions       <span class="meta"># list all installed Ruby versions</span></div></pre></td></tr></table></figure>
+<ul>
+<li><a href="https://gems.ruby-china.org/" target="_blank" rel="external">配置 gem 墙内源</a></li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ gem sources --add https:<span class="comment">//gems.ruby-china.org/ --remove https://rubygems.org/</span></div><div class="line">$ gem sources -l</div><div class="line">https:<span class="comment">//gems.ruby-china.org</span></div><div class="line"># 确保只有 gems.ruby-china.org</div></pre></td></tr></table></figure>
+<h3 id="安装vim和MacVim"><a href="#安装vim和MacVim" class="headerlink" title="安装vim和MacVim"></a>安装vim和MacVim</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Step 1. Install homebrew from here: http://brew.sh</div><div class="line">Step 1.1. Run export PATH=/usr/local/bin:$PATH</div><div class="line">Step 2. Run brew update</div><div class="line">Step 3. Run brew install vim &amp;&amp; brew install macvim</div><div class="line">Step 4. Run brew link macvim</div></pre></td></tr></table></figure>
+<ul>
+<li><a href="https://github.com/humiaozuzu/dot-vimrc" target="_blank" rel="external">Vim配置</a></li>
+<li><a href="https://github.com/VundleVim/Vundle.vim" target="_blank" rel="external">vim.bundle</a></li>
+<li><a href="http://blog.csdn.net/eric_xjj/article/details/8932502" target="_blank" rel="external">Mac开发利器之程序员编辑器MacVim学习总结</a></li>
+</ul>
+<h3 id="安装zsh和Oh-My-Zsh"><a href="#安装zsh和Oh-My-Zsh" class="headerlink" title="安装zsh和Oh My Zsh"></a>安装zsh和<a href="https://github.com/robbyrussell/oh-my-zsh" target="_blank" rel="external">Oh My Zsh</a></h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ brew install zsh</div><div class="line"># 安装oh-my-zsh</div><div class="line">$ sh -c <span class="string">"$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"</span></div></pre></td></tr></table></figure>
+<ul>
+<li>更换oh my zsh主题在<code>~/.oh-my-zsh/themes/</code>路径下, 在<a href="http://zshthem.es/" target="_blank" rel="external">zshthem</a>网站进行主题预览</li>
+<li>安装<a href="https://github.com/wting/autojump" target="_blank" rel="external">autojump</a>, 一键跳转到目的目录, 不再不停的cd</li>
+<li>安装<a href="https://github.com/sindresorhus/trash" target="_blank" rel="external">trash</a>, 不再用rm命令.</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># 安装autojump</div><div class="line">$ brew install autojump</div><div class="line"># 安装trash</div><div class="line">$ npm install --global trash</div></pre></td></tr></table></figure>
+<p>持久化SSH连接, 安装<a href="https://mosh.mit.edu/#usage" target="_blank" rel="external">mosh</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ brew install mobile-shell</div></pre></td></tr></table></figure>
+<h3 id="安装python"><a href="#安装python" class="headerlink" title="安装python"></a>安装python</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">$ brew install python</div><div class="line"></div><div class="line">Pip <span class="keyword">and</span> setuptools have been installed. To update them</div><div class="line">  pip install --upgrade pip setuptools</div><div class="line"></div><div class="line">You can install Python packages with</div><div class="line">  pip install &lt;package&gt;</div><div class="line"></div><div class="line">They will install into the site-package directory</div><div class="line">  /usr/local/lib/python2<span class="number">.7</span>/site-packages</div><div class="line"></div><div class="line">See: http:<span class="comment">//docs.brew.sh/Homebrew-and-Python.html</span></div></pre></td></tr></table></figure>
+<h3 id="安装安装-MongoDB-MySQL"><a href="#安装安装-MongoDB-MySQL" class="headerlink" title="安装安装 MongoDB, MySQL"></a>安装安装 MongoDB, MySQL</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ brew install mongodb mysql</div></pre></td></tr></table></figure>
+<p>设置开机自启动「可选」：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ mkdir -p ~/Library/LaunchAgents</div><div class="line">$ ln -sfv /usr/local/opt/mongodb<span class="comment">/*.plist ~/Library/LaunchAgents</span></div><div class="line">$ ln -sfv /usr/local/opt/mysql/*.plist ~/Library/LaunchAgents</div></pre></td></tr></table></figure>
+<h3 id="zshrc文件配置"><a href="#zshrc文件配置" class="headerlink" title=".zshrc文件配置"></a>.zshrc文件配置</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">alias zshconfig=&quot;vim ~/.zshrc&quot;</div><div class="line">alias rezsh=&quot;source ~/.zshrc&quot;</div><div class="line">alias ohmyzsh=&quot;cd ~/.oh-my-zsh&quot;</div><div class="line"></div><div class="line"># The default command paramters</div><div class="line">alias vi=&apos;vim&apos;</div><div class="line">alias egrep=&apos;egrep --color=auto&apos;</div><div class="line">alias fgrep=&apos;fgrep --color=auto&apos;</div><div class="line">alias bc=&apos;bc -l&apos;</div><div class="line">alias wget=&apos;wget -c&apos;</div><div class="line">alias chown=&apos;chown --preserve-root&apos;</div><div class="line">alias chgrp=&apos;chgrp --preserve-root&apos;</div><div class="line">alias rm=&apos;rm -I --preserve-root&apos;</div><div class="line">alias ln=&apos;ln -i&apos;</div><div class="line"></div><div class="line"># Colorful grep output</div><div class="line">alias grep=&apos;grep --color=auto&apos;</div><div class="line">export GREP_COLOR=&apos;1;33&apos;</div><div class="line"></div><div class="line"># Colorful ls</div><div class="line">export LSCOLORS=&apos;Gxfxcxdxdxegedabagacad&apos;</div><div class="line">ls=&apos;ls --color=auto&apos;</div><div class="line"></div><div class="line"># autojump</div><div class="line">[[ -s ~/.autojump/etc/profile.d/autojump.sh ]] &amp;&amp; . ~/.autojump/etc/profile.d/autojump.sh</div></pre></td></tr></table></figure>
+<h3 id="安装Sublime-Text"><a href="#安装Sublime-Text" class="headerlink" title="安装Sublime Text"></a>安装Sublime Text</h3><ol>
+<li>安装<a href="http://www.sublimetext.com/" target="_blank" rel="external">Sublime Text 3</a></li>
+<li>安装<a href="https://packagecontrol.io/" target="_blank" rel="external">Package Control</a></li>
+<li>自定义配置<a href="https://gist.github.com/Andrew-liu/86223a7f34a17080b0c33e36a09e5da3" target="_blank" rel="external">Settings</a></li>
+</ol>
+<p>Sublime Text 3 安装Package Control的程序<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">import urllib.request,os;pf = &apos;Package Control.sublime-package&apos;;ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) );open(os.path.join(ipp, pf), &apos;wb&apos;).write(urllib.request.urlopen( &apos;http://sublime.wbond.net/&apos; + pf.replace(&apos; &apos;,&apos;%20&apos;)).read())</div></pre></td></tr></table></figure></p>
+<h2 id="常用收费软件"><a href="#常用收费软件" class="headerlink" title="常用收费软件"></a>常用收费软件</h2><ul>
+<li>Alfred 2(效率神器)</li>
+<li>Dash 3(程序员专用-文档查询)</li>
+<li>CleanMyMac 3(电脑清理软件)</li>
+<li>PopClip(选中即复制)</li>
+<li>Near Lock(靠近解锁软件)</li>
+<li>Bartender 2(状态栏图标管理器)</li>
+<li>Manico(更方便的软件切换软件)</li>
+</ul>
+<h2 id="常用免费软件"><a href="#常用免费软件" class="headerlink" title="常用免费软件"></a>常用免费软件</h2><ul>
+<li>Caffeine(不息屏神器)</li>
+<li>XtraFinder(增强Finder)</li>
+<li>Manico(快速切换神器, 相当与window上Alt+Tab)</li>
+<li>Clipy, 重装时发现ClipMenu不维护了, 找了个代替品(剪切板管理)</li>
+<li>Bear，MacDown，Mou(Markdown编辑器)</li>
+<li>Movist(播放器)</li>
+<li>Snip(截图软件)</li>
+<li>Chrome(神之浏览器)</li>
+<li>iTerm2(Mac上遗失的Terminal)</li>
+<li>搜狗拼音(比原生的好用)</li>
+<li>Window Tidy(窗口大小切换)</li>
+<li>SmoothMouse</li>
+<li>Reeder(RSS订阅)</li>
+<li><p><a href="http://pilotmoon.com/scrollreverser/" target="_blank" rel="external">SCROLL REVERSER</a> (修改鼠标移动方向, 但不改变触摸板)</p>
+</li>
+<li><p>百度网盘</p>
+</li>
+<li>微信</li>
+<li>QQ</li>
+<li>阿里旺旺</li>
+<li>JetBrain全家桶</li>
+<li>TinyCal</li>
+<li>Shadowsocks</li>
+<li>Spark</li>
+<li>网易云，QQ音乐</li>
+<li>TickTick</li>
+<li>富途牛牛</li>
+<li>EverNote</li>
+<li>TeamViewer</li>
+<li>MacTex</li>
+</ul>
+<h2 id="命令行管理Wifi"><a href="#命令行管理Wifi" class="headerlink" title="命令行管理Wifi"></a>命令行管理Wifi</h2><p><a href="http://blog.mattcrampton.com/post/64144666914/managing-wifi-connections-using-the-mac-osx" target="_blank" rel="external">Managing WIFI connections using the Mac OSX terminal command line</a></p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="http://www.jianshu.com/p/77a4349bf67b" target="_blank" rel="external">Mac开发配置</a></li>
+<li><a href="http://blog.jobbole.com/85702/" target="_blank" rel="external">shell入门</a></li>
+<li><a href="http://stackoverflow.com/questions/18144660/what-is-path-of-jdk-on-mac" target="_blank" rel="external">what is path of jdk on mac</a></li>
+<li><a href="http://alfredtips.com/s/popular/1/" target="_blank" rel="external">Alfred web search custom</a></li>
+<li><a href="https://kapeli.com/dash_guide" target="_blank" rel="external">Dash官方文档</a></li>
+</ul>
+</div></article></div></main><footer><div class="paginator"><a href="/2017/01/17/2016成就墙完成情况总结/" class="next">NEXT</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>
