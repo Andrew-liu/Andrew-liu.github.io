@@ -1,0 +1,48 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Mac下配置安卓开发环境(Eclipse) · Snow Memory | Andrew Liu</title><meta name="description" content="Mac下配置安卓开发环境(Eclipse) - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">Mac下配置安卓开发环境(Eclipse)</h1><div class="post-info">Jun 20, 2015</div><div class="post-content"><p>本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh" target="_blank" rel="external">署名-非商业用途-保持一致</a>的创作共用协议.</p>
+<blockquote>
+<p>由于Mac下intellij莫名其妙的原因(反正至今找不到原因), 一创建Android项目就卡死, 没有办法, 只能继续在Eclipse下折腾了</p>
+<p>记住我们的口号: 生命不止, 折腾不息</p>
+</blockquote>
+<a id="more"></a>
+<p>#Java JDK下载</p>
+<p><a href="http://www.oracle.com/technetwork/cn/java/javase/downloads/index.html" target="_blank" rel="external">Java JDK(Java SE Development Kit)官方下载</a> </p>
+<ul>
+<li>按照平台下载安装</li>
+</ul>
+<p><strong>Mac获得Java的安装位置</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ echo $(/usr/libexec/java_home)  #输出当前JDK路径</div><div class="line"></div><div class="line">安装的JDK8: /Library/Java/JavaVirtualMachines/jdk1.8.0_20.jdk</div><div class="line">Mac自带的JDK6: /System/Library/Java/JavaVirtualMachines/1.6.0.jdk</div></pre></td></tr></table></figure>
+<p>#Android SDK下载</p>
+<p>谷歌系列的东西需要出(fan)墙(qiang), 在<code>Other Tools Only</code>下载自己平台的SDK</p>
+<ul>
+<li><a href="https://developer.android.com/sdk/index.html" target="_blank" rel="external">Android SDK官方下载</a></li>
+<li>无法翻墙的请使用国内资源进行下载<a href="http://www.androiddevtools.cn/" target="_blank" rel="external">Android Dev Tools</a></li>
+</ul>
+<p>下载完, <code>自行解压</code>下载好的Android SDK，打开Eclipse —&gt; Preferences对话框，找到Android那一项，单击Browse，选取SDK目录即可。</p>
+<p>#Eclipse安装</p>
+<ul>
+<li><a href="https://eclipse.org/downloads/" target="_blank" rel="external">Eclipse安装</a> </li>
+</ul>
+<p><strong>下载对应平台, 然后安装就可以了, 没有什么好说的</strong></p>
+<p>#ADT安装</p>
+<p><em>ADT(Android Developer Tools)</em></p>
+<p>打开Eclipse，在菜单中选择Help中的<code>Install New Software</code>, 在右上方选择Add</p>
+<ul>
+<li>Name编辑为<code>ADT</code></li>
+<li>Location编辑为<code>https://dl-ssl.google.com/android/eclipse/</code>(<strong>你懂的要翻</strong>)</li>
+</ul>
+<p><img src="http://ww2.sinaimg.cn/large/ab508d3dgw1et6u5z5ixtj21ei10iai5.jpg" alt="ADT"></p>
+<p>选择<code>Developer Tools</code>, 点击<code>next</code>执行下载</p>
+<p><strong>安装平台工具</strong></p>
+<p>安装好重启后, 在<code>Window</code>中<code>Android SDK Manager</code>中下载<code>Tools</code>和<code>Extras</code>以及其他API</p>
+<p><img src="http://ww1.sinaimg.cn/large/ab508d3dgw1et6u97zwf2j21640yeaoq.jpg" alt="API"></p>
+<p>#虚拟机设置</p>
+<p>在Window中打开<code>Android Virtual Device Manager</code>, Create添加一个Android虚拟机, 用于开发的Android程序做测试.</p>
+<p><img src="http://ww3.sinaimg.cn/large/ab508d3dgw1et6uciepjoj21320rejwh.jpg" alt="虚拟机"></p>
+<p>#创建Android工程</p>
+<p>重启Eclipse程序后, File-&gt;New-&gt;Other-&gt;Android Application Project. 设置项目名等条目, 创建成功</p>
+<p><img src="http://ww3.sinaimg.cn/large/ab508d3dgw1et6uf08ddjj20t80qyjwn.jpg" alt="创建"></p>
+<p><img src="http://ww4.sinaimg.cn/large/ab508d3dgw1et6ufgyg32j20ym0sm7bw.jpg" alt="设置">安装成功</p>
+<p>#FAQ</p>
+<p><a href="http://stackoverflow.com/questions/26457096/appcompat-v7-r21-returning-error-in-values-xml" target="_blank" rel="external">AppCompat v7 r21 returning error in values.xml?</a></p>
+<p>搭建过程中会出现各种各样的问题, 遇到问题时, 大家最好把出错原因放到Google中搜索, 最后总能解决的, 实在解决不了, 可以找了安卓开发者帮你看看, 最后祝大家都能成功配置安卓开发环境.</p>
+</div></article></div></main><footer><div class="paginator"><a href="/2015/06/26/Dr-Cleaner-轻量级Mac清理工具/" class="prev">上一篇</a><a href="/2015/06/14/NoSQL-MongoDB/" class="next">下一篇</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

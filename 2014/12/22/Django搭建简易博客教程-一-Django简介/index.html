@@ -1,0 +1,27 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Django搭建简易博客教程(一)-Django简介 · Snow Memory | Andrew Liu</title><meta name="description" content="Django搭建简易博客教程(一)-Django简介 - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">Django搭建简易博客教程(一)-Django简介</h1><div class="post-info">Dec 22, 2014</div><div class="post-content"><p><img src="http://picturebag.qiniudn.com/56.png" alt="Django"></p>
+<h2 id="写作目的"><a href="#写作目的" class="headerlink" title="#写作目的"></a>#写作目的</h2><p>喜欢一个学习观点<code>以教促学</code>, 一直以来, 学习的时候经常会发现, 某个方法某个问题自己已经明白了, 但是在教给别人的时候确说不清楚, 所以慢慢的学会了<code>以教促学</code>这种方法, 在教给别人知识的同时也能够提升自己对语言, 对框架的理解.</p>
+<a id="more"></a>
+<p>希望达到的目标:</p>
+<ul>
+<li>希望能写出一个系列文章, 我也不知道到底能写多少</li>
+<li>能够让认真阅读这个系列的文章的人, 能在读完之后做出一个简单的博客</li>
+<li>教会读者使用简单的git操作和github</li>
+<li>希望能够加深自己对<code>Django</code>的理解</li>
+</ul>
+<h2 id="Django简介"><a href="#Django简介" class="headerlink" title="#Django简介"></a>#Django简介</h2><p><a href="">Django</a>是<code>python</code>中目前风靡的Web Framework, 那么什么叫做<code>Framework</code>呢, 框架能够帮助你把程序的整体架构搭建好, 而我们所需要做的工作就是填写逻辑, 而框架能够在合适的时候调用你写的逻辑, 而不需要我们自己去调用逻辑, 让Web开发变的更敏捷.</p>
+<blockquote>
+<p>Django是一个高级Python Web框架, 鼓励快速,简洁, 以程序设计的思想进行开发. 通过使用这个框架, 可以减少很多开发麻烦, 使你更专注于编写自己的app, 而不需要重复造轮子. Django免费并且开源.</p>
+</blockquote>
+<p>##Django特点</p>
+<ul>
+<li>完全免费并开源源代码</li>
+<li>快速高效开发</li>
+<li>使用MTV架构(<code>熟悉Web开发的应该会说是MVC架构</code>)</li>
+<li>强大的可扩展性.</li>
+</ul>
+<h2 id="Django工作方式"><a href="#Django工作方式" class="headerlink" title="#Django工作方式"></a>#Django工作方式</h2><p><img src="http://picturebag.qiniudn.com/57.png" alt="工作方式"></p>
+<p>用户在浏览器中输入<code>URL</code>后的回车, 浏览器会对<code>URL</code>进行检查, 首先判断协议,如果是<code>http</code>就按照 Web 来处理,  然互调用<code>DNS查询</code>, 将域名转换为<code>IP地址</code>, 然后经过网络传输到达对应Web服务器,  服务器对url进行解析后, 调用<code>View</code>中的逻辑(MTV中的V), 其中又涉及到Model(MTV中的M), 与数据库的进行交互, 将数据发到Template(MTV中的T)进行渲染, 然后发送到浏览器中, 浏览器以合适的方式呈现给用户</p>
+<blockquote>
+<p>通过文字和图的结合希望读者能够初步理解Django的工作方式</p>
+</blockquote>
+</div></article></div></main><footer><div class="paginator"><a href="/2014/12/22/Django搭建简易博客教程-二-开发环境和Django安装/" class="prev">上一篇</a><a href="/2014/12/19/Python爬虫-八-Scrapy模拟登录/" class="next">下一篇</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

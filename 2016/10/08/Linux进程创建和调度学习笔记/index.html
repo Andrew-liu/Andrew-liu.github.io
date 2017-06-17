@@ -1,0 +1,89 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Linux进程创建和调度学习笔记 · Snow Memory | Andrew Liu</title><meta name="description" content="Linux 进程创建 进程调度"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">Linux进程创建和调度学习笔记</h1><div class="post-info">Oct 8, 2016</div><div class="post-content"><blockquote>
+<p>读书笔记</p>
+</blockquote>
+<h2 id="进程管理"><a href="#进程管理" class="headerlink" title="进程管理"></a>进程管理</h2><blockquote>
+<p>进程是处于执行期的程序, 包含代码段, 打开描述符, 挂起信号, 内核内部数据, 处理器状态, 一个或多个具有内存映射的内存地址空间及一个或多个执行线程.<br>线程是进程中活动对象, 包含<code>独立</code>的程序计数器, 栈和一组进程寄存器. <code>线程间可共享虚拟内存, 但每个都拥有各自的虚拟处理器</code></p>
+</blockquote>
+<ul>
+<li>内核将进程的列表放在一个双向循环链表中, 每项为<code>task_struct</code></li>
+<li>进程执行系统调用或者异常处理才会陷入内核空间(内核态)</li>
+<li>Linux所有进程都是PID为1的init进程的后代</li>
+</ul>
+<a id="more"></a>
+<p>每个进程或线程都有三个数据结构，分别是 <code>struct thread_info</code>, <code>struct task_struct</code> 和 <code>内核栈</code></p>
+<p><strong>task_struct 结构体中的主要元素</strong>:</p>
+<ul>
+<li>struct thread_info *thread_info。thread_info 指向该进程/线程的基本信息。</li>
+<li>struct mm_struct *mm。mm_struct 对象用来管理该进程/线程的页表以及虚拟内存区。</li>
+<li>struct mm_struct *active_mm。主要用于内核线程访问主内核页全局目录。</li>
+<li>struct fs_struct *fs。fs_struct 是关于文件系统的对象。</li>
+<li>struct files_struct *files。files_struct 是关于打开的文件的对象。</li>
+<li>struct signal_struct *signal。signal_struct 是关于信号的对象。</li>
+</ul>
+<h3 id="进程创建"><a href="#进程创建" class="headerlink" title="进程创建"></a>进程创建</h3><p>通过<code>fork和exec</code>来实现, fork() 拷贝当前进程创建一个子进程, exec() 负责读取可执行文件并将其载入地址空间开始执行.</p>
+<ul>
+<li>Linux的 fork() 使用写时复制(copy-on-write)页实现, 资源的复制只有在需要写入的时候才进行. <code>fork() 的实际开销是复制父进程的页表以及给子进程创建唯一的进程描述符</code></li>
+<li>Linux通过 <code>Clone()</code> 实现 <code>fork()</code>. <code>fork() -&gt; clone(SIGCHLD) -&gt; do_fork() -&gt; copy_process()</code></li>
+</ul>
+<p>copy_process()的工作:</p>
+<ol>
+<li>调用dup_task_struct为新进程创建一个内核栈, thread_info结果和task_struct, 值保持与当前进程相同</li>
+<li>检查当前用户进程数未超出给定分配资源的限制</li>
+<li>子进程部分信息被清0或重设为初始值</li>
+<li>子进程状态被设置为 TASK_UNINTERRUPTIBLE, 保证他不会投入运行</li>
+<li>更新 task_struct的flags成员</li>
+<li>调用 alloc_pid为新进程分配有效的<code>PID</code>(此时才分配新pid)</li>
+<li>根据传递给clone的参数, 设置拷贝或共享的资源.</li>
+<li>返回一个指向子进程的指针.</li>
+</ol>
+<blockquote>
+<p>vfork 与 fork 的区别是, vfork不拷贝父进程的页表项</p>
+</blockquote>
+<h3 id="线程"><a href="#线程" class="headerlink" title="线程"></a>线程</h3><ul>
+<li>线程在Linux被视为一个与其他进程共享某些资源的进程</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># 线程同样通过clone创建, 只是指定共享的资源不同</div><div class="line">clone(CLONE_VM | CLONE_FS | CLONE_FILES | CLONE_SIGHAND, <span class="number">0</span>);</div></pre></td></tr></table></figure>
+<h3 id="内核线程"><a href="#内核线程" class="headerlink" title="内核线程"></a>内核线程</h3><ul>
+<li>内核线程用于完成内核需要在后台执行的一些操作</li>
+<li>内核线程和普通进程的区别在于内核线程<code>没有独立的地址空间</code>, 只在内核空间运行, <strong>所有的内核线程共享内核地址空间</strong></li>
+<li>内核线程可以被调度, 可以被抢占</li>
+<li>内核线程只能由其他内核线程创建</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"># &lt;linux/kthread.h&gt;, 内核线程创建</div><div class="line">struct task_struct *kthread_create_on_node(int (*threadfn)(void *data),</div><div class="line">					   void *data,</div><div class="line">					   int node,</div><div class="line">					   const char namefmt[], ...);</div><div class="line"></div><div class="line">#define kthread_create(threadfn, data, namefmt, arg...) \</div><div class="line">	kthread_create_on_node(threadfn, data, NUMA_NO_NODE, namefmt, ##arg)</div><div class="line"></div><div class="line"># 创建并运行, kthread_create创建, wake_up_process唤醒</div><div class="line">#define kthread_run(threadfn, data, namefmt, ...)			   \</div><div class="line">(&#123;									   \</div><div class="line">	struct task_struct *__k						   \</div><div class="line">		= kthread_create(threadfn, data, namefmt, ## __VA_ARGS__); \</div><div class="line">	if (!IS_ERR(__k))						   \</div><div class="line">		wake_up_process(__k);					   \</div><div class="line">	__k;								   \</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<h3 id="进程终止"><a href="#进程终止" class="headerlink" title="进程终止"></a>进程终止</h3><p>进程终止一般是调用 <code>exit()</code>, 最终基本是通过 <code>do_exit()</code>完成.</p>
+<ol>
+<li>task_struct的标志成员设置为 PF_EXITING</li>
+<li>调用del_timer_sync()删除任一内核定时器</li>
+<li>调用exit_mm()函数释放进程占用的 mm_struct</li>
+<li>调用sem_exit()函数</li>
+<li>调用exit_file()和exit_fs() 分别递减文件描述符, 文件系统数据的引用计数</li>
+<li>执行一些其他的退出动作</li>
+<li>调用exit_notify()向父进程发送信号, 为其子进程找继父(线程组其他线程或init进程). 进程状态设置为<code>EXIT_ZOMBIE</code></li>
+<li>调度schedule()切换到新的进程. do_exit() 永不返回.</li>
+</ol>
+<blockquote>
+<p>进程终止的清理工作和进程描述符的删除是分开执行的. 进程描述符的删除由<code>wait4()系统调用</code>完成. 两步完成所有资源才释放完成.</p>
+</blockquote>
+<h2 id="进程调度"><a href="#进程调度" class="headerlink" title="进程调度"></a>进程调度</h2><blockquote>
+<p>进程调度程序可以看做在可运行态进程之间分配有限的处理器时间资源的内核子系统. Linux在2.6.23内核版本中使用了<code>完全公平调度算法(CFS)</code></p>
+</blockquote>
+<ul>
+<li>进程分为I/O消耗型和处理器消耗型</li>
+<li>Linux调度器以模块方式提供, 允许多种不同的可动态添加的调度算法并存.</li>
+<li>Linux使用<code>完全公平调度(CFS)</code>, 允许每个进程运行一段时间, 循环轮转, 选择运行最少的进程作为下一个运行进程(不采用通过nice计算并分配给进程时间片做法), 分配给进程的是一个处理的使用比重. nice值在CFS中被作为进程获得处理器运行比的权重. 高nice值获得更低的处理器权重. 为防止可运行进程过趋于无限时,  进程各自获得处理器使用比趋于0, CFS为每个进程设置一个<code>最小粒度</code></li>
+<li>CFS使用红黑树组织可运行进程队列, 选择可运行进程中最小<code>vruntime(进程虚拟运行时间)</code>的任务. 进程可运行或被fork()后被加入红黑树</li>
+<li>Linux还提供两种实时调度策略(均为静态优先级) <code>SCHED_FIFO和SCHED_RR</code>由特殊的实时调度器管理. FIFO就是先入先出的调度策略. RR是一种带时间片的先入先出的调度策略</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"># &lt;linux/sched.h&gt; <span class="class"><span class="keyword">struct</span> <span class="title">sched_entity</span>对进程运行时间做记录</span></div><div class="line"><span class="title">struct</span> <span class="title">sched_entity</span> &#123;</div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">load_weight</span>	<span class="title">load</span>;</span>		<span class="comment">/* for load-balancing */</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">rb_node</span>		<span class="title">run_node</span>;</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">list_head</span>	<span class="title">group_node</span>;</span></div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span>		on_rq;</div><div class="line"></div><div class="line">	u64			exec_start;</div><div class="line">	u64			sum_exec_runtime;</div><div class="line">	u64			vruntime;</div><div class="line">	u64			prev_sum_exec_runtime;</div><div class="line"></div><div class="line">	u64			nr_migrations;</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> CONFIG_SCHEDSTATS</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sched_statistics</span> <span class="title">statistics</span>;</span></div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> CONFIG_FAIR_GROUP_SCHED</span></div><div class="line">	<span class="keyword">int</span>			depth;</div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sched_entity</span>	*<span class="title">parent</span>;</span></div><div class="line">	<span class="comment">/* rq on which this entity is (to be) queued: */</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">cfs_rq</span>		*<span class="title">cfs_rq</span>;</span></div><div class="line">	<span class="comment">/* rq "owned" by this entity/group: */</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">cfs_rq</span>		*<span class="title">my_q</span>;</span></div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> CONFIG_SMP</span></div><div class="line">	<span class="comment">/*</span></div><div class="line">	 * Per entity load average tracking.</div><div class="line">	 *</div><div class="line">	 * Put into separate cache line so it does not</div><div class="line">	 * collide with read-mostly values above.</div><div class="line">	 */</div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sched_avg</span>	<span class="title">avg</span> ____<span class="title">cacheline_aligned_in_smp</span>;</span></div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>Linux优先级分两种. nice值(取值-20到+19, nice值最大优先级越低); 实时优先级(取值0到99, 实时优先级数值月大优先级越高)</p>
+</blockquote>
+<h3 id="上下文切换"><a href="#上下文切换" class="headerlink" title="上下文切换"></a>上下文切换</h3><p><code>schedule()</code>执行进程调度时, 调用kernel/sched.c中的<code>context_switch()</code>函数执行:</p>
+<ul>
+<li>调用声明<code>asm/mmu_context.h</code>中的switch_mm(), 该函数把虚拟内存从上一个进程切换到新的进程中.</li>
+<li>调用<code>&lt;asm/system.h&gt;</code>中的<code>switch_to()</code>, 该函数负责从上一个进程的处理器状态切换到新进程的处理器状态. 包括保存、回复栈信息和寄存器信息</li>
+</ul>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li>Linux内核设计与实现 - 原书第3版</li>
+</ul>
+</div></article></div></main><footer><div class="paginator"><a href="/2016/10/29/某度实习总结/" class="prev">上一篇</a><a href="/2016/09/30/深入探索C-对象模式读书笔记/" class="next">下一篇</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> The Google File System · Snow Memory | Andrew Liu</title><meta name="description" content="The Google File System - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">The Google File System</h1><div class="post-info">May 15, 2016</div><div class="post-content"><p>本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh" target="_blank" rel="external">署名-非商业用途-保持一致</a>的创作共用协议.</p>
+<p><img src="http://ww1.sinaimg.cn/large/ab508d3djw1f2sj4b9nasj20q80begnu.jpg" alt=""></p>
+<blockquote>
+<p>GFS是一个共享的分布式文件系统</p>
+</blockquote>
+<ul>
+<li>GFS提供了一个与位置无关的名字空间(namespace), 这使得数据可以为了负载均衡或灾难冗余等目的在不同位置间透明迁移</li>
+<li>GFS并没有在文件系统层面提供任何Cache机制, 但借助了Linux底层cache机制.</li>
+<li>GFS文件以分层目录的形式组织, 用路径名来表示, 文件的写入主要依赖追加(append)操作完成</li>
+</ul>
+<a id="more"></a>
+<h2 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h2><ul>
+<li>GFS集群包含<code>单Master</code>和多个<code>chunkservers</code></li>
+<li>文件被划分为固定大小的块(chunk, 默认为64MB), 在块被创建时, 由Master分配给块的全局唯一不可变的64位的块句柄(chunk handle), 每个块默认存储三个副本到不同的chunserver上(容错)</li>
+<li>Master维护所有的文件系统元数据. 这些元数据包括命名空间、访问控制信息、文件到块的映射信息、以及当前块的位置(命令空间, 文件到块映射和chunk所有副本的位置为Master的三大原信息存储在内存中保证访问速度, 命名空间和文件到块的映射会持久化到操作日志中). Master节点还控制着系统范围内的活动, 比如, 块租用管理、孤立块的垃圾回收、以及块在chunkserver间的迁移。Master用<code>心跳信息(HeartBeat messages)</code>周期地和每个chunkserver通讯, 向chunkserver发送指令并收集其状态.</li>
+<li><strong>无论是客户端还是chunkserver都不需要缓存文件数据</strong>, chunkserver由linux自带的缓存策略来完成缓存</li>
+</ul>
+<h2 id="通信流程"><a href="#通信流程" class="headerlink" title="通信流程:"></a>通信流程:</h2><ol>
+<li>GFS client使用固定的块大小(fix chunk size)将应用程序指定的文件名和字节偏移转换成文件中的块索引(chunk index)</li>
+<li>GFS client向master发送request(包含文件名和块索引)询问应该与那些chunkservers通信</li>
+<li>master 响应对应的块句柄(chunk handle)和块副本位置信息</li>
+<li>GFS client发送request到某个副本(距离最近的一个). request中包含快句柄和块内字节范围. 对同一个块的进一步读取不再需要client和master的交互了, 直到client缓存(可以通信的chunkservers, 从步骤3中缓存)信息过期或者文件被重新打开</li>
+</ol>
+<h2 id="一致性模型"><a href="#一致性模型" class="headerlink" title="一致性模型"></a>一致性模型</h2><p>GFS是松一致性模型(<code>a relaxed consistency model</code>)</p>
+<ul>
+<li>文件命名空间的变更(如文件创建）是原子性的. 它们只能由master控制：<code>命名空间锁(namspace locking)</code>保证了原子性和正确性</li>
+</ul>
+<h2 id="系统交互"><a href="#系统交互" class="headerlink" title="系统交互"></a>系统交互</h2><p><img src="http://ww1.sinaimg.cn/large/ab508d3djw1f2w02a0xi3j20oi0m4q5o.jpg" alt=""></p>
+<p><strong>控制流</strong></p>
+<ol>
+<li>客户机询问master哪一个chunkserver持有该块当前的租约以及其它副本的位置. 如果没有chunkserver持有租约, master将租约授权给它选择的副本.</li>
+<li>master将<code>主副本(被master授予租约的副本)的标识符以及其它副本（次级副本）的位置返回</code>给客户机. 客户机为将来的变更缓存这些数据. 只有在主副本不可达, 或者其回应它已不再持有租约的时候,客户机才需要再一次联系master</li>
+<li>客户机将数据推送到所有副本.客户机可以以任意的顺序推送数据. chunkserver将数据存储在内部LRU 缓存中, 直到数据被使用或者过期. 通过<code>从控制流解耦数据流</code>, 我们可以基于网络拓扑而不管哪个chunksever上有主副本, 通过调度昂贵的数据流来提高系统性能</li>
+<li>当所有的副本都确认接收到了数据, 客户机对主副本发送写请求. 这个请求标识了早前推送到所有副本的数据. 主副本为接收到的所有变更分配连续的序列号, 由于变更可能来自多个客户机, 这就提供了必要的序列化. 它以序列号的顺序把变更应用到它自己的本地状态中(并保存变更顺序)</li>
+<li>主副本将写请求转发到所有的次级副本. 每个次级副本依照主副本分配的序列顺序应用变更</li>
+<li>所有次级副本回复主副本并标明它们已经完成了操作</li>
+<li>主副本回复客户机. <code>任何副本遇到的任何错误都报告给客户机</code>. 出错的情况下,写操作可能在主副本和次级副本的任意子集上执行成功(如果在主副本失败, 就不会分配序列号和转发). 客户端请求被认定为失败, 被修改的域处于不一致的状态. 我们的客户机代码通过重试失败的变更来处理这样的错误.在退到从头开始重试之前, 客户机会将<code>从步骤3到步骤7</code>做几次重试</li>
+</ol>
+<hr>
+<ul>
+<li>步骤3描述将数据流从控制流中解耦. 在控制流从客户机到主副本再到所有次级级副本的同时, 数据以管道的方式, <code>线性</code>地的沿着一个精心挑选的chunkserver链推送(push). 这样可以充分利用每个机器的带宽.</li>
+<li>GFS提供了一种叫做<code>记录追加(record append)</code>的原子追加操作(类似UNIX以<code>O_APPEND模式</code>打开文件)</li>
+<li>快照操作(<code>the snapshot operation</code>)几乎瞬间完成对一个文件或者目录树的拷贝, 并且最小化对正在进行的变更的任何干扰. 快照使用标准的<code>写时复制</code>来实现.</li>
+</ul>
+<h2 id="Master操作"><a href="#Master操作" class="headerlink" title="Master操作"></a>Master操作</h2><ol>
+<li>Master的许多操作消耗大量时间, 为了不阻塞其他操作, 允许同时执行多个操作, 使用<code>名称空间域上的锁(读写锁)</code>来保证正确的串行化(serialization)</li>
+<li>GFS在文件删除后物理空间的回收是由<code>垃圾收集(garbage collection)</code>完成的</li>
+</ol>
+<blockquote>
+<p>看到这里有个小疑惑, Master失效了会怎么选举?</p>
+</blockquote>
+<h2 id="容错和诊断"><a href="#容错和诊断" class="headerlink" title="容错和诊断"></a>容错和诊断</h2><blockquote>
+<p>快速恢复和备份来实现GFS集群的高可用性</p>
+</blockquote>
+<ul>
+<li>快速回复, 使用直接kill系统中进程的方式来关闭服务器, 未完成的客户端请求则需要进行重连和重试.</li>
+<li>块拷贝, <code>chunk</code>副本默认会保证三个</li>
+<li>Master拷贝, 此处回答了我的疑惑, 当Master挂掉, 首先尽快重启, 如果Master机器的硬件故障, 则监控系统会启动一个新的master进程. <code>master中数据和状态的恢复通过操作日志(operation log)和检查点(checkpoints)</code>, 并且master操作日志和检查点都在多台机器上备份. 另外还有一种<code>影子master(shadow master)策略</code>来不保证在主master挂掉后, 系统依然可用.</li>
+<li>诊断工具, 诊断日志(diagnostic log), RPC日志来帮助定位问题, debug和性能分析.</li>
+</ul>
+<p><strong>GFS的优点:</strong></p>
+<ol>
+<li>支持大规模的读取和写入</li>
+<li>高吞吐量</li>
+<li>对数据(chunk)有良好的容错策略</li>
+</ol>
+<p><strong>GFS的缺点:</strong></p>
+<ol>
+<li>Master的容错策略略有不足</li>
+<li>chunk默认64MB, 对小文件不友好.</li>
+</ol>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="https://pdos.csail.mit.edu/6.824/papers/gfs.pdf" target="_blank" rel="external">GFS Paper</a></li>
+</ul>
+</div></article></div></main><footer><div class="paginator"><a href="/2016/06/05/Google-protobuf-C-学习笔记/" class="prev">上一篇</a><a href="/2016/05/08/How-to-Write-Go-Code/" class="next">下一篇</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

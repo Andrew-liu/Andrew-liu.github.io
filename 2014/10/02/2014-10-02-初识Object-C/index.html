@@ -1,0 +1,151 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 初识Objective-C · Snow Memory | Andrew Liu</title><meta name="description" content="初识Objective-C - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">初识Objective-C</h1><div class="post-info">Oct 2, 2014</div><div class="post-content"><p>#1. 如何学习OC</p>
+<ol>
+<li>OC是在C语言的基础上做加法</li>
+<li>主要学习相比于C语言新增的数据类型, 如何定义变量, 循环控制(增强for循环)以及函数, 类的概念</li>
+<li>OC文件以.m为扩展名, .h扩展名主要用于头文件</li>
+<li>OC是一门面向对象的编程语言:<code>封装, 继承, 多态</code></li>
+<li>属性生成器 @property, @synthesize: 简化代码</li>
+</ol>
+<a id="more"></a>
+<p>#2. 类方法和对象方法</p>
+<pre><code>对象方法:
+ 1. 以 - 号开头,
+ 2. 只能由对象调用
+ 3. 对象方法中可以访问成员变量(实例变量, 由内存分配)
+ 4. 对象方法中可以调用类方法
+
+ 类方法:
+ 1. 以 + 号开头,
+ 2. 只能由类名调用
+ 3. 类方法中不可以访问成员变量(实例变量)
+ 4. 类方法中不可以调用对象方法
+ 5. 类方法中可以调用类方法(同名的除外)
+
+ 同名的对象方法和类方法是通过加号和减号识别
+</code></pre><blockquote>
+<p>self, <code>谁</code>调用这个方法, self就代表<code>谁</code></p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">- (void)test</div><div class="line">&#123;</div><div class="line">    NSLog(@&quot;person test&quot;);</div><div class="line">    NSLog(@&quot;self = %p&quot;, self);</div><div class="line">&#125;</div><div class="line"></div><div class="line"> Person *p1 = [Person new];</div><div class="line">    NSLog(@&quot;p = %p&quot;,  p1);</div><div class="line">    [p1 test];</div><div class="line">    </div><div class="line">打印结果, p1和self由相同的内存地址, self指向了对象的isa; </div><div class="line"></div><div class="line">类的地址就是第一个属性的地址, 也就是isa的地址</div></pre></td></tr></table></figure>
+<p><img src="http://byson.img42.wal8.com/img42/434369_20140909170142/141214788087.png" alt="self"></p>
+<ol>
+<li>类方法可以调用类方法</li>
+<li>类方法不可以调用对象方法(没有内存分配)</li>
+<li>对象方法可以调用类方法</li>
+<li>对象方法和对象方法?</li>
+</ol>
+<p>##2.1. super</p>
+<blockquote>
+<p>在子类方法中使用[super 父类方法],明确的告诉程序要执行父类的方法,<br>super使用场合: 子类重写父类的方法的时候想保留父类的一些行为</p>
+</blockquote>
+<ol>
+<li>使用super在类方法调用父类方法, 会调用父类的类方法</li>
+<li>使用super在对象方法调用父类方法, 会调用父类的对象方法</li>
+</ol>
+<p><code>组合模式 : xxx拥有xxx</code><br><code>继承模式 : xxx是xxx</code></p>
+<p>##2.2. description方法<br><code>%@</code>打印一个对象, 会调用对象description方法,这个方法来自NSObject, 则可以重写(NSString *)description; (包含+ - 两个方法)</p>
+<ul>
+<li>[ NSString stringWithFormat: @”xxx = %d”]按照自定义格式生成字符串</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">- (NSString *)description</div><div class="line">&#123;</div><div class="line">    return [NSString stringWithFormat:@&quot;age = %d, name = %@, tel = %@&quot;, _age, _name, _tel];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>##2.3. set和get方法</p>
+<ul>
+<li>set方法<br>为了给多个成员变量赋值, 约定提供一个set方法</li>
+</ul>
+<ol>
+<li>一定是对象方法(要访问成员变量)</li>
+<li>返回值一定是void</li>
+<li>一定以set开头, set后面跟上去掉下划线的成员名称(并且首字母大写), 参数名字为成员变量名称去掉下划线</li>
+</ol>
+<ul>
+<li>get方法<br>当要访问成员变量, 获取成员变量值, 约定提供一个get方法</li>
+</ul>
+<ol>
+<li>一定是对象方法</li>
+<li>一定有返回值, 并且返回值类型和成员变量类型一致</li>
+<li>方法名称和成员变量去掉下划线一致, </li>
+<li>一定没有参数!!!!</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">生成set/get的简便方法</div><div class="line">/*</div><div class="line">@property  // 编译器特性,用来自动生成成员变量的get/set方法的声明(宰Xcode4.4之前), Xcode4.4以后被增强, 既可以生成声明也可以生成实现</div><div class="line">1. 告诉property要生成的get/set方法生命的成员变量类型是什么</div><div class="line">2. 告诉property要生成的get/set犯法是哪个属性, 属性名称去掉下划线</div><div class="line">3. 如果没有写成员变量, 会自动帮我们生成下划线开头的成员变量,但不在在.h处, 而是在.m处生成带下划线的成员变量</div><div class="line"></div><div class="line">注意 : 如果想让子类集成父类的成员变量, 还是必须手动声明</div><div class="line">*/</div><div class="line"></div><div class="line">//告诉xcode生成的成员变量的类型和名称</div><div class="line">@property int age;  //自动生成- (void)setAge : (int)age和 - (int)age 声明</div><div class="line"></div><div class="line">//@synthesize age = _age 用来生成get/set方法的实现, 意思是给.h文件中名称叫做age的property生成实现</div><div class="line">//如果没有明确告诉synthesize后面的age要赋值给谁, 他就会赋值给和他同名的变量</div><div class="line"></div><div class="line"></div><div class="line">---------------------------------</div><div class="line">当我们手动同时实现set/get方法的时候, property就不会自动给我们生成成员变量</div></pre></td></tr></table></figure>
+<p>##2.4. 成员变量的作用域和OC中的私有方法<br>从第一个关键字到下一个关键字之前是一个关键词的作用域</p>
+<ul>
+<li>@public</li>
+</ul>
+<blockquote>
+<p>可以直接在其他文件中直接访问,可以在本类对象方法中直接访问, 在子类中可以访问父类的public属性</p>
+</blockquote>
+<ul>
+<li>@private</li>
+</ul>
+<blockquote>
+<p>当private,在其他文件中不能直接访问, 可以在本类对象方法中直接访问, <code>在子类中不可以访问父类private属性</code></p>
+</blockquote>
+<ul>
+<li>@protected</li>
+</ul>
+<blockquote>
+<p>protected,在其他文件中不能直接访问,可以在本类对象中直接访问, <code>并且默认情况下所有属性是protected的</code>, 子类可以访问父类中protected属性</p>
+</blockquote>
+<ul>
+<li>@package</li>
+</ul>
+<ol>
+<li>在.h的声明在.m中实现的方法叫做公有方法</li>
+<li>不在.h中声明, 只在.m实现的方法叫做私有方法(<code>OC由于动态绑定, 并没有真正意义上的公有和私有</code>)</li>
+</ol>
+<p>##2.5. 类的本质</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">Person类的本质:</div><div class="line">     Person的代码被加载到代码区,</div><div class="line">     然后堆区生成Person类对象,由一个SEL指针, 指向代码区; 新建Person对象有一个isa指针,isa指针指向Person类对象. isa = (Class)Person(这个Person类也是一个对象)</div><div class="line">     最后在栈创建一个 p, 指向Person对象</div><div class="line">     </div><div class="line">SEL:</div><div class="line">    SEL sel = @selector(test);  //获取了test函数的地址,并赋值给sel</div><div class="line">    Person *p = [Person new];</div><div class="line">    [p performSelector:sel];    //根据p的isa到Person类对象的sel找对应的SEL指针, 找到后,到指向的代码区找地址相同的函数进行调用.</div></pre></td></tr></table></figure>
+<p><img src="http://byson.img42.wal8.com/img42/434369_20140909170142/141214788907.png" alt="类的本质"></p>
+<p>##2.6. init过程</p>
+<ul>
+<li>init用于对类的成员变量进行初始化(类似C++的构造函数)</li>
+<li>init应用场景:  当用到组合类时, 定义一个类后, 这个类中的<code>成员变量类</code>并没有被分配空间初始化, 需要传入一个分配空间的<code>成员变量类</code>. 此时可以重写init,在init初始化类中的<code>成员变量类</code></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">/*</div><div class="line"> new :</div><div class="line"> 1. 开辟存储空间   + alloc(用来开辟存储空间) 会返回一个没有初始化的对象</div><div class="line"> 2. 初始化成员变量 - init 对对象中的成员变量进行初始化</div><div class="line"> 3. 返回地址</div><div class="line"> */</div><div class="line">Person *p1 = [Person alloc];//开辟存储空间,返回未初始化对象</div><div class="line">Person *p2 = [p1 init]; //返回初始化后的对象</div><div class="line">//常规写法: Person *p = [[Person alloc] init];</div><div class="line">[p2 setAge:22];</div><div class="line">NSLog(@&quot;init age = %d&quot;, [p2 age]);</div></pre></td></tr></table></figure>
+<p><code>重写init方法</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">- (id)init   //系统不知道创建的什么对象,所有返回万能指针</div><div class="line">&#123;</div><div class="line">    /*</div><div class="line">     重写NSOject的init初始化方法注意点 :</div><div class="line">     1. 一定要调用super init方法, 先初始化父类</div><div class="line">     2. 一定要判断self是否为nil(如果父类初始化失败, 会返回nil)</div><div class="line">     3. 一定要返回self</div><div class="line">     */</div><div class="line">    self = [super init];</div><div class="line">    if(self != nil)</div><div class="line">    &#123;//说明父类初始化成功</div><div class="line">        _age = 18;</div><div class="line">    &#125;</div><div class="line">    return self;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">//优化</div><div class="line">- (id)init</div><div class="line">&#123;</div><div class="line">    if (self = [super init]) &#123;  //表达式先执行右部 </div><div class="line">        _age = 30;</div><div class="line">    &#125;</div><div class="line">    return self;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>###2.6.1. 自定义构造方法</p>
+<ol>
+<li>一定是对象方法, 以-号开头</li>
+<li>方法名称一般以init开头</li>
+<li>返回值一般是id</li>
+<li>自定义的构造方法, 需要在头文件中写声明</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">//使每个对象初始化有自定义的不同的属性 使对象一出生就拥有指定的属性</div><div class="line">- (id)initWithAge:(int)age</div><div class="line">&#123;</div><div class="line">    self = [super init];</div><div class="line">    if (self) &#123;</div><div class="line">        _age = age;</div><div class="line">    &#125;</div><div class="line">    return self;</div><div class="line">&#125;</div><div class="line"></div><div class="line">    Person *p1 = [[Person alloc] initWithAge:20];</div><div class="line">    [p1 infor];</div></pre></td></tr></table></figure>
+<blockquote>
+<p>继承中的自定义构造方法的运行流程</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">- (id)initAge:(int)age Name:(NSString *)name</div><div class="line">&#123;</div><div class="line">    self = [super initAge:age]; //直接调用父类自定义初始化</div><div class="line">    if (self) &#123;</div><div class="line">        //[self setAge:40]; property生成的是私有变量, setAge先在本类中招, 如果本类没有再去父类中找, 不推荐使用这个方法,推荐直接调用父类的自定义初始化</div><div class="line">        _name = name;</div><div class="line">    &#125;</div><div class="line">    return self;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><img src="http://byson.img42.wal8.com/img42/434369_20140909170142/141223444885.jpg" alt="继承中的自定义构造方法的运行流程"></p>
+<p>##2.7. 自定义类方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">//定义类方法, 创建Person</div><div class="line">//一般开发中会提供一个对象方法和一个类方法,用于创建初始化对象</div><div class="line">//约定: 只要是用于创建对象的类方法, 方法名称和类名一致(首字母小写)</div><div class="line">//声明</div><div class="line">+ (id)person;</div><div class="line">//定义</div><div class="line">+ (id)person</div><div class="line">&#123;</div><div class="line">//使用self, 而不是Person, 防止继承中动态绑定生成的不是子类对象</div><div class="line">    return [[self alloc] init]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">//声明</div><div class="line">+ personWithAge : (int)age;</div><div class="line">//定义</div><div class="line">+ (id)personWithAge:(int)age</div><div class="line">&#123;</div><div class="line">//设置成self, 使继承时可以使用,(动态绑定)</div><div class="line">    self *p = [[self alloc] init]; // 或者直接使用self *p = [self person];</div><div class="line">    [p setAge:age];</div><div class="line">    return p;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>#3. 多态</p>
+<blockquote>
+<p>多态: 某一种事物的多种形态(没有继承就没有多态)</p>
+</blockquote>
+<ul>
+<li><p>多态体现 : 用父类类型的指针指向子类对象(Animal *a = [Dog new];狗既是动物也是狗)<br><code>父类指针指向子类对象,(多态), OC特性 : 调用方法时, 会动态检测对象的真实类型(动态绑定 : 运行时判定)</code></p>
+</li>
+<li><p>局限性: 使用父类指针调用子类<code>特有</code>(子类有, 父类没有)的方法, 必须进行强制类型转换</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">//这个错误是因为 : (Xcode特性, 并不是OC的特性),父类并没有jiao这个方法</div><div class="line">Animal *a1 = [Dog new];</div><div class="line"></div><div class="line"></div><div class="line">//使用父类指针调用子类特有的方法, 必须进行强制类型转换</div><div class="line">Dog *d1 = (Dog *)a1;</div><div class="line">[d1 jiao];</div><div class="line"></div><div class="line">//错误写法, 动态检测a2的类型是Animal, Animal中没有jiao这个方法</div><div class="line">Animal *a2 = [Animal new];</div><div class="line">Dog *d2 = (Dog *)a2;</div><div class="line">[d2 jiao];</div></pre></td></tr></table></figure>
+<p>#4. 点语法<br>为了适应java程序员, 加入的一个<strong>编译器特性</strong>, 只能用来调用get set方法</p>
+<ol>
+<li><code>点语法仅对属性有用</code></li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">//三种给属性赋值的方法</div><div class="line">    Girl *g = [Girl new];</div><div class="line">    //利用public在外部赋值, 不安全</div><div class="line">    g-&gt;_age = 12;</div><div class="line">    g-&gt;_name = @&quot;hello&quot;;</div><div class="line">    g-&gt;_tel = @&quot;1321&quot;;</div><div class="line">    </div><div class="line">    </div><div class="line">    //利用set方法</div><div class="line">    [g setAge:22];</div><div class="line">    [g setName:@&quot;王老吉&quot;];</div><div class="line">    [g setTel:@&quot;2421412&quot;];</div><div class="line">    </div><div class="line">    </div><div class="line">    //利用点语法, 编译器编译时会自动转换为set方法</div><div class="line">    g.age = 23;</div><div class="line">    g.name = @&quot;加多宝&quot;;</div><div class="line">    g.tel = @&quot;fuck&quot;;</div><div class="line">    </div><div class="line">    NSLog(@&quot;age = %d&quot;, g.age);//转化为[g age]方法,</div><div class="line">    NSLog(@&quot;%@&quot;, g);</div></pre></td></tr></table></figure>
+<p>#5. id类型(相当于NSObject *)</p>
+<ol>
+<li>定义变量</li>
+<li>作为函数的返回值和函数的参数</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">//id == NSObject *</div><div class="line">NSObject *p1 = [Person new];</div><div class="line"></div><div class="line">//动态绑定时, 若父类中没有子类的方法, 调用前需要先进行强制类型装换</div><div class="line">Person *p2 = (Person *)p1;</div><div class="line">[p2 setAge: 33];</div><div class="line"></div><div class="line">//id的本质 : typedef struct objc_object *id</div><div class="line">//如果用id接受一个对象, 调用对象特有的方法而不需要进行强制类型转换</div><div class="line">//id是一个万能指针, 可以用来指向任何对象, 注意后面不要加*</div><div class="line">id p3 = [Person new];</div><div class="line">[p3 setAge:44];</div><div class="line">NSLog(@&quot;id age = %d&quot;, [p3 age]);</div></pre></td></tr></table></figure>
+<p>#6. 互引用问题<br>如果在A类中导入B类, B类中又导入A类, 就会造成循环引用</p>
+<hr>
+<ul>
+<li><code>使用@class className进行声明</code>,只是告诉编译器这是一个类, 并未导入类的具体实现. 如果用到实现,可以在.m文件中加入头文件</li>
+<li>@class可以提高编译效率</li>
+</ul>
+<p>#7. Xcode编译原理<br>cc -c main.m<br>cc main.o -framework Foundation<br>OC是在运行时动态的检查对象的类型(弱语法)</p>
+</div></article></div></main><footer><div class="paginator"><a href="/2014/10/06/2014-10-06-要对得起这幸运/" class="prev">上一篇</a><a href="/2014/10/01/2014-10-01-偶遇JavaScript/" class="next">下一篇</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

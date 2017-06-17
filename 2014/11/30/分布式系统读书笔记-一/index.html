@@ -1,0 +1,271 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 分布式系统读书笔记(一) · Snow Memory | Andrew Liu</title><meta name="description" content="分布式系统读书笔记(一) - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">分布式系统读书笔记(一)</h1><div class="post-info">Nov 30, 2014</div><div class="post-content"><hr>
+<blockquote>
+<p>分布式系统:若干独立计算机的集合, 这些计算机对于用户来说就像单个系统</p>
+</blockquote>
+<p>分布式系统构造带来的挑战:</p>
+<ul>
+<li>异构性(如何处理不同操作系统, 不同硬件, 不能编程欲然带来的差异)</li>
+<li>开放性(如果形成统一的接口)</li>
+<li>安全性(如果处理隐私, 信息安全问题)</li>
+<li>可扩展性(如果在用户激增情况下, 保持系统性能)</li>
+<li>故障处理(如果大型网络中, 检测故障, 隐藏故障和处理故障)</li>
+<li>并发(如果处理数据共享的一致性问题)</li>
+<li>透明性(如果使系统的某些特性对用户不可见)</li>
+</ul>
+<p>分布式系统特性:</p>
+<ul>
+<li>计算机之间的差别和计算机之间的通信方式的差别对用户是透明的</li>
+<li>用户和应用程序能够以统一和一致的方式与分布式系统通信</li>
+</ul>
+<a id="more"></a>
+<h2 id="1-系统模型"><a href="#1-系统模型" class="headerlink" title="#1. 系统模型"></a>#1. 系统模型</h2><ol>
+<li><p>软件层<br>平台:最底层的硬件和软件层<br>中间件: 软件层,屏蔽异构性, 为应用程序员提供方便的编程模型(<code>核心</code>)<br>紧耦合操作系统用于管理多处理器系统和同构多计算机系统<br>松耦合分布式系统用户管理异构式多计算系统</p>
+<ul>
+<li>单处理器系统</li>
+<li>多处理器系统</li>
+<li>多计算机操作系统(多提供共享存储器的多计算机系统智能向应该用程序提供消息传递, 这种消息传递在不同的计算机系统之间差距很大)</li>
+<li><code>分布式共享存储器系统(提供运行在多计算机系统上的共享存储器虚拟机, DSM)</code></li>
+<li>网络操作系统</li>
+<li><img src="http://picturebag.qiniudn.com/14.png" alt="4"></li>
+</ul>
+</li>
+<li><p>系统体系结构</p>
+<ul>
+<li>客户-服务模型(划分为用户界面层[客户], 处理层[服务器], 数据层[服务器])</li>
+<li>多个服务器提供服务</li>
+<li>代理服务器和缓存</li>
+<li>对等进程</li>
+</ul>
+</li>
+<li>接口和对象<ul>
+<li>一个进程中可调用的函数集合由一个或多个接口接口定义指定</li>
+</ul>
+</li>
+<li>硬件</li>
+</ol>
+<ul>
+<li>共享存储器的计算机系统成为多处理器系统, 多个处理器共享物理地址空间(总线型)<br>当cPU过多, 总线过于繁忙时, 采用策略是<code>增加高速缓存</code>.</li>
+<li>不共享存储器的系统成为多计算机系统<ul>
+<li>同构多计算机系统分为总线型和交换型(通过路由构建的网络拓扑, 流行的小规模交换型多计算机系统-工作站集群(cluster of worlkstation))</li>
+<li><code>异构多计算机系统</code>(主要)</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://picturebag.qiniudn.com/10.png" alt="1"></p>
+<h2 id="2-网络和网络连接"><a href="#2-网络和网络连接" class="headerlink" title="#2. 网络和网络连接"></a>#2. 网络和网络连接</h2><p>协议层: 发送方从上一层按照指定的格式接受数据项, 然后对将接收的数据进行封装,传送的下一层; 在接收方,下层接收到数据要做一次相反的转换,从头部读取信息后,将剩余部分传递给上一层.<code>每一层为上一层提供服务, 并扩展下一层的功能</code></p>
+<blockquote>
+<p>因特网的实现与OSI模型不同. </p>
+<ol>
+<li>因为王协议栈没有清楚的区分应用层,回话层表示层</li>
+<li>会话层和传输层集成子一起</li>
+</ol>
+</blockquote>
+<p><img src="http://picturebag.qiniudn.com/11.png" alt="2"></p>
+<p>##2.1. 路由<br>决定数据包被传输到那个目的路由是有路由算法决定, 这个算法在每个节点的网络层实现</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">路由算法:</div><div class="line">1. 决定每个数据包穿梭于网络时所应经过的路径</div><div class="line">2. 根据监控流量和检测配置变化或者故障动态的评估整个网络</div><div class="line"></div><div class="line">-&gt;基于距离向量算法(RIP算法)</div><div class="line">其中路由器信息协议(RIP)的操作:(路由器算法第二步)</div><div class="line">1. 周期性或者本地路由表发生变化时, 向相邻路由器发送带有自身路由表的RIP数据包</div><div class="line">2. 收到邻接路由器发来的路由表, 对照自身路由表进行路由表更新</div><div class="line">其中处理故障的操作:</div><div class="line">检测到有故障链路, 将本地路由表中指向故障链路的所有项的开销设为无穷大, 这样就不会被其他路由选择</div><div class="line"></div><div class="line">-&gt;链路状态算法(OSPF算法)</div></pre></td></tr></table></figure>
+<p>##2.2. IP协议<br>IP协议将数据报从一个主机传到另一个主机, 数据报发送前, 发送方的IP软件必须将IP数据包中找到的接收方的因特网地址翻译成以太网地址, 其中ARP协议用于完成这个任务. ARP维护一个高速缓存, 存储(IP地址, 以太网地址)对.</p>
+<p>##2.3. TCP和UDP协议<br>IP协议通过一组IP地址, 提供了端到端通信, 但TCP和UDP在传输层, 必须使用进程到进程的通信, <code>端口</code>用于描述进程, 端口号用于将消息选址到特定计算上的进程.</p>
+<ul>
+<li>UDP为无连接不可靠的协议,除了校验和,没有任何额外的验证机制,适用于传输不需要保证可靠性的消息</li>
+<li>TCP为面对连接最大努力交付协议, 提供了次序,控制流, 重发, 缓冲和校验和保证可靠性.</li>
+</ul>
+<blockquote>
+<p>应用程序将请求发送给DNS, DNS将用户指定的域名转换成IP地址, IP地址通过ARP协议转换成因特网地址, 通过物理层连接最终实现进程间通信.</p>
+</blockquote>
+<p><img src="http://picturebag.qiniudn.com/15.png" alt="5"></p>
+<p>##2.4. 网络</p>
+<ol>
+<li>以太网:具有检测冲突的载波监听多路访问(CSMA/CD). 属于竞争总线类网络</li>
+<li>IEEE802.11无线LAN: 具有避免冲突的载波监听多路访问(CSMA/CA), 其中共享密钥的机制可以有效保证通信隐密性和安全性.</li>
+<li>异步传输模式网络: ATM主要用于传输多种不同数据.ATM是一种数据交换技术,提供面向连接的服务,</li>
+</ol>
+<h2 id="3-进程间通信-核心"><a href="#3-进程间通信-核心" class="headerlink" title="#3. 进程间通信(核心)"></a>#3. 进程间通信(核心)</h2><p>一对进程消息传递需要两个消息通信操作支持:<code>send和receive</code>, 在同步通信中两个操作为阻塞操作,在异步通信中<code>send</code>是不阻塞的,<code>receive</code>分为阻塞和不阻塞,阻塞时, 每次发送一个<code>receive</code>,进程一直阻塞直到消息到达, 非阻塞时. 进程发出<code>receive</code>后继续执行程序, 这个操作在后台提供一个缓冲区, 必须通过轮询或者终端独立的接收缓冲区满的通知.</p>
+<blockquote>
+<p>消息被发往(因特网地址, 本地端口)对</p>
+</blockquote>
+<p>##3.1. 套接字</p>
+<p>套接字提供进程间通信的一个断点, 套接字必须绑定到本计算机的一个因特网地址和一个本地端口, <code>bind操作</code>, 端口不可共享(除了IP组播中的共享端口).</p>
+<p>##3.2. UDP数据报通信</p>
+<ol>
+<li>UDP数据报通信使用非阻塞<code>send</code>和阻塞型<code>receive</code>, 当<code>send</code>将消息传递给底层UDP和IP协议后就返回, UDP和IP负责将消息传递给目的地, 消息到达后放在目的端口绑定的套接字队列中.</li>
+<li>套接字上设置超时, 防止<code>receive</code>无线等待</li>
+<li>UDP不包含三大开销<ul>
+<li>需要在源和目的存储状态信息</li>
+<li>传输额外的消息</li>
+<li>传送方的时间延迟</li>
+</ul>
+</li>
+</ol>
+<p>##3.3. TCP流通信</p>
+<ul>
+<li>TCP使用确认机制</li>
+<li>TCP视图匹配读写流的进程的速度</li>
+<li>TCP协议的服务:<code>HTTP, FTP, Telnet, SMTP</code></li>
+</ul>
+<hr>
+<blockquote>
+<p>没有共享存储器的系统中, 所有通信都是基于(低层)消息交换.</p>
+</blockquote>
+<p><img src="http://picturebag.qiniudn.com/13.png" alt="3"></p>
+<p>##3.4.1. 远程程序调用(RPC)</p>
+<blockquote>
+<p>RPC希望调用方式透明. 使用客户存根和服务器存根隐藏差异性(参数打包-&gt;解包(服务器)-&gt;打包(发往客户端)),效果是:将客户对客户存根发出的本地调用转换成服务器中的本地调用</p>
+</blockquote>
+<p>三种调用方式, 传值调用,引用调用和call by copy调用(先复制到堆栈,变量覆盖掉原来变量, 感觉好像先执行传值调用,在执行引用调用)</p>
+<p>主要问题:</p>
+<ul>
+<li>参数传递(编码, 字节次序的不同)</li>
+<li>指针传递(使用指针只在进程所在地址空间有效, 在RPC中客户端和服务器之间使用了类似于copy by copy的策略, 使指针有效)</li>
+<li>参数说明(为了达成一致性)和存根生成</li>
+</ul>
+<p><code>改进型RPC</code>: </p>
+<ol>
+<li>门 : 服务器注册一个门, 客户端利用系统调用door_call请求对门进行调用, 并在door_call中给出要调用门的标识符和参数. 操作系统向上调用注册门的服务器进程, 调用门所得的结果通过系统调用door_return返回客户进程</li>
+<li>异步RPC : 客户发出RPC请求后立即继续执行,服务器接受到RPc请求立即向客户端发送应答, 之后再调用客户请求进程.应答是告诉客户端已经准备处理RPC请求.</li>
+</ol>
+<p><img src="http://picturebag.qiniudn.com/16.png" alt="6"></p>
+<p>##3.4.2. 远程对象调用</p>
+<p>客户绑定(绑定产生一个位于进程地址空间的代理)一个分布式对象, 这个对象接口的实现(称为<code>代理</code>, 类似存根)被加载到客户地址空间.代理的唯一工作是将方法的调用编组成消息, 并对应答消息进行解编, 然后将调用的方法返回给客户. 实际对象驻留在服务器所在机器上, 它向服务器提供的接口与客户提供的接口相同.编组的调用传递给服务器骨架, 骨架调用请求解编成对服务器上对象接口的调用,并对应答消息编组,发送给客户端代理.</p>
+<blockquote>
+<p><code>关于隐式绑定和显式绑定的问题, 静态调用和动态调用问题</code></p>
+</blockquote>
+<p>在将客户绑定到对象之后, 可以通过代理来调用对象的方法, 称为远程方法调用(RMI), RMI和RPC的不同在于<code>RMI一般支持系统级对象引用, 不需要使用通用的客户端和服务器存根, 可以使用针对特定对象的存根</code></p>
+<p><img src="http://picturebag.qiniudn.com/17.png" alt="7"></p>
+<p>##3.5. 面向消息的通信</p>
+<blockquote>
+<p>由于RMI和RPC并不总是适用, 并且他们的同步特性造成阻塞, 所以需要采取其他方法</p>
+</blockquote>
+<p>套接字(Socket)是一种通信端点.</p>
+<ul>
+<li>面向消息的持久通信 :<br>面向消息的中间件服务成为<code>消息队列系统</code>, 应用程序可以通过在特定队列中插入消息来进行通信,只确保发送者发出的消息最终能够插入到接受者消息队列中, 并不保证消息到达时间, 甚至不保证消息一定会得到读取.</li>
+</ul>
+<p>发送者调用put原语是非阻塞的, get原语是阻塞的.</p>
+<blockquote>
+<p>其中消息转换器像一个消息格式重新编排工具, 消息转换器的核心是数据库, 数据库规定了如何将格式X的消息转换为格式Y</p>
+</blockquote>
+<p><img src="http://picturebag.qiniudn.com/19.png" alt="9"></p>
+<p><img src="http://picturebag.qiniudn.com/20.png" alt="10"></p>
+<p>##3.6. 面向流的通信</p>
+<blockquote>
+<p>流的主要问题是两个连续的消息是否有时间上的联系.</p>
+</blockquote>
+<p>数据流是数据单元的序列, 可以应用于离散的媒体, 也可以应用于连续媒体. <code>流一般可以看作信源和信宿之间的虚拟连接</code>.</p>
+<p>时间敏感的需求一般同城为服务质量(<code>Qos</code>), 这种需求秒速了底层分布式系统及网络在确保传输质量方面的需求.<br>Partrideg开发的模型中, 通过令牌存储桶算法(<code>token bucket algorithm</code>), 基本思想是以恒定的速率来产生令牌, 每个令牌代表允许应用程序向网络传输的固定数量的字节. 令令牌在存储桶中进行缓存, 桶的容量有限, 超过就丢弃. 每当应用程序向网络传递一个大小为N的数据单元时, 必须先在存储桶中删除N个字节, 如果桶占k字节,则需要N/k个桶</p>
+<p><img src="http://picturebag.qiniudn.com/18.png" alt="8"></p>
+<p>#4. 进程</p>
+<blockquote>
+<p>每次创建进程, 操作系统必须创建一个完整的独立地址空间(对内存初始化, 如将数据段清空, 有关程序复制到文本段, 为临时数据建立堆栈). 当两个进程之间切换, 需要保存CPu环境(寄存器值,程序计数器,堆栈指针等), 操作系统修改内存管理单元(<code>MMU</code>),并将位于转换后被缓存其(TLB)中的地址转换缓存内容标记为无效, 代价都非常大, 所以有了线程.</p>
+</blockquote>
+<ul>
+<li>用户级线程, 优点: 创建和销毁的代价小, 轻松实现线程上下文切换.缺点: 对引起阻塞的系统调用会阻塞整个进程.</li>
+<li>内核级线程, 每个线程操作都必须由内核完成, 并且需要进行系统调用.线程上下文切换与进程上下文切换花销一样大.</li>
+<li><p>轻量级线程(用户级和内核级混合LWP),轻量级线程上下文切换在用户空间实现, 当进行阻塞的的系统调用时, 转变为内核模式,但仍在当前LWP上下文中继续执行, 在当前LWP无法继续执行时, 简单的切换为另一个LWP继续执行.</p>
+</li>
+<li><p>多线程客户(网页浏览器)</p>
+</li>
+<li>多线程服务器(通过一个分发起线程分配服务器工作者线程)</li>
+</ul>
+<p><img src="http://picturebag.qiniudn.com/21.png" alt="11"></p>
+<p>##4.1. 对象服务器</p>
+<blockquote>
+<p>服务器可以将每个对象放置在属于该对象的内存段, 对象间不共享数据.</p>
+</blockquote>
+<p>在实际调用对象前, 必须先将对象本身加载到服务器地址空间中(激活对象), <code>对象适配器(object adapter)将对象根据策略分组</code></p>
+<p>##4.2. 代码迁移</p>
+<p>代码迁移的最弱形式仅提供弱可移动性, 只传输代码段和初始数据, 特征是:传输的程序以初始状态重新执行.<br>代码迁移支持强可移动性的胸, 可以先停止运行中的进程, 然后搬到另一台机器上继续从中断的位置执行.</p>
+<ul>
+<li><p>迁移与本地资源</p>
+<ul>
+<li>进程对资源绑定的最弱形式: 只知名需要何种资源(打印机等按这种形式绑定)</li>
+<li>进程对资源绑定的较弱的形式是: 只使用资源的值(按值绑定)</li>
+<li>最强绑定方式是进程使用资源的标识符来引用资源</li>
+</ul>
+</li>
+<li><p>异构系统中的代码迁移</p>
+<ul>
+<li>使用虚拟机</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://picturebag.qiniudn.com/1.png" alt="12"></p>
+<p>##4.3. 软件代理</p>
+<blockquote>
+<p>软件代理是一些独立的单元, 能够与其他代理进行写作, 一同执行任务. 能够对环境中的变化做出反映并启动变化的<code>自治</code>进程, 而且可能与用户代理或者其他代理<code>协同</code></p>
+</blockquote>
+<ul>
+<li>接口代理协助用户使用一个或者多个应用程序, 它拥有学习能力.</li>
+<li>信息代理管理来自多个不同信息源的信息, 对信息排序,过滤,比较</li>
+</ul>
+<p>#5. 命名</p>
+<blockquote>
+<p>名称用作唯一标识实体, 指定位置和共享资源.</p>
+</blockquote>
+<ul>
+<li>地址(IP和端口号)指向实体的访问点(访问点在分布式系统中某个主机)</li>
+<li><code>唯一</code>的标识符指向某个实体</li>
+</ul>
+<p>分布式系统的名称都组织在<code>命名空间</code>(带有两种类型节点的有向图)中, 叶节点表示一个命名的实体,目录节点的每条边用一个名称表示.</p>
+<blockquote>
+<p>查询名称的过程称为名称解析.</p>
+</blockquote>
+<p>别名是同一个实体的另一个名称, 注意区分<code>硬链接和符号连接</code></p>
+<blockquote>
+<p>合并不同命名空间的方式: 1. 挂载 2. GNS(全局名称服务, 将命名空间当作新的根节点的子节点)</p>
+</blockquote>
+<p>##5.1. 命名空间的实现</p>
+<p>命名空间是命名服务的核心, 命名服务允许用户和进程添加, 删除和查找名称.</p>
+<p>命名空间分为三层:</p>
+<ul>
+<li>全局层(最高级节点根基点和它的子节点组成)</li>
+<li>行政层(单个组织内被管理的目录节点组成)</li>
+<li><p>管理层(经常被修改的节点组成)</p>
+</li>
+<li><p>名称解析的实现:</p>
+<ol>
+<li>迭代名称解析, 将完整路径名称发送给根名称服务器, 根服务器深入解析路径名, 根服务器解析一部分后, 返回结果给客户, 然后客户发送给下一个名称服务器…知道全部解析成功.</li>
+<li>递归名称解析, 这个方法中名称服务器把解析的部分结果直接发给下一个完成服务器, 知道解析成功, 返回根服务器, 根服务器返回给客户(<code>开销小, 查询高效</code>)</li>
+</ol>
+</li>
+</ul>
+<p><img src="http://picturebag.qiniudn.com/3.png" alt="14"></p>
+<p><img src="http://picturebag.qiniudn.com/35.png" alt="16"></p>
+<blockquote>
+<p>最大的分布式名称服务系统<code>DNS</code></p>
+</blockquote>
+<ol>
+<li>A资源记录代表Internet上的<code>特定主机</code>.</li>
+<li>DNS区分别名和规范名称. 每个主机假定拥有一个规范名称, <code>别名由促出CNAME记录的节点实现,CNAME记录包含主机的规范名称</code> </li>
+</ol>
+<p><img src="http://picturebag.qiniudn.com/2.png" alt="13"></p>
+<p>##5.2. 移动实体的命名和定位</p>
+<blockquote>
+<p>思想: 通过引入标识符把命名实体与查找实体分开</p>
+</blockquote>
+<p>在同过命名服务查找实体时, 命名服务返回标识符, <code>这个标识符永远不会改变.</code></p>
+<p>定位服务:</p>
+<ul>
+<li>局域网中通过广播实体标识符, 找到实体地址.或者通过点到点多播发送给多播组的成员.</li>
+<li>转发指针. 当实体A移动到B, 它将在后面留下一个指针(代理), 指针指向它在B(安装一个引用代理的骨架)中的新位置.(可能使指针链特别长导致性能问题, 还有链断开问题)</li>
+<li>基于起始位置的定位,每个移动主机都使用固定的Ip, 所有与该IP进行的通信都被转发到移动主机的起始位置, 移动主机每次转移都会将(care of address)注册在起始位置中.当其实位置代理收到发给移动主机的数据包时, 会查找主机位置.(可能因为距离增加延迟). 分层机制, 本地直接通信, 否则建立连接后发送.</li>
+<li>分层组织的定位服务(<code>分层搜索树</code>的结构, 使查找在区域进行)</li>
+</ul>
+<p><img src="http://picturebag.qiniudn.com/5.png" alt="15"></p>
+<p>##5.3. 分布式垃圾收集器</p>
+<blockquote>
+<p>distributed garbage collector</p>
+</blockquote>
+<ol>
+<li>引用计数<br> 对于分布式对象实现通过(代理, 框架)对实现. 进程P创建远程对象O的引用, 会在自己地址空间安装O的代理, 代理向对象骨架发送消息, 并希望返回确认信息. 删除<code>对象引用</code>时代理发送递减引用要求. 其中对于确认信息丢失的处理, 必须检查重复消息.</li>
+<li>高级引用计数<ul>
+<li>weighted reference counting</li>
+<li>generation reference counting</li>
+</ul>
+</li>
+<li>引用列表<br> 骨架跟踪引用他的代理, 骨架维护一张列表, 列出所有指向他的列表</li>
+</ol>
+<p>标识不可到达实体的收集:</p>
+<ul>
+<li><code>基于追踪的垃圾收集</code>需要处理跟踪分布式中全部实体(标记-清除算法)</li>
+<li>通过标记清除和引用计数联合使用, 垃圾收集在组(进程集合)内处理.</li>
+</ul>
+</div></article></div></main><footer><div class="paginator"><a href="/2014/11/30/分布式系统读书笔记-同步互斥/" class="prev">上一篇</a><a href="/2014/11/28/或许你会更喜欢我眼中的Chrome插件和使用/" class="next">下一篇</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

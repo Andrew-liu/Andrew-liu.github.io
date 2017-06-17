@@ -1,0 +1,137 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Python编码规范 · Snow Memory | Andrew Liu</title><meta name="description" content="Python编码规范 - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">Python编码规范</h1><div class="post-info">Nov 28, 2014</div><div class="post-content"><blockquote>
+<p><code>Python</code>,一门简洁,全能的胶水语言, 牺牲性能换来的<code>多面手</code>的特性, 最近写Python比较多, 通过这篇博文我试图形成自己的编码规范.为以后的代码重构和阅读埋下铺垫. 主要参考的是google编码规范, 毕竟大公司</p>
+<p>大部分.py文件不必以#!作为文件的开始. 程序的main文件以 #!/usr/bin/python2或者 #!/usr/bin/python3开始.(<code>#!先用于帮助内核找到Python解释器, 但是在导入模块时, 将会被忽略. 因此只有被直接执行的文件中才有必要加入#!.</code>)</p>
+</blockquote>
+<p>##1.1. 分号</p>
+<blockquote>
+<p>不要在行尾加分号, 也不要用分号将两条命令放在同一行</p>
+</blockquote>
+<p>可能之前用C/C++比较多, 刚开始写Python的时候, 总是会在行尾加上分号,而且不会报错, 不过最近python写的比较多,所以也改过来了</p>
+<a id="more"></a>
+<p>##1.2. 行长度</p>
+<blockquote>
+<p>每行不超过80个字符</p>
+</blockquote>
+<p>例外:</p>
+<ul>
+<li>常的导入模块语句</li>
+<li>注释里面的URL</li>
+</ul>
+<p>使用<code>圆括号</code>将行隐式连接起来(<code>Python会将 圆括号, 中括号和花括号中的行隐式的连接起来</code>)</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">my_very_big_string = (</div><div class="line">    <span class="string">"For a long time I used to go to bed early. Sometimes, "</span></div><div class="line">    <span class="string">"when I had put out my candle, my eyes would close so quickly "</span></div><div class="line">    <span class="string">"that I had not even time to say “I’m going to sleep.”"</span></div><div class="line">)</div></pre></td></tr></table></figure>
+<p>##1.3. 括号</p>
+<blockquote>
+<p>除了行隐式, 不要在返回语句和条件语句中使用括号, 可以在元组两边使用括号</p>
+</blockquote>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> foo:</div><div class="line">    bar()</div><div class="line"><span class="keyword">while</span> x:</div><div class="line">    x = bar()</div><div class="line"><span class="keyword">if</span> x <span class="keyword">and</span> y:</div><div class="line">    bar()</div><div class="line"><span class="keyword">if</span> <span class="keyword">not</span> x:</div><div class="line">    bar()</div><div class="line"><span class="keyword">return</span> foo</div></pre></td></tr></table></figure>
+<p>##1.4. 缩进</p>
+<blockquote>
+<p>使用四个空格缩进(习惯使用Tab缩进, 貌似这样缺陷很大, 以后改正)</p>
+</blockquote>
+<p>##1.5. 空行</p>
+<ul>
+<li>顶级定义之间空两行(比如函数定义之间或者类定义之间)</li>
+<li>方法定义之间空一行(类定义与第一个方法空一行<code>这个我以前也是这么做的</code>)</li>
+<li>按照标准排版规范使用标点两边空格<ul>
+<li>不要在逗号, 分号, 冒号前面加空格, 但应该在它们后面加</li>
+<li>参数列表, 索引或切片的左括号前不应加空格</li>
+<li>在二元操作符两边都加上一个空格, 比如<code>赋值(=), 比较(==, &lt;, &gt;, !=, &lt;&gt;, &lt;=, &gt;=, in, not in, is, is not), 布尔(and, or, not)</code>.</li>
+<li>当’=’用于指示关键字参数或默认参数值时, 不要在其两侧使用空格</li>
+<li>不要用空格来垂直对齐多行间的标记, 因为这会成为维护的负担(<code>注意这点</code>)</li>
+</ul>
+</li>
+</ul>
+<p>##1.6. 注释</p>
+<ul>
+<li><p>文档字符串的惯例是使用三重双引号”””(<code>一个文档字符串应该这样组织: 首先是一行以句号,
+问号或惊叹号结尾的概述(或者该文档字符串单纯只有一行). 
+接着是一个空行. 接着是文档字符串剩下的部分, 
+它应该与文档字符串的第一行的第一个引号对齐</code>)</p>
+</li>
+<li><p>函数和方法(<code>一个函数必须要有文档字符串, 除非外部不可见, 非常短小, 简单明了, 
+文档字符串应该包含函数做什么, 以及输入和输出的详细描述.对于复杂的代码, 
+在代码旁边加注释会比使用文档字符串更有意义, 注释应该至少离开代码2个空格</code>)</p>
+</li>
+</ul>
+<p>Args:</p>
+<pre><code>列出每个参数的名字, 并在名字后使用一个冒号和一个空格, 分隔对该参数的描述.如果描述太长超过了单行80字符,使用2或者4个空格的悬挂缩进(与文件其他部分保持一致). 描述应该包括所需的类型和含义. 如果一个函数接受*foo(可变长度参数列表)或者**bar (任意关键字参数), 应该详细列出*foo和**bar.
+</code></pre><p>Returns: (或者 Yields: 用于生成器)</p>
+<pre><code>描述返回值的类型和语义. 如果函数返回None, 这一部分可以省略.
+</code></pre><p>Raises:</p>
+<pre><code>列出与接口有关的所有异常.
+</code></pre><figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">fetch_bigtable_rows</span><span class="params">(big_table, keys, other_silly_variable=None)</span>:</span></div><div class="line">    <span class="string">"""Fetches rows from a Bigtable.</span></div><div class="line"></div><div class="line">    Retrieves rows pertaining to the given keys from the Table instance</div><div class="line">    represented by big_table.  Silly things may happen if</div><div class="line">    other_silly_variable is not None.</div><div class="line"></div><div class="line">    Args:</div><div class="line">        big_table: An open Bigtable Table instance.</div><div class="line">        keys: A sequence of strings representing the key of each table row</div><div class="line">            to fetch.</div><div class="line">        other_silly_variable: Another optional variable, that has a much</div><div class="line">            longer name than the other args, and which does nothing.</div><div class="line"></div><div class="line">    Returns:</div><div class="line">        A dict mapping keys to the corresponding table row data</div><div class="line">        fetched. Each row is represented as a tuple of strings. For</div><div class="line">        example:</div><div class="line"></div><div class="line">        &#123;'Serak': ('Rigel VII', 'Preparer'),</div><div class="line">         'Zim': ('Irk', 'Invader'),</div><div class="line">         'Lrrr': ('Omicron Persei 8', 'Emperor')&#125;</div><div class="line"></div><div class="line">        If a key from the keys argument is missing from the dictionary,</div><div class="line">        then that row was not found in the table.</div><div class="line"></div><div class="line">    Raises:</div><div class="line">        IOError: An error occurred accessing the bigtable.Table object.</div><div class="line">    """</div><div class="line">    <span class="keyword">pass</span></div></pre></td></tr></table></figure>
+<ul>
+<li>类</li>
+</ul>
+<p>类应该在其定义下有一个用于描述该类的文档字符串. 如果你的类有公共属性(Attributes), 那么文档中应该有一个属性(Attributes)段. 并且应该遵守和函数参数相同的格式.</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">SampleClass</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="string">"""Summary of class here.</span></div><div class="line"></div><div class="line">    Longer class information....</div><div class="line">    Longer class information....</div><div class="line"></div><div class="line">    Attributes:</div><div class="line">        likes_spam: A boolean indicating if we like SPAM or not.</div><div class="line">        eggs: An integer count of the eggs we have laid.</div><div class="line">    """</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, likes_spam=False)</span>:</span></div><div class="line">        <span class="string">"""Inits SampleClass with blah."""</span></div><div class="line">        self.likes_spam = likes_spam</div><div class="line">        self.eggs = <span class="number">0</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">public_method</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="string">"""Performs operation blah."""</span></div></pre></td></tr></table></figure>
+<p>##2.1. 类</p>
+<blockquote>
+<p>如果一个类不继承自其它类, 就显式的从<code>object</code>继承. 嵌套类也一样</p>
+</blockquote>
+<p>继承自 object 是为了使属性(properties)正常工作, 并且这样可以保护你的代码, 使其不受<code>Python 3000</code>的一个特殊的潜在不兼容性影响. 这样做也定义了一些特殊的方法, 这些方法实现了对象的默认语义, 包括 <code>__new__, __init__, __delattr__, __getattribute__, __setattr__, __hash__, __repr__, and __str__</code></p>
+<p>##2.2. 字符串</p>
+<blockquote>
+<p>即使参数都是字符串, 使用%操作符或者格式化方法格式化字符串</p>
+</blockquote>
+<ul>
+<li>避免在循环中用<code>+和+=</code>操作符来累加字符串. </li>
+</ul>
+<blockquote>
+<p>字符串是不可变的</p>
+</blockquote>
+<p>这样做会创建不必要的临时对象, 并且导致二次方而不是线性的运行时间. 作为替代方案, 你可以将每个子串加入列表, 然后在循环结束后用<code>.join</code> 连接列表.</p>
+<ul>
+<li>在同一个文件中, 保持使用字符串引号的一致性(只用双引号或者只用单引号)</li>
+<li>为多行字符串使用三重双引号<code>&quot;&quot;&quot;</code></li>
+</ul>
+<p>##3.1. 文件和sockets</p>
+<blockquote>
+<p>在文件和sockets结束时, 显式的关闭它.(文件使用<code>with</code>)</p>
+</blockquote>
+<p>##3.2. TODO注释</p>
+<blockquote>
+<p>为临时代码使用TODO注释</p>
+</blockquote>
+<p>TODO注释应该在所有开头处包含”TODO”字符串, 紧跟着是用括号括起来的你的名字, email地址或其它标识符. 然后是一个可选的冒号. 接着必须有一行注释, 解释要做什么</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># TODO(kl@gmail.com): Use a "*" here for string repetition.</span></div><div class="line"><span class="comment"># TODO(Zeke) Change this to use relations.</span></div></pre></td></tr></table></figure>
+<p>##3.3. import格式</p>
+<blockquote>
+<p>每个导入应该独占一行</p>
+</blockquote>
+<p>导入总应该放在文件顶部, 位于模块注释和文档字符串之后, 模块全局变量和常量之前. 导入应该按照从最通用到最不通用的顺序分组,<br>每种分组中, 应该根据每个模块的完整包路径按字典序排序, 忽略大小写:</p>
+<ol>
+<li>标准库导入</li>
+<li>第三方库导入</li>
+<li>应用程序指定导入</li>
+</ol>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> foo</div><div class="line"><span class="keyword">from</span> foo <span class="keyword">import</span> bar</div><div class="line"><span class="keyword">from</span> foo.bar <span class="keyword">import</span> baz</div><div class="line"><span class="keyword">from</span> foo.bar <span class="keyword">import</span> Quux</div><div class="line"><span class="keyword">from</span> Foob <span class="keyword">import</span> ar</div></pre></td></tr></table></figure>
+<p>##3.4. 语句</p>
+<blockquote>
+<p>每个语句独占一行</p>
+</blockquote>
+<p>##3.5. 访问控制</p>
+<p>在Python中, 对于琐碎又不太重要的访问函数, 你应该直接使用公有变量来取代它们, 这样可以避免额外的函数调用开销. 当添加更多功能时, 你可以用属性(property)来保持语法的一致性.</p>
+<p>另一方面, 如果访问更复杂, 或者变量的访问开销很显著, 那么你应该使用像 <code>get_foo()</code> 和 <code>set_foo()</code> 这样的函数调用. 如果之前的代码行为允许通过属性(property)访问 , 那么就不要将新的访问函数与属性绑定. 这样, 任何试图通过老方法访问变量的代码就没法运行, 使用者也就会意识到复杂性发生了变化.</p>
+<p>##3.6.命名</p>
+<blockquote>
+<p><code>module_name, package_name, ClassName, method_name, ExceptionName, function_name, GLOBAL_VAR_NAME, instance_var_name, function_parameter_name, local_var_name.</code></p>
+</blockquote>
+<ol>
+<li>避免使用单字符名称, 除了计数器和迭代器</li>
+<li>避免使用包/模块名中连字符(<code>-</code>)</li>
+<li>避免使用双下划线开头和结尾的名称(‘Python保留’)</li>
+</ol>
+<p>命名约定:</p>
+<ul>
+<li>用单下划线开头(<code>_</code>)表示模块变量或者函数是<code>protected</code>(使用import * from不会包含)</li>
+<li>双下划线(<code>__</code>)表示实例变量或者方法类内私有</li>
+<li>将相关的类和顶级函数放在一个模块里</li>
+<li>对类名使用大写字母开头的单词(如<code>RandomForest</code>).模块名小写加下划线(<code>lower_with_under.py</code>),</li>
+</ul>
+<p>##3.7. Main</p>
+<p>应该在执行主程序前总是检查 <code>if __name__ == &#39;__main__&#39;</code> </p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></div><div class="line">      ...</div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">    main()</div></pre></td></tr></table></figure>
+<p><a href="https://stackoverflow.com/questions/419163/what-does-if-name-main-do" target="_blank" rel="external">What does <code>if __name__ == “__main__”:</code> do?
+</a></p>
+</div></article></div></main><footer><div class="paginator"><a href="/2014/11/28/或许你会更喜欢我眼中的Chrome插件和使用/" class="prev">上一篇</a><a href="/2014/11/27/Python代码风格-译/" class="next">下一篇</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

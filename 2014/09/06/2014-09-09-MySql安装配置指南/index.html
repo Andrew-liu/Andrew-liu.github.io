@@ -1,0 +1,136 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> MySql安装配置指南 · Snow Memory | Andrew Liu</title><meta name="description" content="MySql安装配置指南 - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">MySql安装配置指南</h1><div class="post-info">Sep 6, 2014</div><div class="post-content"><p>#1. 安装MySQL</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-get install mysql-server</div></pre></td></tr></table></figure>
+<ol>
+<li><p>终端输入</p>
+<blockquote>
+<p> sudo netstat -tap | grep mysql     测试是否安装成功</p>
+</blockquote>
+</li>
+<li><p>通过登录MySQL测试</p>
+<blockquote>
+<p>在终端输入 mysql -uroot -p 接下来会提示你输入密码，输入正确密码，即可进入。</p>
+</blockquote>
+</li>
+</ol>
+<a id="more"></a>
+<blockquote>
+<p>退出命令：quit或者exit</p>
+</blockquote>
+<ul>
+<li>从所有主机：grant all privileges on <em>.</em> to root@”%” identified by “password” with grant option;</li>
+<li>从指定主机：grant all privileges on <em>.</em> to root@”172.30.3.100” identified by<br>“password” with grant option; flush privileges;</li>
+<li>进mysql库查看host为%的数据是否添加：use mysql; select * from user;</li>
+<li>远程登录mysql：mysql -h ip -u user -p</li>
+</ul>
+<!--break-->
+<p>#2. MySQL的一些简单操作</p>
+<ul>
+<li>启动MySQL服务：                       sudo start mysql</li>
+<li>停止MySQL服务：                       sudo stop mysql</li>
+<li>修改 MySQL 的管理员密码：     sudo mysqladmin -u root password newpassword</li>
+<li>设置远程访问(正常情况下，mysql占用的3306端口只是在IP 127.0.0.1上监听，拒绝了其他IP的访问（通过netstat可以查看到）。取消本地监听需要修改 my.cnf 文件:</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo vi /etc/mysql/my.cnf</div><div class="line">bind-address = 127.0.0.1 //找到此内容并且注释</div></pre></td></tr></table></figure>
+<ul>
+<li>显示所有的数据库： </li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mysql&gt; show databases;</div></pre></td></tr></table></figure>
+<ul>
+<li>显示库中所有的表：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mysql&gt;show tables;</div></pre></td></tr></table></figure>
+<ul>
+<li>修改mysql最大连接数：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/etc/mysql/my.cnf，增加或修改max_connections=1024</div></pre></td></tr></table></figure>
+<ul>
+<li>创建数据库，创建user：<blockquote>
+<p>create database db_name;</p>
+</blockquote>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">1)  建库：create database test;</div><div class="line">2)  建用户，赋权：grant all privileges on test.* to user_test@&quot;%&quot; identified by &quot;password&quot; with grant option;</div><div class="line">3）删除数据库：drop database test;</div></pre></td></tr></table></figure>
+<ul>
+<li><p>使用数据库</p>
+<blockquote>
+<p>use db_name</p>
+</blockquote>
+</li>
+<li><p>显示表的结构</p>
+<blockquote>
+<p>describe db;    </p>
+</blockquote>
+</li>
+</ul>
+<ul>
+<li>删除权限：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">1) revoke all privileges on test.* from user_test@&quot;%&quot;;</div><div class="line">2) use mysql;</div><div class="line">3) delete from user where user=&quot;user_test&quot; and host=&quot;%&quot;;</div><div class="line">4) flush privileges;</div></pre></td></tr></table></figure>
+<ul>
+<li>设置字符集（以utf8为例）</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"> 1. 在mysql里面查看当前的编码：show variables like &apos;character%&apos;;</div><div class="line"> </div><div class="line"> 2. 然后修改my.cnf，在终端输入命令 sudo gedit /etc/mysql/my.cnf</div><div class="line"></div><div class="line">重新启动mysql ：sudo restart mysql</div><div class="line">启动mysql sudo start mysql</div><div class="line">检查 mysqld 进程是否已经开启，可以使用下面的命令：</div><div class="line">pgrep mysqld</div></pre></td></tr></table></figure>
+<p>#3. MySQL安装后的目录结构分析(此结构只针对于使用apt-get install 在线安装情况)：</p>
+<pre><code>数据库存放目录：               /var/lib/mysql/
+
+相关配置文件存放目录：          /usr/share/mysql
+
+相关命令存放目录：             /usr/bin(mysqladmin mysqldump等命令)
+
+启动脚步存放目录：            /etc/rc.d/init.d/
+</code></pre><p>#4. mysql的配置<br>MySQL配置文件：/etc/mysql/my.cnf ，其中指定了数据文件存放路径<br>datadir         = /var/lib/mysql<br>如果你创建了一个名为 test 的数据库，那么这个数据库的数据会存放到<br>/var/lib/mysql/test 目录下。 </p>
+<p>#5. 远程访问mysql<br>如果你想进行远程访问或控制，那么你要做两件事：<br>其一：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mysql&gt;GRANT ALL PRIVILEGES ON test.* TO user_test@&quot;%&quot; IDENTIFIED BY &quot;password&quot;;</div></pre></td></tr></table></figure>
+<p>允许user_test用户可以从任意机器上登入MySQL。<br>其二：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$sudo gedit /etc/mysql/my.cnf</div><div class="line">&gt;bind-address=127.0.0.1 =&gt; bind-address= 你机器的IP</div><div class="line">这样就可以允许其他机器访问MySQL了。</div></pre></td></tr></table></figure>
+<p>#5. 一些无法登陆的错误解决</p>
+<ol>
+<li>修改编码后导致mysql无法启动<br>Ubuntu 14.04 MySQL改utf-8 启动不了</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"> //修改信息及报错情况</div><div class="line">default-character-set=utf8</div><div class="line">报错：</div><div class="line">start mysql. The restart(8) utility is also available.</div><div class="line">start: Job failed to start</div></pre></td></tr></table></figure>
+<p>改用另一种修改编码的方式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">On MySQL 5.5 I have in my.cnf</div><div class="line">[mysqld] </div><div class="line">init_connect=&apos;SET collation_connection = utf8_unicode_ci&apos; </div><div class="line">init_connect=&apos;SET NAMES utf8&apos; </div><div class="line">character-set-server=utf8 </div><div class="line">collation-server=utf8_unicode_ci </div><div class="line">skip-character-set-client-handshake</div></pre></td></tr></table></figure>
+<ol>
+<li>权限问题导致mysql无法启动，<br>在linux中权限是个很重要的东西，所以大多数据mysql无法启动都与<br>权限有问题</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">错误提示</div><div class="line">World-writable config file ‘/opt/lampp/etc/my.cnf’ is ignored</div><div class="line">[ERROR] Fatal error: Can’t change to run as user ’mysql’ ;</div><div class="line">Please check that the user exists!</div></pre></td></tr></table></figure>
+<p>进入lampp/etc/把my.cnf的权限改为755 重启lampp,正常。同理，把phpmyadmin的权限也改成755即可。<br>至此，问题全部解决。<br>PS：出于安全考虑，xampp不允许将mysql和phpmyadmin的权限范围设为最大，在安装时注意不要把整个<br>lampp目录的权限设为777。</p>
+<p>#6. 安装MySQL-python</p>
+<ol>
+<li>方法一<br>要想使python可以操作mysql 就需要MySQL-python驱动，它是python 操作mysql必不可少的模块。<blockquote>
+<p>下载地址：<a href="https://pypi.python.org/pypi/MySQL-python/" target="_blank" rel="external">https://pypi.python.org/pypi/MySQL-python/</a></p>
+</blockquote>
+</li>
+</ol>
+<p>下载MySQL-python-1.2.5.zip 文件之后直接解压。进入MySQL-python-1.2.5目录:</p>
+<blockquote>
+<blockquote>
+<p>python setup.py install</p>
+</blockquote>
+</blockquote>
+<ol>
+<li>方法二<br>使用pip安装<blockquote>
+<p>sudo apt-get install python-pip</p>
+</blockquote>
+</li>
+</ol>
+<p>然后使用pip进行安装<br>sudo pip install mysql-python</p>
+<p>##6.1 安装过程中会遇到mysql_config not found</p>
+<ol>
+<li>用whereis mysql_config 查找mysql_config ，如果有，跳过2，执行3。</li>
+<li>安装mysql-dev:<br> sudo apt-get install libmysqlclient-dev</li>
+<li>将site.cfg中的mysql_config = /usr/local/mysql/bin/mysql_config 这一行前的#去掉，并且把mysql_config的路径设置正确。</li>
+</ol>
+<p>##6.2 安装过程中遇到问题 _mysql.c:29:20: fatal error: Python.h: No such file or directory</p>
+<ol>
+<li>需要安装python-dev：<br> sudo apt-get install python-dev<br>参考：<a href="http://www.cyberciti.biz/faq/debian-ubuntu-linux-python-h-file-not-found-error-solution/" target="_blank" rel="external">http://www.cyberciti.biz/faq/debian-ubuntu-linux-python-h-file-not-found-error-solution/</a></li>
+</ol>
+<p><a href="http://blog.csdn.net/cjfeii/article/details/12951331" target="_blank" rel="external">mysql安装指南</a></p>
+<p>#7. 安装tornado</p>
+<p>1.下载源码：<a href="https://github.com/bdarnell/torndb" target="_blank" rel="external">https://github.com/bdarnell/torndb</a><br>2.解压文件：<br>    unzip torndb-master.zip<br>3.进入安装目录：<br>    cd torndb-master/<br>4.编译：<br>    python setup.py build<br>5.安装：<br>    sudo python setup.py install<br>6.测试是否安装成功，在python命令行下：<br>    import torndb<br>效果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; import torndb</div><div class="line">&gt;&gt;&gt; mdb = torndb.Connection(&apos;127.0.0.1:3306&apos;, &apos;db_name&apos;, &apos;user_name&apos;, &apos;user_pass&apos;, max_idle_time=5)</div><div class="line">&gt;&gt;&gt; mdb</div><div class="line">&lt;torndb.Connection object at 0x2724ed0&gt;</div><div class="line">&gt;&gt;&gt; mdb._ensure_connected()</div><div class="line">&gt;&gt;&gt; mdb.query(&quot;SELECT * from test&quot;)</div><div class="line">[&#123;&apos;id&apos;: 1L, &apos;name&apos;: u&apos;chenjf&apos;&#125;]</div></pre></td></tr></table></figure>
+<p><a href="http://blog.csdn.net/cjfeii/article/category/1511385" target="_blank" rel="external">python博客</a></p>
+<p>#8.配置mysql<br>运行命令 django-admin.py startproject mysite<br>在mysite/mysite下有文件setting.py</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">//修改默认服务器设置</div><div class="line">DATABASES = &#123;</div><div class="line">    &apos;default&apos;: &#123;</div><div class="line">        &apos;ENGINE&apos;: &apos;django.db.backends.mysql&apos;, #设置为mysql数据库</div><div class="line">        &apos;NAME&apos;: &apos;dmyz&apos;,  #mysql数据库名</div><div class="line">        &apos;USER&apos;: &apos;root&apos;,  #mysql用户名，留空则默认为当前linux用户名</div><div class="line">        &apos;PASSWORD&apos;: &apos;&apos;,   #mysql密码</div><div class="line">        &apos;HOST&apos;: &apos;&apos;,  #留空默认为localhost</div><div class="line">        &apos;PORT&apos;: &apos;&apos;,  #留空默认为3306端口</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">//配置后台超级用户</div><div class="line">python manage.py syncdb</div></pre></td></tr></table></figure>
+</div></article></div></main><footer><div class="paginator"><a href="/2014/09/08/Hello-World/" class="prev">上一篇</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

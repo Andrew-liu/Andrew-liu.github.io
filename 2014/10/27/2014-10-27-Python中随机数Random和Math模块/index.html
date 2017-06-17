@@ -1,0 +1,102 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Python中随机数Random和Math模块 · Snow Memory | Andrew Liu</title><meta name="description" content="Python中随机数Random和Math模块 - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">Python中随机数Random和Math模块</h1><div class="post-info">Oct 27, 2014</div><div class="post-content"><p>由于最近经常使用到Python中<code>random</code>,<code>math</code>和<code>time``datetime</code>模块, 所以决定花时间系统的学习一下</p>
+<p>#1. math模块</p>
+<blockquote>
+<p>math中的函数不可以用于太过复杂的数的运算, 如果需要复杂数的运行最好使用<code>cmath</code>模块中同名函数, 如果想要更加高级的数学功能，可以考虑选择标准库之外的<code>numpy</code>和<code>scipy</code>模块，它们不但支持数组和矩阵运算，还有丰富的数学和物理方程可供使用</p>
+</blockquote>
+<p>#1.1. 数学常量</p>
+<ul>
+<li><code>math.pi</code> 这个数学常量等于 <code>3.141592...</code></li>
+<li><code>math.e</code> 这个数学常量 <code>e = 2.718281...,</code></li>
+</ul>
+<a id="more"></a>
+<p>#1.2. 常用简单函数</p>
+<ul>
+<li><code>math.ceil(x)</code> : 对x向上取整，返回最小整数值大于或者等于x</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># -*- coding:utf-8 -*-</div><div class="line">import math  #仅在第一次声明, 以下都将省略</div><div class="line">print math.ceil(math.pi)  #math.pi是圆周率pi, 类似于C/C++中的宏</div><div class="line"></div><div class="line">//输出4</div></pre></td></tr></table></figure>
+<ul>
+<li><code>math.floor(x)</code> : 对x向下取整, 返回整数值小于或者等于x</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; import math</div><div class="line">&gt;&gt;&gt; math.floor(math.pi)</div><div class="line">3.0</div></pre></td></tr></table></figure>
+<ul>
+<li><code>math.pow(x,y)</code> : 指数运算，得到x的y次方</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; math.pow(2, 3)</div><div class="line">8.0</div></pre></td></tr></table></figure>
+<ul>
+<li><code>math.log(x[, base])</code> : 对数运算，默认基底为e的对数运算。使用base参数时，改变对数的基底, 变为以base为底的对数运算</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; math.log(10)</div><div class="line">2.302585092994046</div><div class="line">&gt;&gt;&gt; math.log(8, 2)   #log(x)/log(base).</div><div class="line">3.0</div></pre></td></tr></table></figure>
+<ul>
+<li><code>math.sqrt(x)</code>    平方根计算</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; math.sqrt(4)</div><div class="line">2.0</div></pre></td></tr></table></figure>
+<ul>
+<li><code>math.fabs(x)</code>  取绝对值</li>
+<li><code>math.factorial(x)</code> 求阶乘, 即x!</li>
+<li><code>math.exp(x)</code> 求e的x次方</li>
+</ul>
+<p>##1.3. 三角函数</p>
+<blockquote>
+<p>以下函数都接收一个弧度(radian)为单位的x作为参数</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">math.acos(x) #求arccos(x)</div><div class="line">math.asin(x) #求arcsin(x)</div><div class="line">math.atan(x) #求arctan(x)</div><div class="line">math.cos(x)  #求cos(x)</div><div class="line">math.sin(x)  #求sin(x)</div><div class="line">math.tan(x)  #求tan(x)</div></pre></td></tr></table></figure>
+<ul>
+<li><code>math.degrees(x)</code> 角度制转化为弧度制 </li>
+<li><code>math.radians(x)</code> 弧度制转化为角度制</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; math.degrees(math.pi / 2)</div><div class="line">90.0</div></pre></td></tr></table></figure>
+<p>##1.5. 双曲函数和特殊函数<br>math.sinh(x), math.cosh(x), math.tanh(x), math.asinh(x), math.acosh(x), math.atanh(x)</p>
+<blockquote>
+<p>还有些函数基本没用过</p>
+</blockquote>
+<p>#2. random模块</p>
+<blockquote>
+<p>random模块的作用是产生随机数, 这个模块实现了伪随机数产生器</p>
+</blockquote>
+<p>##1.1. 常用函数</p>
+<ul>
+<li><p><code>random.seed([x])</code> 用户初始化一个随机数种子, 可选参数可以是任何hashtable对象,默认使用系统时间</p>
+</li>
+<li><p><code>random.randint(a, b)</code> 返回一个a到b之间的整数</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; import random</div><div class="line">&gt;&gt;&gt; random.randint(3, 8)</div><div class="line">7</div></pre></td></tr></table></figure>
+<ul>
+<li><code>random.randrange([start], stop[, step])</code> 从指定范围内，按指定基数递增的集合中 获取一个随机数。如：random.randrange(10, 100, 2)，结果相当于从[10, 12, 14, 16, … 96, 98]序列中获取一个随机数。random.randrange(10, 100, 2)在结果上与 random.choice(range(10, 100, 2) 等效。</li>
+</ul>
+<blockquote>
+<p>random.randrange(start, stop, step)等价于random.choice(range(start, stop, step))</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; random.randrange(10, 100, 2)</div><div class="line">90</div></pre></td></tr></table></figure>
+<p>##1.2. 随机挑选和排序</p>
+<ul>
+<li><code>random.choice(sequence)</code> : 从序列中获取一个随机元素. 参数sequence表示一个有序类型。这里要说明 一下：sequence在python不是一种特定的类型，而是泛指一系列的类型。list, tuple, 字符串都属于sequence</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; random.choice(range(10))</div><div class="line">1</div><div class="line">&gt;&gt;&gt; random.choice((1, 2, 3, 4))</div><div class="line">3</div></pre></td></tr></table></figure>
+<ul>
+<li><code>random.sample(sequence, k)</code> # 从指定序列中随机获取指定长度k的片断。sample函数不会修改原有序列</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; lst = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] </div><div class="line">&gt;&gt;&gt; new_lst = random.sample(lst, 6)</div><div class="line">&gt;&gt;&gt; print new_lst</div><div class="line">[8, 9, 2, 1, 5, 4]</div><div class="line">&gt;&gt;&gt; print lst</div><div class="line">[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</div></pre></td></tr></table></figure>
+<ul>
+<li><code>random.shuffle(x[, random])</code>，用于将一个列表中的元素打乱, 不会生成新的列表</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; lst = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</div><div class="line">&gt;&gt;&gt; random.shuffle(lst)</div><div class="line">&gt;&gt;&gt; print lst</div><div class="line">[10, 5, 2, 7, 3, 9, 4, 8, 6, 1]</div></pre></td></tr></table></figure>
+<p>##1.3. 随机生成实数</p>
+<blockquote>
+<p>生成的实数符合均匀分布(<code>uniform distribution</code>)</p>
+</blockquote>
+<ul>
+<li>random.random()    随机生成下一个实数，它在[0,1)范围内。</li>
+<li>random.uniform(a,b) 随机生成下一个实数，它在[a,b]范围内。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; random.random()</div><div class="line">0.019433835195078797</div><div class="line">&gt;&gt;&gt; random.uniform(3, 8)</div><div class="line">6.830376841208885</div></pre></td></tr></table></figure>
+<ul>
+<li><code>random.gauss(mu,sigma)</code>    随机生成符合高斯分布的随机数，mu,sigma为高斯分布的两个参数。 </li>
+<li><code>random.expovariate(lambd)</code>  随机生成符合指数分布的随机数，lambd为指数分布的参数。</li>
+</ul>
+<blockquote>
+<p>其余是一些目前没用过的函数, 以后用到了再补充</p>
+</blockquote>
+<p>#3. 参考链接</p>
+<p><a href="https://docs.python.org/2/library/random.html" target="_blank" rel="external">random官网文档</a><br><a href="https://docs.python.org/2/library/math.html" target="_blank" rel="external">math官方文档</a></p>
+</div></article></div></main><footer><div class="paginator"><a href="/2014/10/27/2014-10-27-Git远程协作和分支技巧/" class="prev">上一篇</a><a href="/2014/10/26/2014-10-26-Python正则表达式/" class="next">下一篇</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

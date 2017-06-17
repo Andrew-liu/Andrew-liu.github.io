@@ -1,0 +1,151 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Node.js学习笔记 · Snow Memory | Andrew Liu</title><meta name="description" content="Node.js学习笔记 - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">Node.js学习笔记</h1><div class="post-info">Nov 2, 2014</div><div class="post-content"><h1 id="学习Node-js"><a href="#学习Node-js" class="headerlink" title="学习Node.js"></a>学习Node.js</h1><blockquote>
+<p>Node.js入门经典读书笔记</p>
+<p>Node.js是事件驱动的服务器端JavaScript环境, 以下简称Node</p>
+</blockquote>
+<ul>
+<li>使用JS操纵浏览器中的Web页面并与之交互, 成为客户端的JS</li>
+<li>服务器端JS发生在把页面发送给浏览器之前的服务器端</li>
+</ul>
+<a id="more"></a>
+<p>#1. 安装Node</p>
+<p>主页 : <code>http://nodejs.org</code>下载响应平台的版本配置安装</p>
+<p>ubuntu上可以使用类似<code>sudo apt-get install nodejs</code>进行安装</p>
+<p>验证安装是否成功, 进入Terminal输入以下命令: </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">node -v  //查看node版本号</div><div class="line">npm -v   //查看npm的版本号(Node Package Manager)</div></pre></td></tr></table></figure>
+<ul>
+<li>npm类似于Python中的包管理器pip, 使用npm安装模块,使用下面命令</li>
+</ul>
+<blockquote>
+<p>npm install module_name  #安装模块(本地安装), -g(全局安装)<br>npm search key1 key2     #关键词搜索模块, 多个关键词用空格隔开<br>npm docs module_name     #查看模块文档</p>
+</blockquote>
+<ul>
+<li>在程序中使用模块, 必须下载, 然后再源码中进行模块请求</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">var module = require(&apos;module&apos;)  //一般将模块赋予一个变量</div><div class="line"></div><div class="line">安装coffee-script</div><div class="line">coffee-script@1.8.0 /usr/local/lib/node_modules/coffee-script</div></pre></td></tr></table></figure>
+<p>##1.1. 使用package.json安装模块</p>
+<p>创建package.json文件, 并加入以下内容 :</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">&quot;name&quot; : &quot;project_name&quot;,</div><div class="line">&quot;version&quot; : &quot;0.0.1&quot;,</div><div class="line">&quot;dependencies&quot; : &#123;</div><div class="line">    &quot;module_name&quot; : &quot;version&quot;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>#2. Node回调机制</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">//Node.js使用filesystem模块从磁盘读取文件内容</div><div class="line">var fs = requires(&apos;fs&apos;);</div><div class="line">fs.readFile(&apos;somefile.txt&apos;, &apos;utf8&apos;, function(err, data)</div><div class="line">&#123;</div><div class="line">if(err) </div><div class="line">    throw err;</div><div class="line">console.log(data);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>发生的事情 :</p>
+<ol>
+<li>fs(<code>filesystem</code>)模块被请求, 以便在脚本中使用</li>
+<li>将文件系统上的文件路径作为第一个参数提供给fs.readFile方法</li>
+<li>第二个参数标识文件的编码</li>
+<li>将回调函数作为第三参数提供给fs.readFile方法</li>
+<li>回调函数第一个参数err, 用于保存在读取文件时返回的错误</li>
+<li>第二个参数data, 用于保存读取文件所返回的数据</li>
+<li>如果err为真, 则会抛出异常</li>
+<li>如果err为假, 则来自文件的数据可以使用</li>
+</ol>
+<blockquote>
+<p>回调是实现网络编程的关键方法</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">var fs = require(&apos;fs&apos;), http = require(&apos;http&apos;);</div><div class="line">http.get(&#123;host : &apos;baidu.com&apos;&#125;, function(res)</div><div class="line">&#123;</div><div class="line">console.log(&quot;got a response from baidu.com&quot;);</div><div class="line">&#125;).on(&apos;error&apos;, function(e)</div><div class="line">&#123;</div><div class="line">console.log(&quot;there was an error from baidu.com&quot;);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">fs.readFile(&apos;ex_one.js&apos;, &apos;utf8&apos;, function(err, data)</div><div class="line">&#123;</div><div class="line">if (err) &#123;</div><div class="line">    throw err;</div><div class="line">&#125;;</div><div class="line">console.log(&apos;ex_one.js read!&apos;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<ul>
+<li>获取<code>www.baidu.com</code>的主页内容</li>
+<li>地区<code>ex_one.js</code>文件的内容</li>
+<li>对于两者的返回时间是不可预测的, <code>回调</code>是负责解决不可预测性的方法, 也是处理并发的高效方法</li>
+</ul>
+<p>##2.1. 同步和异步代码</p>
+<ul>
+<li><code>同步</code>的代码意味着每次执行一个操作, 在一个操作完成前, 代码的执行会被<code>阻塞</code></li>
+<li>Node.js则是异步的调用回调(<code>非阻塞</code>)</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">var http = require(&apos;http&apos;)</div><div class="line"></div><div class="line">function fetchPage () &#123;</div><div class="line">console.log(&apos;fetching page&apos;);</div><div class="line">http.get(&#123; host : &apos;trafficjamapp.herokuapp.com&apos;, path : &apos;/?delay=2000&apos;&#125;,</div><div class="line">    function(res)</div><div class="line">    &#123;</div><div class="line">        console.log(&apos;data returned from requesting page&apos;);</div><div class="line">    &#125;).on(&apos;error&apos;, function(e)&#123;</div><div class="line">        console.log(&quot;There was an error &quot; + e);</div><div class="line">    &#125;);</div><div class="line">&#125;</div><div class="line"></div><div class="line">function fetchApi () &#123;</div><div class="line">console.log(&apos;fetching api&apos;);</div><div class="line">http.get(&#123; host : &apos;trafficjamapp.herokuapp.com&apos;, path : &apos;/?delay=2000&apos;&#125;, </div><div class="line">function(res)&#123;</div><div class="line">    console.log(&apos;data returned from the api&apos;);</div><div class="line">&#125;).on(&apos;error&apos;, function(e)</div><div class="line">&#123;</div><div class="line">    console.log(&quot;There was an error&quot; + e);</div><div class="line">&#125;);</div><div class="line">&#125;</div><div class="line"></div><div class="line">fetchPage();</div><div class="line">fetchApi();</div></pre></td></tr></table></figure>
+<p>运行结果 :<br>fetching page<br>fetching api<br>data returned from requesting page<br>data returned from the api</p>
+<blockquote>
+<p>事件循环是的系统可以将回调函数保存起来, 而后当事件将来发生时再运行, 因为回调函数的执行被推迟到事情发生之后, 于是无需停止执行, 控制流可以返回到Node运行时的环境, 从来让其他事情发生.  <code>核心思想:将代码围绕着时间来架构而不是按照期望的输入顺序来执行</code></p>
+</blockquote>
+<p>为确保高性能需要遵循 :</p>
+<ul>
+<li>函数必须快速返回</li>
+<li>函数不得阻塞</li>
+<li>长时间运行的操作必须移到另一个进程中</li>
+</ul>
+<p>#3. HTTP</p>
+<blockquote>
+<p>HTTP头部发送的是附加的信息, 包括内容类型, 服务器发送响应的时间以及HTTP状态码</p>
+</blockquote>
+<p>HTTP服务器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">var http = require(&apos;http&apos;)//请http模块, 并赋予一个变量</div><div class="line">http.createServer(function (req, res) //使用http.createServer创建一个新的Web服务对象</div><div class="line">&#123;</div><div class="line">res.writeHead(200, &#123;&apos;Content-Type&apos; : &apos;text/plain&apos;&#125;); //给服务器增加头部</div><div class="line">res.end(&apos;Hello World\n&apos;); //响应请求, 关闭连接</div><div class="line">&#125;</div><div class="line">).listen(8000, &quot;127.0.0.1&quot;);//标识可以使用127.0.0.1:8000来访问服务器</div><div class="line">console.log(&apos;Server running at http://127.0.0.1:8000/&apos;);  //脚本将服务器的访问位置记录到控制台</div></pre></td></tr></table></figure>
+<p>##3.1. 查看HTTP头部</p>
+<ul>
+<li>通过一个python小程序可以查看服务器响应的头部</li>
+<li>使用Chrome浏览器可以使用<code>HTTP Headers扩展程序</code>, 同样可以查看HTTP头部</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">//使用OSX系统终端查看</div><div class="line">brew install curl   #安装curl</div><div class="line">curl                #查看是否安装成功, 若成功, 输入命令会显示curl: try &apos;curl --help&apos; or &apos;curl --manual&apos; for more information</div><div class="line">curl -I 127.0.0.1:8000   #查看头部, 需要打开node服务器</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">from urllib2 import Request, urlopen, URLError, HTTPError</div><div class="line"></div><div class="line">old_url = &apos;http://127.0.0.1:8000&apos;</div><div class="line">req = Request(old_url)</div><div class="line">response = urlopen(req)  </div><div class="line">print &apos;Info():&apos;</div><div class="line">print response.info()</div><div class="line"></div><div class="line">#输出结果</div><div class="line">Info():</div><div class="line">Content-Type: text/plain</div><div class="line">Date: Sun, 02 Nov 2014 06:11:45 GMT</div><div class="line">Connection: close</div><div class="line">Transfer-Encoding: chunked</div></pre></td></tr></table></figure>
+<p>##3.2. Node.js中的重定向</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">var http = require(&apos;http&apos;);</div><div class="line"></div><div class="line">http.createServer(function(req, res)</div><div class="line">&#123;</div><div class="line">//重定向状态码为301</div><div class="line">res.writeHead(301,    </div><div class="line">&#123;</div><div class="line">    &apos;Location&apos; : &apos;http://andrewliu.tk/&apos;</div><div class="line">&#125;);</div><div class="line">res.end();</div><div class="line">&#125;).listen(8000, &quot;127.0.0.1&quot;);</div><div class="line">console.log(&apos;Server runing at http://127.0.0.1:8000&apos;);</div></pre></td></tr></table></figure>
+<p>##3.3.响应不同的请求</p>
+<blockquote>
+<p>路由指的是应用程序要响应的请求(资源)</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">var url = require(&apos;url&apos;);//请求url模块</div><div class="line"></div><div class="line">var requestURL = &apos;http://andrewliu.tk&apos;; //请求的URL</div><div class="line">console.log(url.parse(requestURL).hostname); //URL的主机名</div><div class="line">console.log(url.parse(requestURL).port);//端口号</div><div class="line">console.log(url.parse(requestURL).pathname);//路径名</div></pre></td></tr></table></figure>
+<p>响应不同的请求需要不同的路由</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line">var http = require(&apos;http&apos;), url = require(&apos;url&apos;);</div><div class="line"></div><div class="line">http.createServer(function(req, res)</div><div class="line">&#123;</div><div class="line">var pathname = url.parse(req.url).pathname;</div><div class="line"></div><div class="line">if(pathname === &apos;/&apos;)  //路径为127.0.0.1:3000</div><div class="line">&#123;</div><div class="line">    res.writeHead(200, </div><div class="line">    &#123;</div><div class="line">        &apos;Content-Type&apos; : &apos;text/plain&apos;</div><div class="line">    &#125;);</div><div class="line">    res.end(&apos;Home Page\n&apos;)</div><div class="line">&#125;</div><div class="line">else if(pathname === &apos;/about&apos;)//路径为127.0.0.1:3000/about</div><div class="line">&#123;</div><div class="line">    res.writeHead(200, </div><div class="line">    &#123;</div><div class="line">        &apos;Content-Type&apos; : &apos;text/plain&apos;</div><div class="line">    &#125;);</div><div class="line">    res.end(&apos;About Me\n&apos;)</div><div class="line">&#125;</div><div class="line">else if(pathname === &apos;/redirect&apos;)//路径为127.0.0.1:3000/redirect</div><div class="line">&#123;</div><div class="line">    res.writeHead(301, </div><div class="line">    &#123;</div><div class="line">        &apos;Location&apos; : &apos;/&apos;</div><div class="line">    &#125;);</div><div class="line">    res.end();</div><div class="line">&#125;</div><div class="line">else</div><div class="line">&#123;</div><div class="line">    res.writeHead(404, </div><div class="line">    &#123;</div><div class="line">        &apos;Content-Type&apos; : &apos;text/plain&apos;</div><div class="line">    &#125;);</div><div class="line">    res.end(&apos;Page not Found\n&apos;)</div><div class="line">&#125;</div><div class="line">&#125;).listen(3000, &quot;127.0.0.1&quot;);</div><div class="line">console.log(&apos;Server running at http://127.0.0.1:3000&apos;);</div></pre></td></tr></table></figure>
+<p>##3.4. Node.js客户端</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">//通过http欢呼段来查看Web服务器的状态</div><div class="line">var http = require(&apos;http&apos;);</div><div class="line"></div><div class="line">var options = &#123;</div><div class="line">host : &apos;andrewliu.tk&apos;,</div><div class="line">port : 80,</div><div class="line">path : &apos;/&apos;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">http.get(options, function(res)</div><div class="line">&#123;</div><div class="line">if(res.statusCode === 200)</div><div class="line">&#123;</div><div class="line">    console.log(&quot;The site is up!&quot;);</div><div class="line">&#125;</div><div class="line">else</div><div class="line">&#123;</div><div class="line">    console.log(&quot;The site is down!&quot;);</div><div class="line">&#125;</div><div class="line">&#125;).on(&apos;error&apos;, function(e)&#123;</div><div class="line">console.log(&apos;There was an error :&apos; + e.message);</div></pre></td></tr></table></figure>
+<p>#4. Express框架(Web框架)</p>
+<p>安装express</p>
+<blockquote>
+<p>npm install -g express<br>npm install -g express-generator<br>express first_express &amp;&amp; cd first_express <code>创建并打开express站点框架,命名为first_express</code><br>npm install <code>通过package.json安装依赖模块</code><br>npm start<code>启动站点</code></p>
+</blockquote>
+<p>框架结构 :</p>
+<ul>
+<li>app.js        启动应用程序的应用程序文件夹(包含应用程序配置)</li>
+<li>node_modules  保存安装的Node模块</li>
+<li>package.json  提供应用程序信息(运行需要依赖模块)</li>
+<li>public  公共文件夹</li>
+<li>routes  定义程序应该响应的页面</li>
+<li>views   定义应用程序的布局</li>
+</ul>
+<p>##4.1. 介绍Jade</p>
+<ul>
+<li>Jade是基于缩进的模板引擎(缩进定义HTML层次结构)</li>
+<li>Jade比HTML简介</li>
+<li>Jade无需使用标记, 编译模板的时候会自动加入<code>&lt;&gt;</code>字符</li>
+<li>Jade无需关闭HTML标记, Jade生成HTML的时候会为我们关闭标记</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>标记</th>
+<th>Jade</th>
+<th>HTML</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>普通标记</td>
+<td>html</td>
+<td><code>&lt;html&gt;&lt;/html&gt;</code></td>
+</tr>
+<tr>
+<td>id</td>
+<td>section#wrapper</td>
+<td><code>&lt;section id = &quot;wrapper&quot;&gt;&lt;/section&gt;</code></td>
+</tr>
+<tr>
+<td>类</td>
+<td>p.highlight</td>
+<td><code>&lt;p class = &quot;highlight&quot;&gt;&lt;/p&gt;</code></td>
+</tr>
+<tr>
+<td>类和id</td>
+<td>p#wrapper.class_name</td>
+<td><code>&lt;p id = &quot;wrapper&quot; class = &quot;class_name&quot;&gt;&lt;/p&gt;</code></td>
+</tr>
+<tr>
+<td>多个类</td>
+<td>p.classone.classtwo</td>
+<td><code>&lt;p class = &quot;classone classtwo&quot;&gt;&lt;/p&gt;</code></td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;!--缩进 Jade--&gt;</div><div class="line">p </div><div class="line">  span</div><div class="line">&lt;!---编译后HTML--&gt;</div><div class="line">&lt;p&gt;&lt;span&gt;&lt;/span&gt;&lt;/p&gt;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">- var foo = Node;</div><div class="line">p I want to learn #&#123;foo&#125;!  //   #&#123;变量&#125; 告诉Jade用变量替换字符窜foo</div><div class="line">//编译后的记过</div><div class="line">&lt;p&gt;I want to learn Node!&lt;/p&gt;</div></pre></td></tr></table></figure>
+<p>Jade简单语法范例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line">extends layout</div><div class="line"></div><div class="line">block content</div><div class="line">h1= title</div><div class="line">p Welcome to #&#123;title&#125;</div><div class="line"></div><div class="line">//变量</div><div class="line">- var name = &quot;Andrew_liu&quot;</div><div class="line">p This is my first Test for #&#123;name&#125;!</div><div class="line"></div><div class="line">//循环</div><div class="line">- var users =[&apos;Liu&apos;, &apos;Bin&apos;, &apos;Andrew&apos;, &apos;Dinosaur&apos;]</div><div class="line">- each user in users</div><div class="line">p= user</div><div class="line"></div><div class="line">//对象迭代</div><div class="line">- obj = &#123;first : &apos;LIU&apos;, last : &apos;BIN&apos;&#125;</div><div class="line">- each val, key in obj</div><div class="line">li #&#123;key&#125; : #&#123;val&#125;</div><div class="line"></div><div class="line">//条件</div><div class="line">- raining = true</div><div class="line">- if (raining)</div><div class="line">p It is raining , Take Something!</div><div class="line">- else</div><div class="line">p No rain, Take the bike!</div><div class="line"></div><div class="line">//内连JavaScript</div><div class="line">//include</div><div class="line">html</div><div class="line">body</div><div class="line">  p Hello World</div><div class="line">  h1 Hello World</div><div class="line">h1 Jade inlcude example</div><div class="line">include includes/footer</div><div class="line"></div><div class="line">//Minix,常用代码的封装</div><div class="line">mixin users(users)</div><div class="line">ul</div><div class="line">  each user in users</div><div class="line">    li= user</div><div class="line"></div><div class="line">- users = [&apos;liu&apos;, &apos;bin&apos;, &apos;good&apos;]</div><div class="line">mixin users(users)</div></pre></td></tr></table></figure>
+</div></article></div></main><footer><div class="paginator"><a href="/2014/11/10/2014-11-10-IOS程序启动原理/" class="prev">上一篇</a><a href="/2014/11/02/2014-11-02-A_Wearable_System/" class="next">下一篇</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

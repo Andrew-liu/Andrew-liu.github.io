@@ -1,0 +1,197 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Python正则表达式 · Snow Memory | Andrew Liu</title><meta name="description" content="Python正则表达式 - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">Python正则表达式</h1><div class="post-info">Oct 26, 2014</div><div class="post-content"><p><img src="http://byson.img42.wal8.com/img42/434369_20140909170142/141446010198.jpg" alt="Image"></p>
+<p><code>在编写处理字符串的程序或网页时，经常会有查找符合某些复杂规则的字符串的需要</code><br><code>正则表达式就是用于描述这些规则的工具。换句话说，正则表达式就是记录文本规则的代码。</code></p>
+<blockquote>
+<p>正则表达式并不是python中特有的功能，它是一种通用的方法。python中的正则表达式库，所做的事情是利用正则表达式来搜索文本。要使用它，你必须会自己用正则表达式来描述文本规则。</p>
+</blockquote>
+<a id="more"></a>
+<p>#1. 入门<br>有个正则表达式是<code>hi</code>，那么它就可以匹配出文本中所有含有hi的字符</p>
+<blockquote>
+<p>Hi, I am Shirley Hilton. I am his wife.</p>
+</blockquote>
+<p>完全匹配后,会得到两个<code>hi</code>, 两个<code>hi</code>分别来自<code>Shirley</code>和<code>his</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">#字符串前面加了r，是raw的意思，它表示对字符串不进行转义, 不理会任何转义字符串,如&quot;\n&quot;等</div><div class="line"></div><div class="line">import re</div><div class="line">text = &quot;Hi, I am Shirley Hilton. I am his wife.&quot;</div><div class="line">m = re.findall(r&quot;hi&quot;, text)</div><div class="line">if m :</div><div class="line">    print m</div><div class="line">else :</div><div class="line">    print &quot;No match&quot;</div><div class="line">#如果只想找到 hi 这个单词，而不把包含它的单词也算在内，那就可以使用“\bhi\b”这个正则表达式</div></pre></td></tr></table></figure>
+<p>##1.1. 元字符</p>
+<ul>
+<li><code>\b</code>在正则表达式中表示单词的开头或结尾，空格、标点、换行都算是单词的分割。而<code>\b</code>自身又不会匹配任何字符，它代表的只是一个位置</li>
+</ul>
+<blockquote>
+<p>对与上面的代码正则表达式修改为’\bhi\b’, 则输出结果为No match</p>
+</blockquote>
+<ul>
+<li><code>.</code>表示匹配<code>除了换行符以外的任意字符</code></li>
+</ul>
+<blockquote>
+<p>对于上述代码中的正则修改为<code>i.</code>, 输出结果为[‘i,’, ‘ir’, ‘il’, ‘is’, ‘if’]</p>
+</blockquote>
+<ul>
+<li>与<code>.</code>类似的一个符号是“\S”，它表示的是不是空白符的任意字符, 这里S是大写</li>
+</ul>
+<blockquote>
+<p>对于上面代码正则表达式修改为<code>i\S</code>,则输出结果为[‘i,’, ‘il’, ‘il’, ‘is’, ‘if’]</p>
+</blockquote>
+<ul>
+<li>在很多搜索中，会用<code>?</code>表示任意一个字符，<code>*</code>表示任意数量连续字符，这种被称为<code>通配符</code>. 但在正则表达式中，任意字符是用<code>.</code>表示，而<code>*</code>则不是表示字符，而是表示数量：它表示<code>前面的字符</code>可以重复任意多次（包括0次），只要满足这样的条件，都会被表达式匹配上。()<br><code>\bhi\b.*\bLucy\b的意思：先是一个单词hi,然后是任意个任意字符(但不能是换行)，最后是Lucy这个单词</code></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">re.findall(r&quot;I.*e&quot;, text)最终匹配结果为:</div><div class="line">[&apos;I am Shirley Hilton. I am his wife&apos;]</div><div class="line">#“*”在匹配时，会匹配尽可能长的结果</div><div class="line">#想让他匹配到最短的就停止，需要用“.*?”</div><div class="line"></div><div class="line">m = re.findall(r&quot;I.*?e&quot;, text)</div><div class="line">匹配结果为[&apos;I am Shirle&apos;, &apos;I am his wife&apos;] #懒惰匹配</div><div class="line"></div><div class="line">//匹配 &quot;site sea sue sweet see case sse ssee loses&quot;中所有以s开头以e结尾的单词</div><div class="line">text1= &quot;site sea sue sweet see case sse ssee loses&quot;</div><div class="line">m = re.findall(r&quot;\bs\S*e\b&quot;, text1)// 意思是匹配以s开头的任意字符串(但不是空白符),最后以e结尾的字符串</div><div class="line">//打印结果[&apos;site&apos;, &apos;sue&apos;, &apos;see&apos;, &apos;sse&apos;, &apos;ssee&apos;]</div></pre></td></tr></table></figure>
+<ul>
+<li><code>\d</code>匹配一位数字(0，或1，或2，或……)</li>
+</ul>
+<blockquote>
+<p><code>0\d{2}-\d{8}。这里\d后面的{2}({8})的意思是前面\d必须连续重复匹配2次(8次)</code></p>
+</blockquote>
+<ul>
+<li><code>\s</code>匹配任意的空白符，包括空格，制表符(Tab)，换行符，中文全角空格, 这里s是小写</li>
+</ul>
+<blockquote>
+<p>对于第一段代码正则表达式修改为<code>I\s</code>,则输出结果为[‘I ‘, ‘I ‘]</p>
+</blockquote>
+<ul>
+<li><code>\w</code>匹配字母或数字或下划线或汉字等</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">//一些例子</div><div class="line">1. \ba\w*\b匹配以字母a开头的单词——先是某个单词开始处(\b)，然后是字母a,然后是任意数量的字母或数字(\w*)，最后是单词结束处(\b)</div><div class="line"></div><div class="line">2. \d+匹配1个或更多连续的数字。这里的+是和*类似的元字符，不同的是*匹配重复任意次(可能是0次)，而+则匹配重复1次或更多次</div><div class="line"></div><div class="line">3. \b\w&#123;6&#125;\b 匹配刚好6个字符的单词</div><div class="line"></div><div class="line">4. ^\d&#123;5,12&#125;$ 匹配5到12个数字, ^表示数字的开始,　$表示数字的结束</div></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th>代码</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.</code></td>
+<td>匹配除换行符以外的任意字符</td>
+</tr>
+<tr>
+<td><code>\w</code></td>
+<td>匹配字母或数字或下划线或汉字</td>
+</tr>
+<tr>
+<td><code>\s</code></td>
+<td>匹配任意的空白符</td>
+</tr>
+<tr>
+<td><code>\d</code></td>
+<td>匹配数字</td>
+</tr>
+<tr>
+<td><code>\b</code></td>
+<td>匹配单词的开始或结束</td>
+</tr>
+<tr>
+<td><code>^</code></td>
+<td>匹配字符串的开始</td>
+</tr>
+<tr>
+<td><code>$</code></td>
+<td>匹配字符串的结束</td>
+</tr>
+</tbody>
+</table>
+<p>##1.2. 重复</p>
+<table>
+<thead>
+<tr>
+<th>代码/语法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>*</td>
+<td>重复<code>零次</code>或更多次</td>
+</tr>
+<tr>
+<td>+</td>
+<td>重复<code>一次</code>或更多次</td>
+</tr>
+<tr>
+<td>?</td>
+<td>重复零次或一次</td>
+</tr>
+<tr>
+<td>{n}</td>
+<td>重复n次</td>
+</tr>
+<tr>
+<td>{n,}</td>
+<td>重复n次或更多次</td>
+</tr>
+<tr>
+<td>{n,m}</td>
+<td>重复n到m次</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>Windows\d+匹配Windows后面跟1个或更多数字</li>
+<li>^\w+匹配一行的第一个单词</li>
+</ol>
+<p>##1.3. 字符类</p>
+<ul>
+<li><code>[]</code>表示满足括号中任一字符。比如<code>[hi]</code>，它就不是匹配<code>hi</code>了，而是匹配<code>h</code>或者<code>i</code></li>
+</ul>
+<blockquote>
+<p>对于上面代码正则表达式修改为<code>[hi]</code>,则输出结果为[‘i’, ‘h’, ‘i’, ‘i’, ‘h’, ‘i’, ‘i’]</p>
+<p>[aeiou]就匹配任何一个英文元音字</p>
+<p>[.?!]匹配标点符号(.或?或!)</p>
+<p>[0-9]代表的含意与\d就是完全一致的：一位数字</p>
+<p>[a-z0-9A-Z_]也完全等同于\w</p>
+</blockquote>
+<p>##1.4. 反义</p>
+<table>
+<thead>
+<tr>
+<th>代码/语法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>\W</td>
+<td>匹配任意不是字母，数字，下划线，汉字的字符</td>
+</tr>
+<tr>
+<td>\S</td>
+<td>匹配任意不是空白符的字符</td>
+</tr>
+<tr>
+<td>\D</td>
+<td>匹配任意非数字的字符</td>
+</tr>
+<tr>
+<td>\B</td>
+<td>匹配不是单词开头或结束的位置</td>
+</tr>
+<tr>
+<td>[^x]</td>
+<td>匹配除了x以外的任意字符</td>
+</tr>
+<tr>
+<td>[^aeiou]</td>
+<td>匹配除了aeiou这几个字母以外的任意字符</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li><code>\S+</code>匹配不包含空白符的字符串。</li>
+<li><code>&lt;a[^&gt;]+&gt;</code>匹配用尖括号括起来的以a开头(除了&gt;以外)的字符串。</li>
+</ol>
+<p>##1.5. 分枝条件<br>写出一个正则表达式用于匹配下面的数字串<br>(021)88776543<br>010-55667890<br>02584453362<br>0571 66345673<br>很容易写出<code>\(?0\d{2, 3}[) -]?\d{8}</code>, <code>\(?</code>表示出现0个或者1个做括号, <code>\d{2, 3}</code>表示匹配2个或者3个数字, <code>[) -]?</code>表示匹配)或者-或者空格, <code>\d{8}</code>表示匹配8个数字<br><strong>但是这样依然不能正确的表示以上的数字串, 可能出现括号不匹配的问题, 例如(02188776543也会匹配成功</strong></p>
+<p>这里需要使用<code>|</code>类似与数学中<code>或操作</code></p>
+<blockquote>
+<p>可以写出<code>\(0\d{2,3}\)\d{7,8}|0\d{2,3}[ -]?\d{7,8}</code>, 其中(是对括号进行转义, ()在正则表达式中有特定的用途,另外<code>|</code>操作匹配时，会按照从左往右的顺序，一旦匹配成功就停止验证后面的规则</p>
+</blockquote>
+<p>#2.Python中的re模块</p>
+<p>##2.1. 模块函数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">#引入re模块</div><div class="line">import re</div><div class="line"></div><div class="line">#将一个正则表达式的样式转化为Python中正则表达式对象</div><div class="line">re.compile(pattern, flags=0)</div><div class="line">#范例, pattern为正则表达式, 在Python中使用正则表达式要在前面加r</div><div class="line">b = re.compile(r&quot;\d+\.\d*&quot;)</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">#在string中扫描, 找到正则表达式第一个匹配的位置, 返回MatchObject实例, 没有匹配到会返回None, 我们可以使用group(num) 或 groups() 匹配对象函数来获取匹配表达式。</div><div class="line">re.search(pattern, string, flags=0)</div><div class="line"></div><div class="line"></div><div class="line">m = re.search(&quot;output_(\d&#123;4&#125;)&quot;, &quot;output_1986.txt&quot;)</div><div class="line">print(m.group(1))</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">#如果有0和或者多个串从头开始和pattern正则表达式匹配,返回MatchObject实例, 没有匹配到返回None, 我们可以使用group(num) 或 groups() 匹配对象函数来获取匹配表达式。</div><div class="line">re.match(pattern, string, flags=0)</div><div class="line"></div><div class="line"></div><div class="line">text = &quot;Hi, I am Shirley Hilton. I am his wife.&quot;</div><div class="line">m = re.match(r&quot;H\w&quot;, text)//此时会匹配成功返回MatchObject</div><div class="line">if m :</div><div class="line">    print m.group(0)</div><div class="line">else :</div><div class="line">    print  &quot;No match&quot;</div><div class="line">#输出Hi</div><div class="line">m = re.match(r&quot;i\w&quot;, text)//此时会匹配失败返回None</div></pre></td></tr></table></figure>
+<blockquote>
+<p>re.match与re.search的区别<br>re.match只匹配字符串的开始，如果字符串开始不符合正则表达式，则匹配失败，函数返回None；而re.search匹配整个字符串，直到找到一个匹配。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">#根据正则表达式分割字符串， 将分割后的所有子字符串放在一个表(list)中返回</div><div class="line">re.split(pattern, string, maxsplit=0, flags=0)</div><div class="line"></div><div class="line"></div><div class="line">text = &quot;Hi, I am Shirley Hilton. I am his wife.&quot;</div><div class="line">m = re.split(r&quot;[Ii]&quot;, text)#以I或者i对text进行划分</div><div class="line">if m :</div><div class="line">    print m</div><div class="line">else :</div><div class="line">    print  &quot;No match&quot;</div><div class="line">#输出结果[&apos;H&apos;, &apos;, &apos;, &apos; am Sh&apos;, &apos;rley H&apos;, &apos;lton. &apos;, &apos; am h&apos;, &apos;s w&apos;, &apos;fe.&apos;]</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#根据正则表达式搜索字符串，将所有符合的子字符串放在一给表(list)中返回</div><div class="line">re.findall(pattern, string, flags=0)</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">#用于替换字符串中的匹配项,如果模式没有发现，字符将被没有改变地返回</div><div class="line">re.sub(pattern, repl, string, max=0)</div><div class="line"></div><div class="line">import re</div><div class="line">phone = &quot;2004-959-559 # This is Phone Number&quot;</div><div class="line">num = re.sub(r&apos;#.*$&apos;, &quot;&quot;, phone) #删除Python中#的注释</div><div class="line">print  num</div><div class="line"></div><div class="line"># Remove anything other than digits</div><div class="line">num = re.sub(r&apos;\D&apos;, &quot;&quot;, phone)    </div><div class="line">print  num</div><div class="line"></div><div class="line">#输出结果为</div><div class="line">2004-959-559 </div><div class="line">2004959559</div></pre></td></tr></table></figure>
+<p>#3. 参考链接</p>
+<p><a href="http://deerchao.net/tutorials/regex/regex.htm" target="_blank" rel="external">正则表达式30分钟入门教程</a><br><a href="http://wiki.ubuntu.org.cn/Python%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%93%8D%E4%BD%9C%E6%8C%87%E5%8D%97" target="_blank" rel="external">Python正则表达式操作指南</a><br><a href="https://docs.python.org/2/library/re.html" target="_blank" rel="external">Python官方文档</a></p>
+</div></article></div></main><footer><div class="paginator"><a href="/2014/10/27/2014-10-27-Python中随机数Random和Math模块/" class="prev">上一篇</a><a href="/2014/10/23/2014-10-23-K最邻近算法和局部敏感哈希LSH/" class="next">下一篇</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

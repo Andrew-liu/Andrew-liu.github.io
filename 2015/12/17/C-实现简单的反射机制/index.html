@@ -1,0 +1,38 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> C++实现简单的反射机制 · Snow Memory | Andrew Liu</title><meta name="description" content="C++实现简单的反射机制 - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">C++实现简单的反射机制</h1><div class="post-info">Dec 17, 2015</div><div class="post-content"><p>本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh" target="_blank" rel="external">署名-非商业用途-保持一致</a>的创作共用协议.</p>
+<h1 id="反射机制"><a href="#反射机制" class="headerlink" title="反射机制"></a>反射机制</h1><p>在Python中, 通常RPC中经常看到一种场景, 通过协议解析客户端请求后, 拿到要调用的函数的字符串, 通过字典映射得到对应的可调用的函数, 其中利用了Python解释性语言的特性. 这个特性有一个名字叫<code>反射</code></p>
+<blockquote>
+<p>反射是通过一个字符串名来做创建, 调用, 获取信息等操作. </p>
+</blockquote>
+<p>C++是一种静态语言, 并不支持这种特性, 但是我们可以自己实现这种<code>反射机制</code>.</p>
+<a id="more"></a>
+<p><strong>反射的常用场景</strong></p>
+<ul>
+<li>序列化和数据绑定</li>
+<li>远程方法调用(RPC)</li>
+<li>对象关系设置</li>
+</ul>
+<blockquote>
+<p>为什么静态方法中, 通过引用的方式返回后的对象不同于原来的对象</p>
+</blockquote>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p><strong>实现思路</strong></p>
+<ol>
+<li>通过<code>Map</code>数据结构存储类名到类型的映射</li>
+<li>通过一个公有的方法来取得映射关系对象</li>
+<li>通过字符串key找到对应的类类型并生成相应的类的对象</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div><div class="line">// 工厂的基类</div><div class="line">class BaseFactory &#123;</div><div class="line">public:</div><div class="line">    virtual boost::any Init() const &#123;</div><div class="line">        std::cout &lt;&lt; &quot;BaseFactory&quot; &lt;&lt; std::endl;</div><div class="line">        return boost::any();  // 这里返回我们想要在反射后调用类的实例</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">// 工厂的继承类</div><div class="line">class TestFactory : public BaseFactory &#123;</div><div class="line">    public:</div><div class="line">        boost::any Init() const &#123;</div><div class="line">            std::cout &lt;&lt; &quot;TestFactory&quot; &lt;&lt; std::endl;</div><div class="line">            return boost::any();</div><div class="line">        &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">// reflect保存映射关系的对象</div><div class="line">map&lt;string, BaseFactory*&gt;&amp; GetReflectorMap();</div><div class="line"></div><div class="line">// register and get method</div><div class="line">boost::any GetInstanceFromMap(const string&amp; class_name);</div><div class="line">void RegisterInstanceIntoMap(const string&amp; class_name, BaseFactory*);</div><div class="line"></div><div class="line">#endif /* _REFLECTOR_H_ */</div></pre></td></tr></table></figure>
+<p>在Map的Key中存储类型对象字符串, 通过Key-value将字符串和类型对应起来, Value中存储工厂基类的指针或者引用. <code>为什么使用指针呢,</code> 这样可以使用C++的动态绑定的特性(保证基类指针在调用成员方法时根据真实类型进行成员方法调用)</p>
+<ul>
+<li><code>RegisterInstanceIntoMap</code>类名字符串和对应的继承类类型注册到Map关系映射中</li>
+<li><code>GetInstanceFromMap</code>通过字符串获得并调用对象的类实例的<code>Init方法</code>, 可方法由自己定义逻辑.</li>
+</ul>
+<blockquote>
+<p>这里给出一种基本的实现思路, 还有更多细节需要完善</p>
+</blockquote>
+<ul>
+<li><a href="https://github.com/Andrew-liu/Reflect" target="_blank" rel="external">Github源码链接</a></li>
+</ul>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="http://blog.csdn.net/ljphhj/article/details/12858767" target="_blank" rel="external">一个例子让你了解Java反射机制</a></li>
+</ul>
+</div></article></div></main><footer><div class="paginator"><a href="/2015/12/27/Git操作小记/" class="prev">上一篇</a><a href="/2015/12/12/Python单元测试和Mock测试/" class="next">下一篇</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

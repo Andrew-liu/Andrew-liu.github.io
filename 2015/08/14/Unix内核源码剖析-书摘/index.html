@@ -1,0 +1,101 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Unix内核源码剖析 书摘 · Snow Memory | Andrew Liu</title><meta name="description" content="Unix内核源码剖析 书摘 - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">Unix内核源码剖析 书摘</h1><div class="post-info">Aug 14, 2015</div><div class="post-content"><p>本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh" target="_blank" rel="external">署名-非商业用途-保持一致</a>的创作共用协议.</p>
+<p>前几天被人送了一本书<code>&lt;Unix内核源码剖析&gt;</code>, 看到作者是日本人的时候, 一开始我是排斥的, 不过在试读了几页后我还是觉得应该读下去, 别人送的书哭着也要读完.</p>
+<p>本书基于Unix V6版本进行剖析, 此版本使用了pre K&amp;R C(c语言不成熟版), 看了下Unix的发展图, 这个版本可以称得上是Mac OS X的祖先了…</p>
+<h2 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h2><blockquote>
+<p><strong>这个版本Unix没有线程的实现</strong>.</p>
+</blockquote>
+<p>静态的程序以动态的进程为形态运行在计算机中, 内核分配内存给进程, 进程用被分配到的内存进行逻辑处理.</p>
+<a id="more"></a>
+<ul>
+<li>新进程创建并拥有独立的<code>逻辑地址空间</code>, 由<code>内存管理单元(MMU)</code>转化为实际的物理内存地址, 访问被分配的内存</li>
+<li>单核计算机中, 计算机中多个进程并发的执行, 某一时刻事实上只有单个进程运行, 由于封装隐藏了底层的细节, 使用用户以为多个进程并行执行</li>
+<li>进程三态: 就绪, 执行, 阻塞, 就绪态表示万事俱备, 只欠CPU, 执行态表示当前正在占用CPU进行逻辑处理, 阻塞态表示进程由于缺少某资源无法继续运行, 中断自身处理进入休眠. 进程的执行状态由<code>proc.p_stat</code>表示</li>
+<li>处理器的用户模式和内核模式, 模式的划分可以防止用户误操作一些关键功能, 提高进程安全和稳定性, 用户模式到内核模式的切换一般是由于<code>系统调用</code></li>
+<li>swtch()进行进程调度, 选择处于可执行状态和优先级最高的进程作为执行进程</li>
+</ul>
+<p>进程的状态信息存储在<code>proc</code>结构体中.<br>进程的控制信息存储在<code>user</code>结构体中(管理进程打开的文件或目录等信息).</p>
+<blockquote>
+<p><strong>进程被分配代码段和数据段两段连续的物理内存区域,进程通过虚拟地址访问被分配的物理内存</strong></p>
+</blockquote>
+<p><strong>进程的生命周期(父子进程)</strong></p>
+<ol>
+<li>父进程使用<code>fork</code>系统调用创建子进程, 子进程拷贝父进程数据(复制proc[]数组, 复制数据段, 不复制代码段, 父子进程共享代码段)</li>
+<li>父进程执行<code>wait</code>系统调用, 当收到子进程结束信号, 回收子进程资源</li>
+<li>子进程读取内存执行程序, 执行后调用<code>exit</code>系统调用结束运行并进入僵尸状态(zombie)</li>
+<li>父进程清理子进程(资源回收)</li>
+</ol>
+<p><strong>交换处理</strong></p>
+<p>由于内存大小固定, 随着进程的增多, 内存不发容纳所有程序的代码和数据, 针对这种情况内核定期将处于休眠或者执行优先级较低的进程从内存移至磁盘交换空间. 当换出的进程可执行时, 在将其移入内存.<code>系统启动生成的进程(调度进程)proc[0]定期调用sched()寻找需要交换的进程, xswap()作换出处理, swap()作换入处理</code></p>
+<h2 id="中断"><a href="#中断" class="headerlink" title="中断"></a>中断</h2><p>执行中的进程在中断或陷入时暂停运行, 转而处理发生的中断或陷入. 处理结束后, 被暂停的进程再次恢复运行.</p>
+<blockquote>
+<p>中断是对周边设备提出的异步中断请求进行有效处理的机制, 陷入是对CPU内部发生的异常进行有效处理的机制, 系统调用是用户程序执行内核功能的手段(陷入实现)</p>
+</blockquote>
+<ul>
+<li>中断类型: 块设备处理完成通知, 终端输入, 时钟终端. 中断一般由CPU外部事件引发</li>
+<li>陷入类型: 被0除, 访问了未被分配的区域, 总线超时, <code>系统调用</code>. 陷入是由CPU内部事件引发的</li>
+</ul>
+<p><strong>中断和陷入的处理流程</strong></p>
+<ol>
+<li>发生中断或者陷入</li>
+<li>将当前的PSW和pc保存在内核栈</li>
+<li>从向量指定的地址读取PSW和pc(中断和陷入有相应的中断和陷入向量)</li>
+<li>执行call或trap</li>
+<li>执行中断处理函数或陷入处理函数</li>
+<li>从内核栈中恢复PSW和pc.</li>
+</ol>
+<p><strong>信号</strong></p>
+<blockquote>
+<p>信号是实现进程间通信的机制. 收到信号的进程暂停当前的处理, 并根据信号种类做相应的处理. 信号可以认为由软件引起的中断</p>
+</blockquote>
+<ul>
+<li>执行进程之外的进程无法确定是否收到信号</li>
+<li>进程在处理信号前又收到新的信号, 旧的信号会被覆盖(SIGKIL除外, 执行kill -9 pid会发送此信号)</li>
+<li>信号可以被忽略, SIGKIL除外</li>
+</ul>
+<h2 id="块I-O设备"><a href="#块I-O设备" class="headerlink" title="块I/O设备"></a>块I/O设备</h2><p><code>操作设备通过设备驱动程序</code>, 设备驱动由设备驱动表管理, 需要操作某设备时, 设备驱动表中对应的驱动被调用.</p>
+<p>访问块设备的处理由<code>块设备子系统</code>统一进行, 首先检查是否已存在缓冲区, 如果存在则使用当前缓冲区, 否则从块缓冲池中分配新缓冲区, 然后由驱动设备操作对块设备提出读取请求(分为同步读取, 异步读取)或者写入请求(分为同步写入, 异步写入, 延迟写入)</p>
+<h2 id="文件系统"><a href="#文件系统" class="headerlink" title="文件系统"></a>文件系统</h2><p>内核使用户可以通过文件、目录访问块设备上的数据. <code>文件系统是结构化管理块设备上的数据的机制</code></p>
+<p>通过文件管理块设备, 文件包含inode和文件数据. <strong>inode管理文件大小、访问权限、保存数据的块设备编号等信息</strong>.(inode是文件系统中的核心概念)</p>
+<p>块设备分4个区域:</p>
+<ol>
+<li>编号为0的启动区域, 在系统启动时使用</li>
+<li>编号为1的超级块, 用于管理资源, inode和存储区域大小由超级块定义</li>
+<li>inode区域, 所有文件的inode定义 </li>
+<li>存储区域, 存储数据</li>
+</ol>
+<blockquote>
+<p>user.u_ofile[]负责管理由进程打开的文件, 第0个元素预设为标准输入, 第一个元素预设为标准输出, 第二个元素预设为标准错误输出.</p>
+</blockquote>
+<p><strong>管道</strong></p>
+<blockquote>
+<p>管道是父子进程通信的机制, 因为进程拥有独立的地址空间, 所有任意的进程无法直接访问其他进程拥有的数据.</p>
+</blockquote>
+<ol>
+<li>管道获取根磁盘的inode</li>
+<li>通过inode指向的存储区域进行数据交换</li>
+<li><code>inode和存储区域构成了管道的实体</code></li>
+<li>发送方进程向管道写入数据, 直到管道被充满, 然后发送进程睡眠, 并唤醒等待的接收进程</li>
+<li>切换至接收方的进程, 使得从管道读入数据, 已经接收的数据从管道中被删除</li>
+<li>数据全部读取后(管道变空), 读取进程睡眠, 切换至发送方的进程, 继续执行步骤4</li>
+<li>管道通信结束后, 应该像文件描述符一样, 关闭管道(此时唤醒睡眠的发送进程和接收进程)</li>
+</ol>
+<p><strong>使用管道可以像对待一般文件那样执行系统调用read和write</strong></p>
+<p><strong>父子进程间管道通信</strong></p>
+<ul>
+<li>父进程系统调用pipe后, 执行系统调用fork(), 父进程的user.u_ofile[]的内容将被复制到新生成的子进程中(父子进程都拥有<code>可读写</code>的管道)</li>
+<li>使用系统调用close关掉父进程read使用的描述符</li>
+<li>使用系统调用close关掉子进程write使用的描述符</li>
+<li>形成父进程到子进程的传送数据的管道</li>
+</ul>
+<h2 id="系统启动"><a href="#系统启动" class="headerlink" title="系统启动"></a>系统启动</h2><p><strong>Unix V6启动流程:</strong></p>
+<ol>
+<li>保存在ROM中的引导装入程序, 将位于根磁盘块编号0处的引导程序(根磁盘块四大区域的第一个区域)读取至内存地址0的位置并执行</li>
+<li>引导程序从根磁盘中的文件系统将<code>/unix、/rkunix</code>等内核程序的主程序读取至内存地址0的位置并执行</li>
+<li>内核对系统进程初始化, 使用MMU有效, 设定内存APR, 初始化时钟装置, 初始化内存和交换空间, 初始化I/O资源, 生成proc[0]和proc[1]</li>
+<li><code>proc[0]</code>为系统进程, 作为调度器执行</li>
+<li><code>proc[1]</code>用于执行/etc/init(应用程序), 进程进入待机状态等待连接终端和用户登录, 然后进入无限循环状态, 对失去父进程的进程进行持续处理(如僵尸进程)</li>
+</ol>
+<h2 id="参考书目"><a href="#参考书目" class="headerlink" title="参考书目"></a>参考书目</h2><ul>
+<li><unix内核源码剖析> 青柳隆宏</unix内核源码剖析></li>
+</ul>
+</div></article></div></main><footer><div class="paginator"><a href="/2015/08/23/重读经典《C-Primer》/" class="prev">上一篇</a><a href="/2015/08/10/理解硬链接和软链接/" class="next">下一篇</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

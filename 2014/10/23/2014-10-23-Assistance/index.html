@@ -1,0 +1,80 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Toward Wearable Cognitive Assistance · Snow Memory | Andrew Liu</title><meta name="description" content="Toward Wearable Cognitive Assistance - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">Toward Wearable Cognitive Assistance</h1><div class="post-info">Oct 23, 2014</div><div class="post-content"><p>#1. 研究背景和介绍</p>
+<p>##1.1. 研究背景</p>
+<ul>
+<li>由于各种情况导致越来越多人认知下降, 感知下降包括无法识别他人, 位置和对象, 或长或短的记忆缺失等.</li>
+<li>可穿戴设备给改善认知下降带来希望, 感知设备集成了第一视角图像, 感觉, 处理和交流能力.</li>
+<li>认知辅助系统可以帮助引导认知下降人的生活. 这种系统应该有足够功能, 性能和实用性, 并应该有灵活的可定制能力用于不同认知下降群体.</li>
+<li>论文基于Google Glass构建和实现了一个认知辅助系统.</li>
+</ul>
+<blockquote>
+<p>Implement </p>
+</blockquote>
+<ul>
+<li>论文展现了多层次移动系统架构,针对密集型认知操作计算提供了严格的端到端延迟限制, 并解决有限电池容量问题</li>
+<li>展现了后端密集处理的构架支持基于虚拟机的可扩展性, 而不会带来延迟问题</li>
+<li>探索在面临网络连接失败的时候认知服务性能不会急剧降低</li>
+</ul>
+<a id="more"></a>
+<p>##1.2. 可穿戴设备认知辅助一直未能实现的原因</p>
+<ol>
+<li>一些基础技术,如计算机视觉和速度识别到现在才达到要求的速度和精准</li>
+<li>卸载密集型操作计算设备在移动设备上的缺少</li>
+<li>缺少适当的可穿戴设备</li>
+</ol>
+<p><img src="http://byson.img42.wal8.com/img42/434369_20140909170142/141404943617.png" alt="google glass"></p>
+<p>#2. 设计局限</p>
+<p>##2.1. 快速的交互式响应</p>
+<ol>
+<li>正常人的认知任务中性能是非常快速和准确的.时间大概是几百毫秒.</li>
+<li>但对于认知设备会出现比人反映时间更大的延迟, 这会使用户感到烦恼</li>
+</ol>
+<p>##2.2. 需要offload</p>
+<ul>
+<li>由于可穿戴设备和服务器硬件之间巨大的差距, 导致具体的计算能力的差距.</li>
+<li>offload对于识别等计算和可穿戴设别上的电量使用有巨大的改善</li>
+</ul>
+<p>##2.3. offload服务带来的性能降低可以接受</p>
+<p><code>当网络中断时, 用户可能会在当前环境下找不到外部设备, 这可能导致用户关掉一部分可穿戴设备的功能来获取服务和更长的电池寿命.</code></p>
+<p>##2.4. 上下文敏感的传感器控制</p>
+<p>使用环境控制可穿戴设备传感器可以改善电池寿命和可用性.</p>
+<p>##2.5. 粗粒度并行</p>
+<p>人的认知通过多重感知输入分析然后综合输出.人完成这些通过通过完全不同并行的脑部神经循环. 而软件同样形成了不同的认知引擎(使用各种不同语言)</p>
+<p>#3. 设计结构</p>
+<p><img src="http://byson.img42.wal8.com/img42/434369_20140909170142/141404944979.png" alt="jiegou"></p>
+<p>##3.1. Low-Latency Offloading</p>
+<ul>
+<li>同时实现快速,低延迟交互和offloading处理较为困难.一个容易实现的解决办法是使用商业云服务(但其RTT时间过长).</li>
+<li>论文框架实现低延迟offload使用了Cloudlet云代理),它属于mobile device-cloudlet-cloud中间层</li>
+</ul>
+<p>##3.2. Offload Fallback策略</p>
+<p>当没有合适的Cloudlet可以获取时,直接低效运行Cloud. 更加低效的机制是使用笔记本电脑或者智能手机作为外部设备, 通过蓝牙或者Wi-Fi热点进行连接, 替代Cloud进行事件处理和回馈</p>
+<p>##3.3. 虚拟机和PubSub框架</p>
+<p>Cloudlet必须并行的访问各种认知引擎, 认知辅助系统在虚拟机中包含了每个认知引擎.基于虚拟机的方法会有更少的限制, 并且更有普遍性.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">认知虚拟机, 包含不同的认知引擎, 独立并行的处理从谷歌眼镜传感器发送的数据流. 其中Control VM负责所有交互,接收所有传感器输入流,并进行预处理, PubSub机制发送传感器信息到认知VM中. VM通过UPnP发现机制发现传感器数据流. 然后认知VM将输出发送到User Guidance VM, 最后UserGuidance VM打包数据做更高层次的认知处理.</div></pre></td></tr></table></figure>
+<p><img src="http://byson.img42.wal8.com/img42/434369_20140909170142/141404944117.png" alt="xuniji"></p>
+<p>#4. 初步实现</p>
+<p>##4.1. 谷歌眼镜前端</p>
+<p>前端安卓应用运行在谷歌眼镜中,  发现Cloudlet, 连接系统主体. User Guidance VM获取认知引擎的输出, 然后通过文本或者图片等向用户提供辅助.其中Guidance VM使用Wi-Fi TCP连接.</p>
+<p>##4.2. 发现和初始化</p>
+<ol>
+<li>在系统有多个VM工作, 对于如果发现和连接不同的设备有以下方案 : 首先启动control VM向谷歌眼镜提供服务和认知引擎连接. 然后启动认知引擎和User Guidance VM.他们通过OpenStack连接一个私有虚拟网络. 其中Control VM连接私有网络和公用网络,公共网络用于和Google Glass通信</li>
+<li>UPnP服务器运行在Control VM提供发现本地服务的标准广播方法.使其他VM启动时可以发现control VM, UPnP也提供简单的机制使google Glass可以发现系统.</li>
+<li>Glass设备首先连接cloudlet, 如果未发现cloudelet, 则直接offload到Cloud中的系统, 如果继续连接失败, 则进行连接用户携带的设备</li>
+</ol>
+<p>##4.3. 处理认知引擎的多样化</p>
+<p><code>论文框架允许认知引擎使用各种编程框架和操作系统, 为了使他们协同工作, 需要一个通用的交流模式.可以通过一些代码, 对认知引擎输入和输出进行编码, 转换成适应认知引擎或者适应输入流的编码.</code></p>
+<p>##4.4. 有限的队列延迟</p>
+<ul>
+<li>在整个框架中, 组件通过网络交流, 每个通信点都有一个网络栈, 过大会造成延迟, 过小要保证数据大小不超出栈的大小.</li>
+<li>通过设置应用优先级形式的端到端控制系统来限制数据数量.</li>
+</ul>
+<p>##4.5. 支持的认知引擎</p>
+<ul>
+<li>人脸识别引擎</li>
+<li>对象识别引擎(MOPED&amp;STF)</li>
+<li>视觉符号识别引擎(开源&amp;商用)</li>
+<li>运动分类引擎</li>
+<li>激活预测引擎</li>
+<li>增强现实引擎</li>
+</ul>
+</div></article></div></main><footer><div class="paginator"><a href="/2014/10/23/2014-10-23-K最邻近算法和局部敏感哈希LSH/" class="prev">上一篇</a><a href="/2014/10/22/2014-10-22-Tizen移动应用开发/" class="next">下一篇</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

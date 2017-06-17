@@ -1,0 +1,141 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Effective C++ 读书笔记 · Snow Memory | Andrew Liu</title><meta name="description" content="Effective C++ 读书笔记 - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">Effective C++ 读书笔记</h1><div class="post-info">Sep 11, 2015</div><div class="post-content"><p>本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh" target="_blank" rel="external">署名-非商业用途-保持一致</a>的创作共用协议.</p>
+<blockquote>
+<p>最喜欢书中的一句话: <code>所谓最佳系统设计, 取决于系统希望做什么事情, 包括现在与未来</code>.</p>
+</blockquote>
+<h2 id="Use-const-whenever-possible"><a href="#Use-const-whenever-possible" class="headerlink" title="Use const whenever possible"></a>Use const whenever possible</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">TestConst</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">char</span> greeting[] = <span class="string">"Hello"</span>;  <span class="comment">// length = 6</span></div><div class="line">    <span class="keyword">char</span> test[] = <span class="string">"world"</span>;</div><div class="line">    <span class="keyword">char</span> *pt = greeting;  <span class="comment">// 指向数据中第一个元素的指针, 可变数据, 可变指针</span></div><div class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *cpt = greeting;  <span class="comment">// 不可变数据, 可变指针, 等价与char const *cpt</span></div><div class="line">    <span class="comment">// *cpt = 'a';  // error: read-only variable is not assignable</span></div><div class="line">    <span class="keyword">char</span> * <span class="keyword">const</span> ptc = greeting;  <span class="comment">// 可变数据, 不可变指针</span></div><div class="line">    *ptc = <span class="string">'a'</span>;  </div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; greeting &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;  <span class="comment">//输出 aello</span></div><div class="line">    <span class="comment">// ptc = pt;  //error: read-only variable is not assignable</span></div><div class="line">    <span class="keyword">const</span> <span class="keyword">char</span> * <span class="keyword">const</span> p = greeting;  <span class="comment">//数据指针都不可变</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<a id="more"></a>
+<blockquote>
+<p>如果关键字const出现在星号左边, 表示被指物是常量(内存中的变量不可变), 如果关键字出现在星号右边, 表示指针本身是常量(不能再指向其他指针)</p>
+</blockquote>
+<ul>
+<li>声明迭代器为const, 就想声明一个<code>T *const指针</code>, 其指针不可变值可以变, 如果不希望迭代器所指东西改变需要使用<code>const_iterator</code></li>
+<li>如果函数不会修改传你入的引用或指针类型参数, 该参数应声明为<code>const</code>.</li>
+</ul>
+<blockquote>
+<p><strong>两个成员函数如果只是常量性不同, 可以被重载</strong>, 意思是const和非const成员函数, 被看做是两个不同的函数. const对象会首先调用const成员函数</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Text</span> &#123;</span></div><div class="line"><span class="keyword">public</span>:</div><div class="line">    Text(<span class="built_in">std</span>::<span class="built_in">string</span> str): text_(str) &#123;&#125;</div><div class="line">    <span class="keyword">const</span> <span class="keyword">char</span> &amp; <span class="keyword">operator</span>[] (<span class="built_in">std</span>::<span class="keyword">size_t</span> pos) <span class="keyword">const</span> &#123; </div><div class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"call const method."</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">        <span class="keyword">return</span> text_[pos]; </div><div class="line">    &#125;</div><div class="line">    <span class="keyword">char</span> &amp; <span class="keyword">operator</span>[] (<span class="built_in">std</span>::<span class="keyword">size_t</span> pos) &#123;</div><div class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"call non-const method"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">        <span class="keyword">return</span> text_[pos];</div><div class="line">    &#125;</div><div class="line"><span class="keyword">private</span>:</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> text_;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">const</span> Text <span class="title">test</span><span class="params">(<span class="string">"hello"</span>)</span></span>;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; test[<span class="number">1</span>] &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;  <span class="comment">//调用const成员函数</span></div><div class="line">    <span class="function">Text <span class="title">utext</span><span class="params">(<span class="string">"world"</span>)</span></span>;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; utext[<span class="number">1</span>] &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;  <span class="comment">//调用非const成员函数</span></div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>尽可能将函数声明为<code>const</code>. 访问函数应该总是<code>const</code>. 其他不会修改任何数据成员, 未调用非 const 函数, 不会返回数据成员非<code>const</code>指针或引用的函数也应该声明成 <code>const</code>.</li>
+<li>如果数据成员在对象构造之后不再发生变化, 可将其定义为 const</li>
+<li>关键字<code>mutable</code>可以使用, 但是在多线程中是不安全的, 使用时首先要考虑线程安全. mutable声明的数据成员即使在const成员函数中也是可以被更改的.</li>
+</ul>
+<h2 id="Know-what-function-C-silently-writes-and-calls"><a href="#Know-what-function-C-silently-writes-and-calls" class="headerlink" title="Know what function C++ silently writes and calls"></a>Know what function C++ silently writes and calls</h2><p>编译器可以暗自为class创建default构造函数, copy构造函数, copy assignment操作符, 以及析构函数</p>
+<p><strong>禁用拷贝构造函数和赋值操作符的方案:</strong></p>
+<ul>
+<li>仅声明拷贝构造函数和赋值操作符, 并声明为<code>private</code>. 但class成员函数和友元可能依然可以调用</li>
+<li>设置一个禁用copying的<code>base class</code>, 所有不适用拷贝的函数都继承自这个基类</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Uncopyable</span> &#123;</span></div><div class="line"><span class="keyword">protected</span>:</div><div class="line">    Uncopyable() &#123;&#125;  <span class="comment">//允许派生对象构造和析构</span></div><div class="line">    ~Uncopyable() &#123;&#125; </div><div class="line"><span class="keyword">private</span>:</div><div class="line">    Uncopyable(<span class="keyword">const</span> Uncopyable &amp;);  <span class="comment">// 阻止copying</span></div><div class="line">    Uncopyable &amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> Uncopyable &amp;);</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Base</span> :</span> <span class="keyword">private</span> Uncopyable &#123;  <span class="comment">//private继承</span></div><div class="line">    <span class="comment">// do something, 禁用了copying</span></div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<ul>
+<li>对于析构函数, 尽量不要在析构函数中引发异常, 如果发生错误, 最好强迫程序结束(abort)</li>
+<li>不在构造函数和析构函数期间调用<code>virtual</code>函数</li>
+<li>赋值运算符及复合运算符(如<code>+=, -=</code>)的重载都应该返回引用(支持链式调用), 对于包含指针数据成员的class, 赋值运算符的重载应该添加自我赋值的检测</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 方案1: 进行自我赋值检测</span></div><div class="line">    Text&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> Text&amp; rhs) &#123;</div><div class="line">        <span class="keyword">if</span> (<span class="keyword">this</span> == &amp;rhs) &#123;  <span class="comment">//自我赋值检测两个对象地址是否相同</span></div><div class="line">            <span class="keyword">return</span> *<span class="keyword">this</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">delete</span> pt;  <span class="comment">//pt是一个string类型的指针数据成员, 删除动态分配的空间</span></div><div class="line">        pt = <span class="keyword">new</span> <span class="built_in">string</span>(*rhs.pt);  <span class="comment">//重新开辟动态空间并初始化</span></div><div class="line">        <span class="keyword">return</span> *<span class="keyword">this</span>;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line"><span class="comment">// 方案2: 不要先删除动态分配空间(更加安全)</span></div><div class="line">    Text&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> Text&amp; rhs) &#123;</div><div class="line">        <span class="built_in">string</span>* pstr = pt;  <span class="comment">//创建一个新的指针保存动态分配空间的位置</span></div><div class="line">        pt = <span class="keyword">new</span> <span class="built_in">string</span>(*rhs.pt);  <span class="comment">//pt指向新开辟动态内存的位置</span></div><div class="line">        <span class="keyword">delete</span> pstr;</div><div class="line">        <span class="keyword">return</span> *<span class="keyword">this</span>;</div><div class="line">    &#125;</div><div class="line"><span class="comment">// 方案3: copy and swap技术</span></div><div class="line">思想: 将资源拷贝到对象副本中(保证原对象不会出错), 一切正常后, 对象副本与真正的对象交换</div></pre></td></tr></table></figure>
+<blockquote>
+<p>虚函数的运行机制!</p>
+</blockquote>
+<h2 id="Use-objects-to-manage-resources"><a href="#Use-objects-to-manage-resources" class="headerlink" title="Use objects to manage resources"></a>Use objects to manage resources</h2><ul>
+<li>将资源放进管理对象(managing object)中被称为<code>资源取得时机便是初始化时机(RAII)</code></li>
+<li>管理对象(managing object)运用析构函数确保资源被释放</li>
+<li><code>应用计数型智能指针(RSCP)</code>持续追踪共有多少对象指向某个资源, 但无法打破环状引用(智能指针智能监控局部对象使用状态). <code>垃圾收集机制(GC)</code>掌握全局的对象使用状态可以检测环状引用(或者称为循环引用)</li>
+<li><code>STL中的auto_ptr和shared_ptr都不能用于动态分配数组(析构函数内为delete而不是delete[])</code></li>
+</ul>
+<h2 id="Treat-class-design-as-type-design"><a href="#Treat-class-design-as-type-design" class="headerlink" title="Treat class design as type design"></a>Treat class design as type design</h2><ul>
+<li>新type的对象应该如何构造/析构(内存分配和释放)</li>
+<li>对象初始化和对象赋值的区别(拷贝构造函数和赋值操作符实现的差别)</li>
+<li>pass-by-value和pass-by-reference的选择</li>
+<li>错误检查, 边界检查和异常处理</li>
+<li>新type的显式和隐式类型转换</li>
+<li>那些成员函数应该private, 那些成员函数应该public</li>
+</ul>
+<h2 id="Minimize-casting"><a href="#Minimize-casting" class="headerlink" title="Minimize casting"></a>Minimize casting</h2><blockquote>
+<p>优良的C++代码很少使用转型</p>
+</blockquote>
+<p><strong>转型动作:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">// old style casts, convert expression to type T</div><div class="line">(T)expression</div><div class="line">T(expression)</div><div class="line"></div><div class="line">// new style cast(C++)</div><div class="line">const_cast&lt;T&gt;(expression)</div><div class="line">dynamic_cast&lt;T&gt;(expression)</div><div class="line">reinterpret_cast&lt;T&gt;(expression)</div><div class="line">static_cast&lt;T&gt;(expression)</div></pre></td></tr></table></figure>
+<ul>
+<li>const_cast用来去除变量的常量性(去掉const属性)</li>
+<li>dynamic_cast用于<code>安全向下转型</code>(不同实现可能存在性能问题, 使用时需要慎重考虑)</li>
+<li>reinterpret_cast意图执行低级转换</li>
+<li>static_cast用于强迫隐式转换</li>
+<li><strong>注意:</strong> 尽量使用C++ style cast, 不要使用旧式转型.</li>
+</ul>
+<h2 id="Strive-for-exception-safe-code"><a href="#Strive-for-exception-safe-code" class="headerlink" title="Strive for exception-safe code"></a>Strive for exception-safe code</h2><p><strong>异常安全(exception-safeJ)的条件:</strong></p>
+<ol>
+<li><strong>不泄露任何资源</strong>. </li>
+<li><strong>不允许数据破坏</strong></li>
+</ol>
+<blockquote>
+<p>对于锁机制, 比较好的防止异常的方式是使用RAII</p>
+</blockquote>
+<p><strong>异常安全函数提供三个保证之一:</strong></p>
+<ol>
+<li><strong>基本承诺</strong>: 如果异常被抛出, 程序内的任何事物仍然保持在有效状态下(对象和数据结构不会被破坏, 出现异常后, 程序可能处于任何状态)</li>
+<li><strong>强烈保证</strong>: 如果异常被抛出, 程序状态不改变(如果函数成功, 就完全成功, 如果函数失败, 程序会恢复到调用函数前的状态, 有点类似原子操作概念, 一般可以通过copy and swap策略实现)</li>
+<li><strong>不抛异常保证</strong>: 绝不抛出异常.</li>
+</ol>
+<h2 id="Understand-the-ins-and-outs-of-inlining"><a href="#Understand-the-ins-and-outs-of-inlining" class="headerlink" title="Understand the ins and outs of inlining"></a>Understand the ins and outs of inlining</h2><ol>
+<li>inline函数减少调用函数招致的额外开销</li>
+<li>类内定义函数隐式声明为inline, 显式声明inline函数是在定义式前加上关键字inline</li>
+<li>inline会增加目标代码大小(内存小的机器需要慎重考虑)</li>
+<li>inline函数通常被定义于头文件, 大多数编译器inline为<code>编译期行为</code>. <code>inline是对编译器的神情, 编译器可以加以忽略</code></li>
+<li>对于virtual函数(表示运行期才能确定实现), inline关键字失效</li>
+</ol>
+<h2 id="Make-sure-public-inheritance-models-“is-a”"><a href="#Make-sure-public-inheritance-models-“is-a”" class="headerlink" title="Make sure public inheritance models “is-a”"></a>Make sure public inheritance models “is-a”</h2><blockquote>
+<p>public inheritance意味”is-a”的关系(private和protected不是这种关系!)</p>
+</blockquote>
+<p>在继承关系中, 使用名称遮掩的规则查找函数或者变量, 对于函数不会去匹配参数类型, 个数, 返回值.</p>
+<p>使用using声明式, 来表示要使用函数或者变量所处的作用域.<br>另外, <code>条款36提到, 绝不重新定义继承而来的non-virtual函数</code></p>
+<blockquote>
+<p>切记: <code>pure virtual(纯虚函数)</code>只具体指定接口继承, <code>impure virtual(虚函数)</code>具体指定接口集成并default实现继承, <code>non-virtual(非虚函数)</code>具体指定接口继承以及强制性实现继承</p>
+</blockquote>
+<p><strong>区分动态绑定和静态绑定</strong>:</p>
+<p>假设有基类名为Base类, public继承的派生类为Derived类. Base类和Derived类分别有中有public非虚函数test()具体实现.</p>
+<p>通过基类指针指向基类对象和通过基类指针指向派生类对象时, 调用test时, 都将调用基类的test(静态绑定). <code>由于指针为point to Base, 通过该指针调用的用于是指针对应类中的test</code> </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Base</span> &#123;</span></div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">test</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"Base test"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Derived</span> :</span> <span class="keyword">public</span> Base &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">test</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"Derived test"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>** argv)</span> </span>&#123;</div><div class="line">    Base b;</div><div class="line">    Derived d;</div><div class="line">    Base *base = &amp;b;</div><div class="line">    Base *dbase = &amp;d;</div><div class="line">    base-&gt;test();</div><div class="line">    dbase-&gt;test();</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div><div class="line"># 输出结果</div><div class="line">Base test</div><div class="line">Base test</div></pre></td></tr></table></figure>
+<p>如果将基类中的test改为虚函数, 此时则基类指针调用test发生了动态绑定.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"># 输出结果</div><div class="line">Base test</div><div class="line">Derived test</div></pre></td></tr></table></figure>
+<h2 id="Use-private-inheritance-judiciously"><a href="#Use-private-inheritance-judiciously" class="headerlink" title="Use private inheritance judiciously"></a>Use private inheritance judiciously</h2><ul>
+<li><strong>铭记:</strong> private不是一种is-a关系!</li>
+<li>private继承, 编译器不会自动将一个派生类对象转换为一个基类对象</li>
+<li>由private基类集成来的所有成员, 在派生类中都会变成private</li>
+</ul>
+<h2 id="Understand-implicit-interface-and-compile-time-polymorhpism"><a href="#Understand-implicit-interface-and-compile-time-polymorhpism" class="headerlink" title="Understand implicit interface and compile-time polymorhpism"></a>Understand implicit interface and compile-time polymorhpism</h2><blockquote>
+<p>class和template都支持接口和多态</p>
+</blockquote>
+<ul>
+<li>面向对象class以显式接口和运行期多态解决问题. 接口类型具体构造在源码中明确可见表示<code>显式接口</code>. 通常显式接口由函数的签名式(函数名称, 参数类型, 返回类型)构成.由类中的一些virtual函数可能导致函数的调用表现为<code>运行期多态</code>. 根据调用的类型来决定调用那个class中的函数</li>
+<li>template则注重隐式接口和编译器多态. <code>隐式接口</code>不基于签名式, 而是由有效表达式组成(和显式接口一样在编译期完成检查). 以不同的template参数具现化导致调用不同的函数, <code>具现行为</code>发生在编译期, 称为编译期多态</li>
+</ul>
+<p><strong>派生类集成模板基类时(在模板具现化之前)无法看到基类中的具体实现的解决方案:</strong></p>
+<ol>
+<li>在调用基类函数动作前加上<code>this-&gt;</code></li>
+<li>使用<code>using BaseClassName&lt;&gt;::some_member_method</code>, 请编译器假设函数位于基类中</li>
+<li>指出被调用的函数位于基类, <code>BaseClassName&lt;T&gt;::some_member_method</code> (被关闭virtual绑定行为)</li>
+</ol>
+<h2 id="Use-traits-classes-for-information-about-types"><a href="#Use-traits-classes-for-information-about-types" class="headerlink" title="Use traits classes for information about types"></a>Use traits classes for information about types</h2><p>STL中五种迭代器:</p>
+<ol>
+<li>Input迭代器: 只能向前移动, 一次一步, 客户只能读取一次</li>
+<li>Output迭代器: 只能向前移动, 一次一步, 客户端只能写数据一次</li>
+<li>Forward迭代器: 只能向前移动, 一次一步, 可读可写</li>
+<li>Bidirectional迭代器: 可以向前向后移动, 一次一步, 可读可写(list, set, map, multiset, multimap迭代器为这种)</li>
+<li>Random access迭代器, 拥有以上功能外, 可以执行迭代器算术(一次执行多步移动, vector, deque, string为此类迭代器)</li>
+</ol>
+<h2 id="Write-placement-delete-if-you-write-placement-new"><a href="#Write-placement-delete-if-you-write-placement-new" class="headerlink" title="Write placement delete if you write placement new"></a>Write placement delete if you write placement new</h2><blockquote>
+<p>如果operator new 接受的参数除了size_t(需要分配大小)外还有其他参数, 这边上placement new</p>
+</blockquote>
+<p>调用placement new后, 如果构造函数发生异常, 需要释放已分配的内存, 防止内存泄露, 此时在运行期间系统会寻找<code>参数个数和类型都与placement new</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="keyword">operator</span> <span class="title">new</span><span class="params">(<span class="built_in">std</span>::<span class="keyword">size_t</span> size, <span class="built_in">std</span>::ostream&amp; logSteam)</span> <span class="title">throw</span><span class="params">(<span class="built_in">std</span>::bad_alloc)</span></span>;  <span class="comment">// placement new</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="keyword">operator</span> <span class="title">delete</span><span class="params">(<span class="keyword">void</span> *pMemorty, <span class="built_in">std</span>::ostream&amp;  logStream)</span> <span class="title">throw</span><span class="params">()</span></span>; <span class="comment">//placement delete</span></div><div class="line"></div><div class="line">#调用</div><div class="line">ClassName* pc = <span class="keyword">new</span> (<span class="built_in">std</span>::<span class="built_in">cerr</span>) ClassName;</div><div class="line"># 如果发生异常会调用placement <span class="keyword">delete</span>, 否则<span class="keyword">delete</span> pc会调用正常的<span class="keyword">operator</span> <span class="keyword">delete</span></div></pre></td></tr></table></figure>
+<p><strong>类内专属的new会掩盖其他new(包括正常的global版本), 解决方案是专属new中::operator new(size)调用全局版本, 详见条款52</strong></p>
+<h2 id="Miscellany"><a href="#Miscellany" class="headerlink" title="Miscellany"></a>Miscellany</h2><ul>
+<li>我曾经的老师, 告诉过我要把Warning当做Error来对待, 不要忽视Warning, 可能某一天这个Warning就会带来严重的Bug</li>
+<li>推荐阅读侯捷先生的<code>&lt;STL源码剖析&gt;</code>, 让自己更加了解标准库</li>
+<li>推荐了解更多Boost库</li>
+</ul>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><code>Effective C++</code></li>
+<li><a href="http://blog.csdn.net/lihao21/article/details/47610309" target="_blank" rel="external">编译防火墙——C++的Pimpl惯用法解析</a></li>
+</ul>
+</div></article></div></main><footer><div class="paginator"><a href="/2015/09/20/Template小记/" class="prev">上一篇</a><a href="/2015/09/04/流逝的暗时间/" class="next">下一篇</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

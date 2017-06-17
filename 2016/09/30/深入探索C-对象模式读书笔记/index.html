@@ -1,0 +1,120 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 深入探索C++对象模式读书笔记 · Snow Memory | Andrew Liu</title><meta name="description" content="C++ 对象模型 虚函数 虚表"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">深入探索C++对象模式读书笔记</h1><div class="post-info">Sep 30, 2016</div><div class="post-content"><blockquote>
+<p>什么是<code>C++对象模型</code>?</p>
+<ol>
+<li>语言中直接支持面向对象程序设计的部分.</li>
+<li>对于各种支持的底层实现机制.</li>
+</ol>
+</blockquote>
+<h2 id="Object-Lessons"><a href="#Object-Lessons" class="headerlink" title="Object Lessons"></a>Object Lessons</h2><ol>
+<li>C++封装并未增加布局成本, 数据成员内含在class object中(像struct), <code>成员函数不会出现在object中</code>, <strong>非内敛函数只会诞生一个实例, 内联函数对每个使用者产生一个实例</strong></li>
+<li>C++在布局及存取时间上主要的额外负担是由<code>virtual</code>引起的<ul>
+<li>virtual function支持动态绑定</li>
+<li>virtual base class实现单一而被共享的基类实例, 多用于多继承中</li>
+</ul>
+</li>
+</ol>
+<a id="more"></a>
+<h3 id="C-Object-Model"><a href="#C-Object-Model" class="headerlink" title="C++ Object Model"></a>C++ Object Model</h3><ol>
+<li>简单对象模式, object由很多slot组成, 每个slot(<code>指向member的指针</code>)指向一个memeber(包含数据成员和成员函数).</li>
+<li>表格驱动对象模型, 将members相关信息分别放到data member table(持有data member)和member function table(member function的指针)中, class object本身包含指向两个表格的指针</li>
+<li>C++对象模型, 非静态数据成员配置在class object内, 静态数据成员存放在个别class object外.</li>
+</ol>
+<p>C++对象模型之<code>虚函数</code>:</p>
+<ol>
+<li>每个<code>class(类)</code>产生一堆指向虚函数的指针, 放在virtual table(<code>vtbl</code>)中</li>
+<li>每个<code>object(实例)</code>包含一个指针(<code>vptr</code>), 指向相关的vitual table. <code>vptr的设置和重置由class的构造/析构/拷贝赋值操作符完成</code>. 每个class的<code>type_info object</code>(支持RTTI)也经由virtual table被指出来.</li>
+</ol>
+<p><img src="http://ww4.sinaimg.cn/large/ab508d3dgw1f7we2123j2j21ce0waq7v.jpg" alt=""></p>
+<blockquote>
+<p>书中给出了一个struct和class结合使用的建议: 当要传递一个复杂的class object的全部或部分到C函数中, struct声明可以将数据封装起来, 并保证拥有与C兼容的空间布局.</p>
+</blockquote>
+<p>C++程序设计模型支持三种programming paradigms(编程范式):</p>
+<ul>
+<li>程序模型, 像C一样</li>
+<li>抽象数据类型模型</li>
+<li>面向对象模型</li>
+</ul>
+<blockquote>
+<p>多态的主要用途是经由一个共同的接口来影响类型的封装, 这个接口通常被定义在一个抽象的base class中</p>
+</blockquote>
+<h2 id="The-Semantics-of-Constructors"><a href="#The-Semantics-of-Constructors" class="headerlink" title="The Semantics of Constructors"></a>The Semantics of Constructors</h2><h3 id="Default-Constructor"><a href="#Default-Constructor" class="headerlink" title="Default Constructor"></a>Default Constructor</h3><p>四种情况会造成编译器必须为未声明构造函数的 classes 合成一个 default constructor</p>
+<ol>
+<li><code>带有Default Constructor的Member Class</code>. 如果class没有任何构造函数, 但包含一个<code>member object</code>, 而后者有默认构造函数, 编译器会为该clas合成一个default constructor(只是为了满足编译器的需求). 如果class有默认构造函数, 且包含<code>member object</code>, 则<strong>编译器会扩张已存在的构造函数</strong>.</li>
+<li><code>带有Default Constructor的Base Class</code>. 一个没有任何构造函数的class派生自一个带有default constructor的 base class, 这个派生类中的default constructor将会被合成.</li>
+<li><code>带有一个Virtual Function的class</code>. <strong>默认构造函数正确的初始化每个class的vptr</strong>. class声明一个虚函数会合成默认构造函数</li>
+<li><code>带有一个Virtual Base class的Class</code>, class派生自一个继承链, 其中有一个或者更多virtual base classes</li>
+</ol>
+<p>带有虚函数类在编译器:</p>
+<ol>
+<li>编译期一个virtual function table会被编译器产生, 内放class 的virtual functions地址</li>
+<li>每个<code>class object</code>中, 一个额外的 pointer member(vptr) 被编译器合成出来, 内含相关与class vtbl的地址.</li>
+</ol>
+<h3 id="Copy-Constructor"><a href="#Copy-Constructor" class="headerlink" title="Copy Constructor"></a>Copy Constructor</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># 三个场景使用拷贝构造函数</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Base</span>;</span></div><div class="line">Base a;</div><div class="line">Base b = a;  <span class="comment">//1. 显示拷贝</span></div><div class="line"><span class="keyword">void</span> (Base x);  <span class="comment">//2. object参数值传递</span></div><div class="line"><span class="keyword">return</span> b;  <span class="comment">//3. 值传递的函数返回object</span></div></pre></td></tr></table></figure>
+<ol>
+<li>class未提供显式copy constructor时, 默认拷贝构造函数会把<code>内建或派生</code>的 data member 的值, 从某个object拷贝到另一个object上, 但不会拷贝其中的<code>member class object</code></li>
+</ol>
+<h3 id="Member-Initialization-List"><a href="#Member-Initialization-List" class="headerlink" title="Member Initialization List"></a>Member Initialization List</h3><p>以下情况必须使用成员初始化列表:</p>
+<ol>
+<li>当初始化一个 reference member 时</li>
+<li>当初始化一个 const member 时</li>
+<li>当调用一个 base class 的 constructor, 而它拥有一组参数时</li>
+<li>当调用一个 member class 的 constructor, 而它拥有一组参数时</li>
+</ol>
+<ul>
+<li><strong>初始化成员列表的顺序是由class中的members声明顺序决定的</strong></li>
+<li>调用<code>member function</code>设定一个member的初值可行, 因为与此object 相关的 this指针已经被建构妥当</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">X::X(<span class="keyword">int</span> val) :</div><div class="line">    i(xfoo(val)),  <span class="comment">// xfoo必须是 member function</span></div><div class="line">    j(val) &#123;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="The-Semantics-of-Data"><a href="#The-Semantics-of-Data" class="headerlink" title="The Semantics of Data"></a>The Semantics of Data</h2><h3 id="Data-Member-Layout"><a href="#Data-Member-Layout" class="headerlink" title="Data Member Layout"></a>Data Member Layout</h3><ul>
+<li>非静态数据成员在class object的排列顺序和其被声明的顺序一样</li>
+<li><code>静态成员函数</code>不会放入对象布局中, 会被放入<strong>data segment</strong></li>
+</ul>
+<blockquote>
+<p>C++标准对布局持放任态度.</p>
+</blockquote>
+<h3 id="Data-Member-get-set"><a href="#Data-Member-get-set" class="headerlink" title="Data Member get/set"></a>Data Member get/set</h3><ul>
+<li><code>static data member</code>在class object中存取不会招致任何空间或执行时间上的额外负担(静态数据成员不在class object内部)</li>
+<li><code>nonstatic data member</code>存放在 class object 内, 存取效率和 c struct member 或 nonderived class member 一样.</li>
+</ul>
+<blockquote>
+<p>继承(非虚继承)不会不会增加空间和存取时间上的额外负担</p>
+</blockquote>
+<p>菱形继承的解决方案是导入虚拟继承</p>
+<p><img src="http://ww3.sinaimg.cn/large/ab508d3djw1f80297j7bzj20ja0bqjs4.jpg" alt=""></p>
+<p>虚继承的实现: class 如果内包含一个或多个 <code>virtual base class subobjects</code>, 将被分割成两部分: 一个不变区域和一个共享区域, 不变区域中的数据, 不管后继如何演化, 总有固定的offset用于直接存取, 共享区域只能被间接存取(在虚表中放置 virtual base class 的 offset)</p>
+<h2 id="The-Semantics-of-Function"><a href="#The-Semantics-of-Function" class="headerlink" title="The Semantics of Function"></a>The Semantics of Function</h2><h3 id="Nonstatic-Member-Functions"><a href="#Nonstatic-Member-Functions" class="headerlink" title="Nonstatic Member Functions"></a>Nonstatic Member Functions</h3><p>C++设计准则之一: 非静态成员函数至少必须和一般的非成员函数有相同的效率.</p>
+<blockquote>
+<p>编译器将类的成员函数转换为非成员函数</p>
+</blockquote>
+<p>转换步骤:</p>
+<ol>
+<li>改写函数signature, 增加一个额外的参数(this)</li>
+<li>将每一个<code>对 nonstatic data member 的存取操作</code>改为经过this指针存取</li>
+<li>将 member function 重新谢伟一个外部函数(对函数名特殊处理. <code>name mangling</code>)</li>
+</ol>
+<h3 id="Virtual-Member-Functions"><a href="#Virtual-Member-Functions" class="headerlink" title="Virtual Member Functions"></a>Virtual Member Functions</h3><p>多态: 以 public base class的指针(或引用) 寻址出一个 derived class object.</p>
+<ul>
+<li>一个类(不是对象)只有一个virtual table, 每个object被安插一个由编译器产生的指针(vptr).</li>
+<li>派生的子类,会 overriding 一个可能存在的 base class virtual function实例</li>
+</ul>
+<p><img src="http://ww2.sinaimg.cn/large/ab508d3djw1f806zpmvegj21520y047e.jpg" alt=""></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Derived</span> :</span> <span class="keyword">public</span> Base1, <span class="keyword">public</span> Base2 &#123;&#125;;</div><div class="line"># 两张虚表</div><div class="line">vtbl_Derived;  <span class="comment">// 主要虚表</span></div><div class="line">vtbl_Base2_Derived;  <span class="comment">// 次要虚表</span></div></pre></td></tr></table></figure>
+<p><strong>多重继承</strong>情况下, 维护有多张虚表. 当Deriveed对象指定给Base1指针或Derived指针时, 被处理的virtual table 是主要表格<code>vtbl_Derived</code>, 当Deriveed对象指定给Base2时, 被处理的虚表为<code>vtbl_Base2_Derived</code></p>
+<p><img src="http://ww2.sinaimg.cn/large/ab508d3djw1f807sjmgdfj214a108n6p.jpg" alt=""></p>
+<h3 id="Static-Member-Function"><a href="#Static-Member-Function" class="headerlink" title="Static Member Function"></a>Static Member Function</h3><blockquote>
+<p><strong>没有this指针</strong></p>
+</blockquote>
+<ul>
+<li>静态成员函数将被转换为一般的非静态成员函数调用</li>
+<li>不能被声明为 const, volatile, virtual</li>
+<li>不需要经由class object 调用</li>
+</ul>
+<h3 id="Inline-Functions"><a href="#Inline-Functions" class="headerlink" title="Inline Functions"></a>Inline Functions</h3><p>处理 inline函数的两个阶段:</p>
+<ol>
+<li>分析函数定义, 以决定函数的 <code>intrinsic inline ability</code>(我理解为天生的内联能力).</li>
+<li>真正的inline函数扩展操作是在调用的那一点上.</li>
+</ol>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li>深入探索C++对象模型</li>
+</ul>
+</div></article></div></main><footer><div class="paginator"><a href="/2016/10/08/Linux进程创建和调度学习笔记/" class="prev">上一篇</a><a href="/2016/09/24/macOS-Sierra-惊险升级/" class="next">下一篇</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

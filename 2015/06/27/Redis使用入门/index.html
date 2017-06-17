@@ -1,0 +1,106 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Redis使用入门 · Snow Memory | Andrew Liu</title><meta name="description" content="Redis使用入门 - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">Redis使用入门</h1><div class="post-info">Jun 27, 2015</div><div class="post-content"><p>本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh" target="_blank" rel="external">署名-非商业用途-保持一致</a>的创作共用协议.</p>
+<p>#Redis Introduction</p>
+<p><code>Redis</code>是一个用C语言实现的key-value store. 除了最基础的基于字符串的键值对，Redis可以是更加复杂的数据结构，所以redis也常被称为是一个data structure server(数据结构服务器)</p>
+<p>Redis支持的数据结构列表:</p>
+<ul>
+<li>String(字符串)</li>
+<li>List(列表, 基本的<code>链表</code>)</li>
+<li>Set(元素唯一的, 无序的集合)</li>
+<li>Sorted Set(类似于Set, 但是每个字符串元素关联一个浮点数score, 用于排序)</li>
+<li>Hash(哈希)</li>
+<li>Bitmap</li>
+<li>HyperLogLogs</li>
+</ul>
+<blockquote>
+<p>本篇没有涵盖Bitmap和HyperLogLogs的使用</p>
+</blockquote>
+<a id="more"></a>
+<p>#Redis Install</p>
+<p>在<a href="http://redis.io/download" target="_blank" rel="external">Redis下载页面</a>下载需要版本的redis</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"># 解压源文件</div><div class="line">$ tar xzf redis-3.0.2.tar.gz</div><div class="line"># 进入redis文件夹</div><div class="line">$ cd redis-3.0.2</div><div class="line"># 编译源文件</div><div class="line">$ make</div><div class="line"># 测试</div><div class="line">$ make test</div><div class="line"></div><div class="line"># 提示以下信息表示安装成功</div><div class="line">\o/ All tests passed without errors!</div><div class="line">Cleanup: may take some time... OK</div></pre></td></tr></table></figure>
+<p><strong>运行Redis的服务器端</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ /src/redis-server</div></pre></td></tr></table></figure>
+<p><strong>运行Redis的交互式客户端</strong></p>
+<blockquote>
+<p>用过python应该都理解交互式的意义吧</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ /src/redis-cli</div></pre></td></tr></table></figure>
+<p><strong>在.zshrc设置快捷启动</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">$ vim ~/.zshrc</div><div class="line"># 在最后一行添加</div><div class="line"></div><div class="line"># Redis shortcur</div><div class="line">alias reds=&quot;/Users/andrew_liu/Development/redis-3.0.2/src/redis-server&quot;</div><div class="line">alias redc=&quot;/Users/andrew_liu/Development/redis-3.0.2/src/redis-cli&quot;</div><div class="line"></div><div class="line"># 保存后, 运行(Esc, :wq把保存并退出)</div><div class="line">$ source ~/.zshrc</div><div class="line"></div><div class="line"># 启动Redis服务器</div><div class="line">$ reds</div><div class="line"></div><div class="line"># 启动Redis交互式客户端</div><div class="line">$ redc</div></pre></td></tr></table></figure>
+<p>#Redis keys</p>
+<p>Redis keys是二进制安全的, 可以使用任何二进制序列作为key, 空的字符串也是有效地key</p>
+<p>#Redis Strings</p>
+<p>使用字符串作为value时, 我们在string key和string value之间建立了映射关系</p>
+<ul>
+<li>value不能大小不能操作<code>512MB</code></li>
+<li><code>SET</code>命令设置键值对, 重复设置key的value, 会覆盖原来的value</li>
+<li><code>GET</code>命令通过key检索value</li>
+<li><code>INRC</code>命令将给定key的value看做整型, 实现<code>加一</code>操作, 这个命令是<code>原子性的</code>(原子性中是事务ACID特性之一)</li>
+<li><code>GETSET</code>命令通过新的value设置key, 并返回旧的value</li>
+<li><code>MSET</code>和<code>MGET</code>命令分别用于同时设置或检索多个key</li>
+<li><code>EXISTS</code>命令, 如果给定的key存在返回1, 否则返回0</li>
+<li><code>DEL</code>命令删除key-value对</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">127.0.0.1:6379&gt; set mykey hello</div><div class="line">OK</div><div class="line">127.0.0.1:6379&gt; get mykey</div><div class="line">&quot;hello&quot;</div><div class="line">127.0.0.1:6379&gt; get mykey</div><div class="line">&quot;1&quot;</div><div class="line">127.0.0.1:6379&gt; incr mykey</div><div class="line">(integer) 2</div><div class="line">127.0.0.1:6379&gt; getset mykey how</div><div class="line">&quot;2&quot;</div><div class="line">127.0.0.1:6379&gt; get mykey</div><div class="line">&quot;how&quot;</div><div class="line">127.0.0.1:6379&gt; mset a 10 b 20 c 30</div><div class="line">OK</div><div class="line">127.0.0.1:6379&gt; mget a b c</div><div class="line">1) &quot;10&quot;</div><div class="line">2) &quot;20&quot;</div><div class="line">3) &quot;30&quot;</div><div class="line">127.0.0.1:6379&gt; exists a</div><div class="line">(integer) 1</div><div class="line">127.0.0.1:6379&gt; del a</div><div class="line">(integer) 1</div><div class="line">127.0.0.1:6379&gt; exists a</div><div class="line">(integer) 0</div></pre></td></tr></table></figure>
+<p>#Redis 定时器</p>
+<ul>
+<li><code>EXPIRE</code>命令提供定时器功能, 设置key只能存在固定时间, 时间到key会被删除(<code>以秒为单位</code>)</li>
+<li><code>TTL</code>用于查询key还有多长时间被删除.<br>TTL返回<code>-2</code>表示key已经被删除, TTL返回<code>-1</code>表示key不会expire</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">127.0.0.1:6379&gt; set key value</div><div class="line">OK</div><div class="line">127.0.0.1:6379&gt; get key</div><div class="line">&quot;value&quot;</div><div class="line">127.0.0.1:6379&gt; expire key 1000</div><div class="line">(integer) 1</div><div class="line">127.0.0.1:6379&gt; ttl key</div><div class="line">(integer) 995</div><div class="line"># 1000秒后, 被删除</div><div class="line">127.0.0.1:6379&gt; get key</div><div class="line">(nil)</div></pre></td></tr></table></figure>
+<p>#Redis Lists</p>
+<blockquote>
+<p>Redis通过链表来实现List</p>
+</blockquote>
+<p><strong>链表的实现优点是快速的插入和删除, 缺点是检索相对数组实现List慢</strong></p>
+<ul>
+<li><code>LPUSH</code>命令从List的头部插入一个或多个value, 返回插入后的list长度</li>
+<li><code>RPUSH</code>命令从List的尾部插入一个或多个value, 返回插入后的list长度</li>
+<li><code>LLEN</code>命令返回List的长度</li>
+<li><code>LRANGE</code>命令从List取出固定一段<code>子List</code>(类似于python中的切片操作), 有两个索引参数, 都可以为负数</li>
+<li><code>LPOP</code>命令从尾部删除value</li>
+<li><code>RPOP</code>命令从头部删除value, 没有value可删时返回nil</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">127.0.0.1:6379&gt; rpush list A</div><div class="line">(integer) 1</div><div class="line">127.0.0.1:6379&gt; rpush list B</div><div class="line">(integer) 2</div><div class="line">127.0.0.1:6379&gt; lpush list C</div><div class="line">(integer) 3</div><div class="line">127.0.0.1:6379&gt; llen list</div><div class="line">(integer) 3</div><div class="line">127.0.0.1:6379&gt; lrange list 0 -1</div><div class="line">1) &quot;C&quot;</div><div class="line">2) &quot;A&quot;</div><div class="line">3) &quot;B&quot;</div><div class="line">127.0.0.1:6379&gt; rpush list a b c</div><div class="line">(integer) 6</div><div class="line">127.0.0.1:6379&gt; rpop list</div><div class="line">&quot;c&quot;</div><div class="line">127.0.0.1:6379&gt; lpop list</div><div class="line">&quot;C&quot;</div></pre></td></tr></table></figure>
+<p>#Redis Sets</p>
+<blockquote>
+<p>value为Set, 表示无需的字符串集合</p>
+</blockquote>
+<ul>
+<li><code>SADD</code>命令向set中增加元素, 如果元素已存在则返回0, 否则返回1</li>
+<li><code>SMEMERS</code>命令返回set集合, 返回的集合与插入时的顺序无关</li>
+<li><code>SISMEMBER</code>命令测试元素是否在set中, 在返回1, 不在返回0</li>
+<li><code>SREM</code>移除set中的元素</li>
+<li><code>SUNION</code>命令链接多个set集合</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">127.0.0.1:6379&gt; sadd mset 1</div><div class="line">(integer) 1</div><div class="line">127.0.0.1:6379&gt; sadd mset 1</div><div class="line">(integer) 0</div><div class="line">127.0.0.1:6379&gt; sadd mset 2</div><div class="line">(integer) 1</div><div class="line">127.0.0.1:6379&gt; smembers mset</div><div class="line">1) &quot;1&quot;</div><div class="line">2) &quot;2&quot;</div><div class="line">127.0.0.1:6379&gt; sismember mset 1</div><div class="line">(integer) 1</div><div class="line">127.0.0.1:6379&gt; sismember mset 3</div><div class="line">(integer) 0</div></pre></td></tr></table></figure>
+<p>#Redis Sorted Sets</p>
+<blockquote>
+<p>Sorted Set类似于Set和Hash的混合, Sorted Set中的元素也是唯一不重复的字符窜元素, <code>Set中的元素无需, Sorted Set中通过浮点数score排序</code>, Sorted Set通过<code>跳表</code>和<code>哈希表</code>实现, 增加一个元素的复杂度<code>O(log(N))</code></p>
+</blockquote>
+<p>排序原则: </p>
+<ul>
+<li>score不同时, A.score &gt; B.score =&gt; A &gt; B</li>
+<li>score相同时, A.score = B.score =&gt; A和B通过比较字符串的<code>字典序</code>进行排序</li>
+</ul>
+<ul>
+<li><code>ZADD</code>命令增加带score的元素, 可以传入多个score-value对</li>
+<li><code>ZRANGE</code>命令类似于<code>LRANGE</code>操作, </li>
+<li><code>ZREVRANGE</code>命令反序输出Sorted set元素片段</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">127.0.0.1:6379&gt; zadd sset 1991 &quot;liu&quot;</div><div class="line">(integer) 1</div><div class="line">127.0.0.1:6379&gt; zadd sset 1991 &quot;andrew&quot;</div><div class="line">(integer) 1</div><div class="line">127.0.0.1:6379&gt; zadd sset 1992 &quot;dinosaur&quot;</div><div class="line">(integer) 1</div><div class="line">127.0.0.1:6379&gt; zadd sset 1993 &quot;bingo&quot;</div><div class="line">(integer) 1</div><div class="line">127.0.0.1:6379&gt; zadd sset 1994 &quot;hello&quot; 1995 &quot;world&quot;</div><div class="line">(integer) 2</div><div class="line">127.0.0.1:6379&gt; zrange sset 0 -1</div><div class="line">1) &quot;andrew&quot;</div><div class="line">2) &quot;liu&quot;</div><div class="line">3) &quot;dinosaur&quot;</div><div class="line">4) &quot;bingo&quot;</div><div class="line">5) &quot;hello&quot;</div><div class="line">6) &quot;world&quot;</div><div class="line">127.0.0.1:6379&gt; zrevrange sset 0 -1</div><div class="line">1) &quot;world&quot;</div><div class="line">2) &quot;hello&quot;</div><div class="line">3) &quot;bingo&quot;</div><div class="line">4) &quot;dinosaur&quot;</div><div class="line">5) &quot;liu&quot;</div><div class="line">6) &quot;andrew&quot;</div></pre></td></tr></table></figure>
+<p>#Redis Hashes</p>
+<ul>
+<li><code>HSET</code>命令设置key中field和field应对的value</li>
+<li><code>HMSET</code>命令用于设置哈希中的多个field</li>
+<li><code>HGET</code>命令用于检索单个field</li>
+<li><code>HMGET</code>命令用于检索多个filed</li>
+<li><code>HGETALL</code>命令获得key的所有的field和field对应的value</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">127.0.0.1:6379&gt; hset user:1001 name &quot;jane&quot;</div><div class="line">(integer) 1</div><div class="line">127.0.0.1:6379&gt; hset user:1001 email &quot;jane@gamil.com&quot;</div><div class="line">(integer) 1</div><div class="line">127.0.0.1:6379&gt; hgetall user:1001</div><div class="line">1) &quot;name&quot;</div><div class="line">2) &quot;jane&quot;</div><div class="line">3) &quot;email&quot;</div><div class="line">4) &quot;jane@gamil.com&quot;</div><div class="line">127.0.0.1:6379&gt; hmset user:1000 username andrewliu birthday 2015 verfield 1</div><div class="line">OK</div><div class="line">127.0.0.1:6379&gt; hget user:1000 username</div><div class="line">&quot;andrewliu&quot;</div><div class="line">127.0.0.1:6379&gt; hgetall user:1000</div><div class="line">1) &quot;username&quot;</div><div class="line">2) &quot;andrewliu&quot;</div><div class="line">3) &quot;birthday&quot;</div><div class="line">4) &quot;2015&quot;</div><div class="line">5) &quot;verfield&quot;</div><div class="line">6) &quot;1&quot;</div><div class="line">127.0.0.1:6379&gt; hmget user:1000 username birthday</div><div class="line">1) &quot;andrewliu&quot;</div><div class="line">2) &quot;2015&quot;</div></pre></td></tr></table></figure>
+<p>#Reference</p>
+<ul>
+<li><a href="http://redisbook.com/" target="_blank" rel="external">Redis 设计与实现</a></li>
+<li><a href="http://redis.io/topics/data-types-intro" target="_blank" rel="external">An introduction to Redis data types and abstractions</a></li>
+</ul>
+</div></article></div></main><footer><div class="paginator"><a href="/2015/07/05/UNIX网络编程基础/" class="prev">上一篇</a><a href="/2015/06/26/Dr-Cleaner-轻量级Mac清理工具/" class="next">下一篇</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

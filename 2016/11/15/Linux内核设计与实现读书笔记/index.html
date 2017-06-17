@@ -1,0 +1,96 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Linux内核设计与实现读书笔记 · Snow Memory | Andrew Liu</title><meta name="description" content="Linux Kernel 读书笔记"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">Linux内核设计与实现读书笔记</h1><div class="post-info">Nov 15, 2016</div><div class="post-content"><p>本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh" target="_blank" rel="external">署名-非商业用途-保持一致</a>的创作共用协议.</p>
+<p><strong>Unix强大的根本原因:</strong></p>
+<ol>
+<li>Unix简洁, 提供几百个系统调用, 设计目的明确</li>
+<li>Unix中<code>所有东西都被当做文件对待</code></li>
+<li>Unix内核和相关系统工具是用C语言开发的, 移植能力强大</li>
+<li>Unix进程创建迅速, 有独特的fork机制</li>
+<li>Unix提供简单稳定的进程间通信元语</li>
+</ol>
+<blockquote>
+<p>Linux是类Unix系统, 借鉴了Unix设计并实现了Unix的API.<br>应用程序通常调用库函数(如C库函数)再由库函数通过系统调用界面, 让内核代其完成各种任务.</p>
+</blockquote>
+<a id="more"></a>
+<ul>
+<li>Linux支持动态加载内核模块</li>
+<li>Linux支持对称多处理(SMP)机制</li>
+<li>Linux为<code>抢占式内核</code></li>
+<li>Linux并不区分线程和其他的一般进程</li>
+<li>Linux提供具有设备类的面向对象的设备模型, 热插拔事件, 以及用户控件的设备文件系统</li>
+</ul>
+<h2 id="中断和中断处理"><a href="#中断和中断处理" class="headerlink" title="中断和中断处理"></a>中断和中断处理</h2><blockquote>
+<p>中断是一种解决处理器和速度差异的方案, 只有在硬件需要的时候再向内核发出信号. 中断本质上是一种特殊的电信号.</p>
+</blockquote>
+<ul>
+<li>内核响应特定中断, 然后<code>内核</code>调用特定的<code>中断处理程序</code>, 终端处理程序是设备驱动程序的一部分</li>
+<li>Linux中的终端处理程序是不可重入的, 同一个中断处理程序不会被同时调用</li>
+<li>中断上下文不可以睡眠(我理解当前被中断的程序再中断处理结束后需要继续执行)</li>
+<li>中断处理程序不在进程上下文中进行, 他们不能阻塞</li>
+<li>中断处理分为两部分, 上半部为中断处理程序, 要求尽可能快的执行, 下半部(<code>用于减少中断处理程序的工作量</code>)执行与中断处理密切相关但中断处理程序本身不执行的工作</li>
+<li>下半部的实现方法 <code>软中断、tasklet、工作队列</code>,</li>
+</ul>
+<blockquote>
+<p><strong>中断机制的实现:</strong> 设置产生中断, 通过电信号给处理器的特定管脚发送一个信号, 处理器听着当前处理工作, <code>关闭中断系统</code>, 然后调到内存中预定义的位置(中断处理程序的入口点)开始执行.计算终端号, <code>do_IRQ()</code>对接收的中断进行应答, 禁止这条线上的中断传递.</p>
+</blockquote>
+<h2 id="内核同步"><a href="#内核同步" class="headerlink" title="内核同步"></a>内核同步</h2><blockquote>
+<p>对于共享资源, 如果同时被多个线程访问和操作, 就可能发生各线程之间相互覆盖共享数据, 造成访问数据不一致.</p>
+</blockquote>
+<p>同步实现通过主要<code>锁机制</code>对共享资源进行加锁, 只有持有锁的线程才能操作共享资源, 其他线程睡眠(或者轮询). 资源操作完成后, 持有锁的线程释放锁, 由等待线程抢锁.</p>
+<p><strong>内核同步方法:</strong></p>
+<ol>
+<li><code>原子操作</code></li>
+<li><code>自旋锁</code>, 特性是当线程无法获取锁, 会一直忙循环(<code>忙等</code>)等待锁重新可以, 适用于短期轻量级加锁</li>
+<li><code>读/写自旋锁</code>(共享/排它锁), 一个或多个任务可以并发的持有读者锁, 写者锁只能被一个写任务持有.</li>
+<li><code>信号量</code>(睡眠锁), 如果一个任务试图获得一个被占用的信用量时, 信号量会将其推进一个等待队列, 然后让其睡眠. 当信号量可用后, 等待队列中的任务会被唤醒. 适用于锁被长期占用的时候.</li>
+<li>mutex(计数为1的信号量), 这个是编程中最常见的.</li>
+<li><code>顺序锁</code></li>
+<li><code>屏障</code>(barriers), 用于确保指令序列和读写的执行顺序</li>
+</ol>
+<p>内核中造成并发的原因:</p>
+<ul>
+<li>中断, 几乎可以再任何时刻异步发生, 可能随时打断当前正在执行的代码</li>
+<li>软中断和tasklet, 内核能在任何时刻唤醒或调度软中断或tasklet, 打断当前正在执行的代码</li>
+<li>内核抢占</li>
+<li>睡眠及与用户空间的同步</li>
+<li>对称多处理, 多个处理器同时执行代码</li>
+</ul>
+<h2 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h2><p>内核把物理页作为内存管理的基本单位, <code>内存管理单元(MMU, 管理内存并将虚拟地址转换为物理地址)</code>通常以页为单位来管理系统中的页表.</p>
+<p>内核把也划分为不同的区(<code>zone</code>), 使用区对具有相似特性的页进行分组</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// &lt;linux/gfp.h&gt; 该函数分配2的order次方个连续`物理页`, 返回指针指向第一个页的page结构体</span></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> struct page *</span></div><div class="line"><span class="title">alloc_pages</span><span class="params">(<span class="keyword">gfp_t</span> gfp_mask, <span class="keyword">unsigned</span> <span class="keyword">int</span> order)</span></div><div class="line"></div><div class="line"><span class="comment">// 释放物理页</span></div><div class="line"><span class="keyword">extern</span> <span class="keyword">void</span> <span class="title">free_pages</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">long</span> addr, <span class="keyword">unsigned</span> <span class="keyword">int</span> order)</span>;</div><div class="line"></div><div class="line"><span class="comment">//&lt;linux/slab.h&gt;以字节为单位分配一块内核内存(物理上连续)</span></div><div class="line"><span class="keyword">static</span> __<span class="function">always_inline <span class="keyword">void</span> *<span class="title">kmalloc</span><span class="params">(<span class="keyword">size_t</span> size, <span class="keyword">gfp_t</span> flags)</span></span></div><div class="line"><span class="comment">//释放kmalloc分配的内存块</span></div><div class="line"><span class="keyword">void</span> <span class="title">kfree</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span> *)</span>;</div></pre></td></tr></table></figure>
+<h2 id="虚拟文件系统"><a href="#虚拟文件系统" class="headerlink" title="虚拟文件系统"></a>虚拟文件系统</h2><p>虚拟文件系统为用户控件程序提供了文件和文件系统相关接口.</p>
+<p>文件的元数据, 被存储在一个单独的数据结构中, 被称为<code>inode</code>(索引节点)</p>
+<p>虚拟文件系统(VFS)有四个主要的对象模型:</p>
+<ul>
+<li>超级块对象, 代表一个具体的已安装文件系统, 存储特定文件系统的信息</li>
+<li>索引节点对象, 代表一个具体文件, 包含内核在操作文件或目录时需要的全部信息, 一个索引节点代表文件系统中的一个文件, </li>
+<li>目录项对象, 代表一个目录项, 是路径的一个组成部分, <code>VFS把目录当做文件处理</code>, 目录项对象没有对应的磁盘数据结构</li>
+<li>文件对象, 代表进程打开的文件, <code>进程直接处理的是文件</code></li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// &lt;linux/fs.h&gt; 文件对象的数据结构</span></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">file</span> &#123;</span></div><div class="line">	<span class="keyword">union</span> &#123;</div><div class="line">		<span class="class"><span class="keyword">struct</span> <span class="title">llist_node</span>	<span class="title">fu_llist</span>;</span></div><div class="line">		<span class="class"><span class="keyword">struct</span> <span class="title">rcu_head</span> 	<span class="title">fu_rcuhead</span>;</span></div><div class="line">	&#125; f_u;</div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">path</span>		<span class="title">f_path</span>;</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">inode</span>		*<span class="title">f_inode</span>;</span>	<span class="comment">/* cached value */</span></div><div class="line">	<span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">file_operations</span>	*<span class="title">f_op</span>;</span></div><div class="line"></div><div class="line">	<span class="comment">/*</span></div><div class="line">	 * Protects f_ep_links, f_flags.</div><div class="line">	 * Must not be taken from IRQ context.</div><div class="line">	 */</div><div class="line">	<span class="keyword">spinlock_t</span>		f_lock;</div><div class="line">	<span class="keyword">atomic_long_t</span>		f_count;</div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> 		f_flags;</div><div class="line">	<span class="keyword">fmode_t</span>			f_mode;</div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">mutex</span>		<span class="title">f_pos_lock</span>;</span></div><div class="line">	<span class="keyword">loff_t</span>			f_pos;</div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">fown_struct</span>	<span class="title">f_owner</span>;</span></div><div class="line">	<span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">cred</span>	*<span class="title">f_cred</span>;</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">file_ra_state</span>	<span class="title">f_ra</span>;</span></div><div class="line"></div><div class="line">	u64			f_version;</div><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> CONFIG_SECURITY</span></div><div class="line">	<span class="keyword">void</span>			*f_security;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line">	<span class="comment">/* needed for tty driver, and maybe others */</span></div><div class="line">	<span class="keyword">void</span>			*private_data;</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> CONFIG_EPOLL</span></div><div class="line">	<span class="comment">/* Used by fs/eventpoll.c to link all the hooks to this file */</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">list_head</span>	<span class="title">f_ep_links</span>;</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">list_head</span>	<span class="title">f_tfile_llink</span>;</span></div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">/* #ifdef CONFIG_EPOLL */</span></span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">address_space</span>	*<span class="title">f_mapping</span>;</span></div><div class="line">&#125; __attribute__((aligned(<span class="number">4</span>)));	<span class="comment">/* lest something weird decides that 2 is OK */</span></div></pre></td></tr></table></figure>
+<h2 id="块I-O层"><a href="#块I-O层" class="headerlink" title="块I/O层"></a>块I/O层</h2><blockquote>
+<p>系统中能够<code>随机访问</code>固定大小数据片(chunks)的硬件设备称作块设备, 如硬盘. 按照字符流的方式被<code>有序访问</code>的硬件设备称为字符设备, 如键盘</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># &lt;linux/bio.h&gt;I/O设备基本容器由bio结构体表示</div></pre></td></tr></table></figure>
+<ul>
+<li><code>I/O调度程序</code>用于管理块设备的请求队列, 决定队列中的请求排列顺序以及什么时刻派发请求到挂设备. 这样有利于减少磁盘的寻址时间, 从而提高全局的吞吐量</li>
+<li>linux实际使用的I/O调度程序有<code>linux电梯, 最终期限I/O调度, 预测I/O调度程序, 空操作的I/O调度程序</code></li>
+</ul>
+<h2 id="进程地址空间"><a href="#进程地址空间" class="headerlink" title="进程地址空间"></a>进程地址空间</h2><p>内核需要管理用户空间中进程的内存, 这个内存称为<code>进程地址空间</code>, 系统中所有进程之间以虚拟方式共享内存.</p>
+<p>进程地址空间由进程可寻址的虚拟内存组成, 每个进程有32位或64位地址空间.</p>
+<p>虚拟地址空间, 可被访问的合法地址空间称为<code>内存区域</code>:</p>
+<ul>
+<li>可执行文件代码的内存映射, 称为代码段</li>
+<li>可执行文件的已初始化全局变量的内存映射, 称为数据段</li>
+<li>包含未初始化全局变量,bss(block started by symbol)段的零页的内存映射</li>
+<li>用于进程用户空间栈的零页内存映射</li>
+<li>每一个如C库或动态链接程序等共享库的代码段、数据段和bss会被载入进程的地址空间</li>
+<li>任何内存映射文件</li>
+<li>任何共享内存段</li>
+<li>任何匿名的内存映射, 如malloc分配的内存</li>
+</ul>
+<p>内核使用内存描述符结构体表示进程的地址空间, 内存描述符由mm_struct(<code>&lt;linux/sched.h&gt;</code>)结构体表示. <code>内核线程没有进程地址空间, 也没有相关的内存描述符, 所有内核线程没有用户上下文</code></p>
+<blockquote>
+<p>应用程序操作的对象是<code>映射到物理内存上的虚拟内存</code>, 而处理器操作的是物理内存, Linux使用三级页表完成地址转换, 每个虚拟地址作为索引指向页表, 页表项则指向下一级的页表. 在多级页表中通过TLB(translate lookaside buffer)作为一个虚拟地址映射到物理地址的缓存</p>
+</blockquote>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><code>&lt;内核设计与实现&gt;</code></p>
+</div></article></div></main><footer><div class="paginator"><a href="/2016/11/21/传统软件公司-创业公司-大公司的工作机会如何选择？/" class="prev">上一篇</a><a href="/2016/11/07/Google-Protobuf源码剖析-一/" class="next">下一篇</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

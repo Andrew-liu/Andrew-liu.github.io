@@ -1,0 +1,255 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Java作死笔记 · Snow Memory | Andrew Liu</title><meta name="description" content="Java作死笔记 - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">Java作死笔记</h1><div class="post-info">Mar 15, 2015</div><div class="post-content"><p>本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh" target="_blank" rel="external">署名-非商业用途-保持一致</a>的创作共用协议.</p>
+<blockquote>
+<p>本来还想在校期间任性的不学习Java, C/C++/Python一直用到毕业呢, 结果<code>天不遂人愿</code>, 选修了MapReduce不得不学习Java了, 完全面向对象语言的学习还有一点小期待的.<br>这篇博文用来记录Java学习过程, 用来学习复习巩固之用.</p>
+</blockquote>
+<h2 id="1-Java基本程序设计结构"><a href="#1-Java基本程序设计结构" class="headerlink" title="#1. Java基本程序设计结构"></a>#1. Java基本程序设计结构</h2><blockquote>
+<p>Java应用程序中全部内容都必须放置在类中</p>
+</blockquote>
+<ul>
+<li>类名以首字母大写的驼峰命名法</li>
+<li>源代码的文件名必须与公共类的名字相同, 并且以<code>.java</code>作为后缀</li>
+<li>java中所有函数都属于某个类的方法(java中main方法必须有一个外壳类)</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">javac FirstSample.java  <span class="comment">//java编译器将源代码编译成字节码</span></div><div class="line">java FirstSample  <span class="comment">//java虚拟机从指定类中的main方法开始执行</span></div></pre></td></tr></table></figure>
+<a id="more"></a>
+<blockquote>
+<p>java中单行注释和多行注释的方式和C++相同</p>
+</blockquote>
+<p>另外还有一种文档注释(文档注释一般出现在源文件顶部)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">/*</div><div class="line"> * This is the doc comment</div><div class="line"> * </div><div class="line"> */</div></pre></td></tr></table></figure>
+<blockquote>
+<p>java是一种强类型语言, 且大小写敏感</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">//变量的定义和初始化</div><div class="line">int vacationDays = 12;</div><div class="line">double salary = 6500.2;</div><div class="line">//常量的定义使用关键词final, 使用static final关键字设置类常量</div><div class="line">final double CONSTANT_CASE = 2.54;</div></pre></td></tr></table></figure>
+<p><strong>运算符</strong></p>
+<ul>
+<li>加减乘除运算符</li>
+<li>自增, 自减运算符</li>
+<li>关系运算符</li>
+<li>位运算符<br><strong>这些运算符与C++的定义基本相同</strong></li>
+</ul>
+<p>二元操作的操作数的转换<code>double &gt; float &gt; long &gt; int</code></p>
+<p><strong>枚举类型</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">enum</span> Size&#123;</div><div class="line">    SMALL,</div><div class="line">    MEDIUM,</div><div class="line">    LARGE,</div><div class="line">    EXTRA_LARGE</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p><strong>字符串</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">String e = &quot;&quot;;</div><div class="line">String first = &quot;Hello&quot;;</div><div class="line">String second = first.substring(0, 3);  //提取字符串中子串</div><div class="line">String message = first + second;  //字符串拼接操作</div><div class="line">first.equals(second);  //字符串比较是否相等</div><div class="line">first.length();  //计算字符串的长度</div><div class="line">if(first == null)  //检查字符串是否为null</div></pre></td></tr></table></figure>
+<blockquote>
+<p>当一个字符串和一个非字符串进行拼接时, 后者被转换成字符串, Java中String类对象称为不可变字符串, 对字符串的操作会生成一个新的字符串, <code>不可变字符串的优点是编译器可以让字符串</code></p>
+</blockquote>
+<p><strong>输入输出</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Scanner in = <span class="keyword">new</span> Scanner(System.in);</div><div class="line">System.out.println(<span class="string">"What's your name?"</span>);</div><div class="line">String name = in.nextLine();  <span class="comment">//输入</span></div></pre></td></tr></table></figure>
+<p><strong>文件的输入和输出</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> java.io.PrintWriter;</div><div class="line"><span class="keyword">import</span> java.nio.file.Paths;</div><div class="line">        Scanner myFile = <span class="keyword">new</span> Scanner(Paths.get(<span class="string">"test.txt"</span>)); <span class="comment">//读取文件</span></div><div class="line">        PrintWriter out = <span class="keyword">new</span> PrintWriter(<span class="string">"test.txt"</span>);  <span class="comment">//写入文件</span></div></pre></td></tr></table></figure>
+<p>控制流程语句的写法与C++基本相同</p>
+<p>Java还提供了一种<code>带标签的break语句</code>, 用于跳出多重嵌套的循环语句, 标签必须放在希望跳出的最外层循环之前, 并且必须紧跟一个冒号.</p>
+<p><strong>数组</strong></p>
+<ul>
+<li>声明数组变量时, 需要指出数组类型和数组变量的名字</li>
+<li>创建数字数组, 所有元素初始化为0, boolean数组的元素会初始化为false, 对象数组的元素则初始化为null</li>
+<li>数组大小在创建后不可变</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span>[] a = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">100</span>]</div></pre></td></tr></table></figure>
+<p><strong>for each循环</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span>[] a = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">10</span>];</div><div class="line"><span class="keyword">int</span>[] b = &#123;<span class="number">2</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>&#125;;</div><div class="line"><span class="keyword">for</span>(<span class="keyword">int</span> element : a)</div><div class="line">&#123;</div><div class="line">    System.out.println(element);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>命令行参数</strong></p>
+<ul>
+<li>在Java中程序名没有被存储在args数组中</li>
+</ul>
+<h2 id="2-对象与类"><a href="#2-对象与类" class="headerlink" title="#2. 对象与类"></a>#2. 对象与类</h2><blockquote>
+<p>识别类的简单规则是在分析问题的过程中寻找名词, 而方法对应着动词.</p>
+<p>所有的Java对象都存储在堆中.</p>
+</blockquote>
+<ul>
+<li>对实例做出修改的方法叫做更改器方法</li>
+<li>仅访问实例域而不修改的方法叫访问器方法(C++中带const后缀的方法)</li>
+<li><code>源文件名必须与public类的名字相匹配, 并且只能有一个public公共类, 可以有任意数目的非共有类</code></li>
+<li>类中包含构造器(构造函数)和方法, 构造器随着new操作符的执行被调用</li>
+<li>java中所有方法必须在类内定义</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">new Date();  //构造一个新对象</div></pre></td></tr></table></figure>
+<p><strong>构造器</strong></p>
+<ol>
+<li>构造器与类同名</li>
+<li>每个类可以有<code>一个以上</code>的构造器</li>
+<li>构造器可以有0个或者多个参数</li>
+<li>构造器没有返回值</li>
+<li>构造器伴随new操作符调用</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">import java.util.*;</div><div class="line">˙</div><div class="line">class Employee &#123;</div><div class="line">    private String name;</div><div class="line">    private double salary;</div><div class="line">    private Date hireDay;</div><div class="line">    public Employee(String n, double s, int year, int month, int day) &#123;  //构造器</div><div class="line">        name = n;</div><div class="line">        salary = s;</div><div class="line">        GregorianCalendar calendar = new GregorianCalendar(year, month - 1, day); // 月份从零开始</div><div class="line">        hireDay = calendar.getTime();</div><div class="line">    &#125;</div><div class="line">    public String getName() &#123;</div><div class="line">        return name;</div><div class="line">    &#125;</div><div class="line">    public double getSalary() &#123;</div><div class="line">        return salary;</div><div class="line">    &#125;</div><div class="line">    public Date getHireDay() &#123;</div><div class="line">        return hireDay;</div><div class="line">    &#125;</div><div class="line">    public void raiseSalary(double byPercent) &#123;</div><div class="line">        double raise = salary * byPercent / 100;</div><div class="line">        salary += raise;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>类中方法包含一个隐式参数,是出现在方法名前的类对象,可以用类似C++的this写法表示隐式参数</strong></p>
+<blockquote>
+<p>注意对于可变数据域(有方法改变其状态), 不要编写返回引用的访问器, 首先应对其进行clone,即<code>返回一个可变数据域的拷贝, 应该使用clone</code></p>
+</blockquote>
+<p>##2.1. 类的访问权限</p>
+<blockquote>
+<p>类内方法可以访问所属类的私有特性</p>
+</blockquote>
+<ul>
+<li><code>final</code>实例域表示在对象构造以后, 这个实例域不可变, 多应用于不可变类的域</li>
+<li><p><code>static</code>, 当修饰实例域, 表示类的所有势力都共享一个实例域. 静态方法是一种不能向对象实施操作的方法(没有隐式参数)</p>
+<ol>
+<li>一种方法不需要访问对象状态</li>
+<li>一种方法只需要访问类的静态域</li>
+</ol>
+</li>
+<li><p>标记public的部分可以被任意的类使用</p>
+</li>
+<li>标记private的部分只能被定义它们的类使用</li>
+</ul>
+<p>##2.2. 初始化数据域方法</p>
+<ol>
+<li>在构造器中设置值</li>
+<li>在声明中赋值</li>
+<li>初始化块(先运行初始化快, 然后才运行构造器的主体部分)</li>
+</ol>
+<p>##2.3. 对象析构</p>
+<blockquote>
+<p>可以为类添加finalize方法, 在垃圾回收器清除对象之前调用, <code>不要依赖这个方法, 因为很难知道何时调用</code></p>
+</blockquote>
+<p>##2.4. 包</p>
+<blockquote>
+<p>使用包的主要原因是确保类名的唯一性</p>
+</blockquote>
+<p>访问另一个包中的共有类:</p>
+<ol>
+<li>每个类名之前添加完整的包名</li>
+<li>使用import语句</li>
+</ol>
+<p><strong>将类放入包中,使用package关键词</strong></p>
+<p>##2.5. 注释</p>
+<ul>
+<li>普通行注释<code>//</code></li>
+<li>多行注释<code>/* ... */</code></li>
+<li>文档注释<code>/** ... */</code></li>
+<li>方法注释<ul>
+<li><code>@param</code>变量描述</li>
+<li><code>@return</code>返回值描述</li>
+<li><code>@throws</code>异常描述</li>
+</ul>
+</li>
+<li>通用注释<ul>
+<li><code>@author</code>作者姓名</li>
+<li><code>@version</code>版本条目</li>
+<li><code>@since</code>对引入特性的版本进行描述</li>
+<li><code>@deprecated</code>文本中取代(过时)的建议</li>
+<li><code>@see</code>添加超级链接</li>
+</ul>
+</li>
+</ul>
+<p>##2.6. OOP技巧</p>
+<ol>
+<li>保持数据私有(不要破坏封装性)</li>
+<li>对数据初始化</li>
+<li>不要在类中使用过多的基本类型</li>
+<li>不是所有类都需要域访问器和域修改器</li>
+<li>将职能过多的类分解</li>
+<li>类名和方法名要体验他们的职责</li>
+</ol>
+<h2 id="3-继承"><a href="#3-继承" class="headerlink" title="#3. 继承"></a>#3. 继承</h2><blockquote>
+<p>Java中所有继承都是公有继承, 没有C++中似有私有继承和保护继承(<code>is-a</code>)</p>
+</blockquote>
+<ul>
+<li>一个对象变量可以指示多种实际类型的现象称为多态. 在运行时能够自动选择调用那种方法的现象叫做动态绑定.</li>
+<li>Java中动态绑定是默认的处理方式</li>
+<li>Java不支持多继承</li>
+<li>Java中<code>对象变量是多态的</code></li>
+<li><code>不能将一个父类的引用赋值给子类变量</code></li>
+</ul>
+<blockquote>
+<p>阻止继承, 在定义类时, 使用final关键字, final声明的类方法, 子类不能覆盖</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">// 继承的写法</div><div class="line">class Manager extends Employee &#123;</div><div class="line">    private double bonus;</div><div class="line">    public Manager(String n, double s, int year, int month, int day) &#123;</div><div class="line">        super(n, s, year, month, day);</div><div class="line">        bonus = 0;</div><div class="line">    &#125;</div><div class="line">    public void setBonus(double b) &#123;  //子类新增函数</div><div class="line">        bonus = b;</div><div class="line">    &#125;</div><div class="line">    public double getSalary() &#123;  //重写父类的方法</div><div class="line">        double baseSalary = super.getSalary();  //调用父类的方法</div><div class="line">        return baseSalary + bonus;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>##3.1. 动态绑定</p>
+<p>调用对象方法的执行过程:</p>
+<ol>
+<li>编译器查看对象的声明类型和方法名</li>
+<li>编译器查看调用方法时提供的参数类型(<code>重载解析</code>)</li>
+<li>private, static, final方法编译器可以准确知道调用那个(<code>静态绑定</code>)</li>
+<li>程序运行时, 采用动态绑定调用方法时, 虚拟机一定调用与x所引用对象的实际类型最合适的那个类的方法</li>
+</ol>
+<p><strong>类的强制类型转换</strong></p>
+<ul>
+<li>只能在继承层次内进行类型转换</li>
+<li>在将父类转换成子类前, 应该使用instanceof进行检查</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> (staff[<span class="number">1</span>] <span class="keyword">instanceof</span> Manager) &#123;</div><div class="line">    boss = (Manager)staff[<span class="number">1</span>];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p><code>abstract</code>关键字, 包含一个或多个抽象方法的类必须声明为抽象的.(抽象类中可以定义具体方法), 抽象类不能被实例化</p>
+</blockquote>
+<p>##3.2. 枚举类</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public enum Size &#123;</div><div class="line">    SMALL, MEDIUM, LARGE, EXTRA_LARGE</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>##3.3. 继承设计技巧</p>
+<ol>
+<li>将公共操作和域放在基类中</li>
+<li>不要使用protected域, 它会破坏封装性</li>
+<li>使用继承实现<code>is-a</code>关系</li>
+<li>除非所有继承的方法都有意义, 否则不要使用继承</li>
+<li>在覆盖方法时, 不要改变其功能</li>
+<li>使用动态, 而不是类型信息</li>
+<li><code>不要过多的使用反射</code></li>
+</ol>
+<h2 id="4-接口和内部类"><a href="#4-接口和内部类" class="headerlink" title="#4. 接口和内部类"></a>#4. 接口和内部类</h2><blockquote>
+<p>接口的所有方法自动属于public, 接口不能含有实例域, 也不能在接口中实现方法, 接口可以看做没有实例域的抽象类. <code>接口不是类</code></p>
+</blockquote>
+<p>类实现接口的步骤:</p>
+<ol>
+<li>将类声明为实现给定的接口</li>
+<li>将接口中的所有方法进行定义</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Comparable</span> </span>&#123;  <span class="comment">// 接口</span></div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">comparaTo</span><span class="params">(Object other)</span></span>;</div><div class="line">&#125;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Employee</span> <span class="keyword">implements</span> <span class="title">Comparable</span>&lt;<span class="title">Employee</span>&gt; </span>&#123;  <span class="comment">//类实现接口</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">comparaTo</span><span class="params">(Employee other)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> Double.compare(salary, othre.salary);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>为什么Java有了抽象类还要引入接口概念</p>
+</blockquote>
+<ul>
+<li>每个类只能扩展于一个类</li>
+<li>每个类可以实现多个接口</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">class Employee extends Comparable, Cloneable &#123;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>##4.1. 对象克隆</p>
+<p><em>浅拷贝和深拷贝问题</em></p>
+<ul>
+<li>浅拷贝中原始变量与拷贝变量引用同一个对象, 指向同一块内存</li>
+<li>深拷贝在我的理解看来, 就是将原来的对象, 重新内存开辟一块中间, 生成完全相同的对象的复制.</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">class Employee extends Cloneable &#123;</div><div class="line">    public Employee clone() throws CloneNotSupportedException &#123;</div><div class="line">        Employee cloned = (Employee) super.clone();  // 调用Object的clone方法</div><div class="line">        cloned.hireDay = (Date) hireDay.clone();  // 克隆可变域</div><div class="line">        return  cloned;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="5-异常"><a href="#5-异常" class="headerlink" title="#5. 异常"></a>#5. 异常</h2><blockquote>
+<p>Java中, 异常对象都是派生于Throwable类的实例</p>
+</blockquote>
+<p>设计Java程序时, 需要关注Exception层次结构.</p>
+<p>抛出异常的情况: </p>
+<ol>
+<li>调用一个抛出已检查异常的方法</li>
+<li>程序运行过程中发生错误, 并且利用throw语句抛出一个已检查异常.</li>
+<li>程序出现错误</li>
+<li>Java虚拟机和运行时库出现的内部错误</li>
+</ol>
+<ul>
+<li>如果一个方法可能抛出多个已检查异常, 必须在方法首部列出所有异常类, 逗号隔开</li>
+</ul>
+<blockquote>
+<p>抛出异常使用<code>throw</code>关键字</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">// 自定义异常类</div><div class="line">class FileFormatException extends IOException &#123;</div><div class="line">    public FileFormatException() &#123;&#125;</div><div class="line">    public FileFormatException(String gripe) &#123;</div><div class="line">        super(gripe);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>##5.1. 捕获异常</p>
+<blockquote>
+<p>捕获异常, 使用<code>try/catch</code>语句</p>
+</blockquote>
+<ul>
+<li>如果try语句块中的代码抛出一个catch语句说明的异常类</li>
+<li>程序将跳过try语句其他代码, 执行catch语句中的处理代码</li>
+<li>如果try语句块无异常, 则跳过catch语句继续执行</li>
+<li>使用finally进行本地资源回收(<code>不管异常是否被捕获, finally中语句都会被执行</code>)</li>
+</ul>
+<p>##5.2. 使用异常的技巧</p>
+<ol>
+<li>异常处理不能代替简单的测试</li>
+<li>不要过分的细化异常</li>
+<li>利用异常层次结构</li>
+<li>善于传递异常</li>
+</ol>
+<p>##5.3. 断言</p>
+<blockquote>
+<p>默认情况下, 是禁用断言的, 运行程序使用选项 -enableassertions或者-ea启用</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">// 两种形式</div><div class="line">assert 条件;</div><div class="line">assert 条件 : 表达式;  // 表达式会传入AssertionError构造器, 转换成消息字符串.</div></pre></td></tr></table></figure>
+</div></article></div></main><footer><div class="paginator"><a href="/2015/03/22/NumPy基础/" class="prev">上一篇</a><a href="/2015/03/08/Introduce-Hadoop/" class="next">下一篇</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

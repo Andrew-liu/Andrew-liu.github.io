@@ -1,0 +1,239 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> MySQL Small Cookbook · Snow Memory | Andrew Liu</title><meta name="description" content="MySQL Small Cookbook - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">MySQL Small Cookbook</h1><div class="post-info">May 24, 2015</div><div class="post-content"><p>本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh" target="_blank" rel="external">署名-非商业用途-保持一致</a>的创作共用协议.</p>
+<blockquote>
+<p>MySQL是一种关系型数据库(<code>RDBMS</code>), 数据库可以理解为相关文件的集合. 数据库和控制器数据库的软件称为数据库管理系统(<code>DBMS</code>)</p>
+<p>数据库提供处理数据的方法: <code>SQL</code></p>
+</blockquote>
+<p>#基本概念</p>
+<ul>
+<li>每个表由多个<code>行</code>和<code>列</code>组成</li>
+<li>每行包含一个单独实体的数据, 称为<code>记录</code></li>
+<li>每一列包含与该记录相关的<code>一项数据</code>, 称为<code>属性</code></li>
+</ul>
+<a id="more"></a>
+<p>##安装</p>
+<blockquote>
+<p>本博文中所有的SQL语句遵循<code>小写书写风格</code>, 不喜勿喷</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">$ brew install mysql</div><div class="line">$ mysql -u root mysql</div><div class="line"></div><div class="line"></div><div class="line">#设置开机启动</div><div class="line">$ ln -sfv /usr/local/opt/mysql/*.plist ~/Library/LaunchAgents </div><div class="line">#加载mysql</div><div class="line">$ launchctl load ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist</div><div class="line">#启动mysql服务器</div><div class="line">$ mysql.server start</div><div class="line">#关闭mysql服务器</div><div class="line">$ mysql.server stop</div><div class="line"></div><div class="line">#使用根用户</div><div class="line">$ mysql -u root </div><div class="line">#创建用户密码</div><div class="line">mysql&gt; set password=password(&apos;123456&apos;);</div><div class="line"></div><div class="line">#创建数据库 </div><div class="line">mysql&gt; create database firstdb;</div><div class="line"></div><div class="line">#添加用户和密码, 并赋予firstdb的完全访问权限, 账户名为amdin, 密码为123456</div><div class="line">mysql&gt; grant all on firstdb.* to admin@localhost identified by &apos;123456&apos;;  </div><div class="line"></div><div class="line">#退出</div><div class="line">mysql&gt; exit</div></pre></td></tr></table></figure>
+<p>##初试数据库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#使用非根用户登陆数据库, 并使用firstdb</div><div class="line">mysql&gt; mysql -u admin -p123456 firstdb</div></pre></td></tr></table></figure>
+<p>###创建表</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">#创建</div><div class="line">mysql&gt; create table sales_rep(</div><div class="line">    -&gt; employee_number int,</div><div class="line">    -&gt; surname varchar(40),</div><div class="line">    -&gt; first_name varchar(30),</div><div class="line">    -&gt; commission tinyint</div><div class="line">    -&gt; );</div><div class="line">    </div><div class="line">#显示已有表</div><div class="line">mysql&gt; show tables;</div><div class="line"></div><div class="line">#describe来检查表结构</div><div class="line">mysql&gt; describe sales_rep;</div></pre></td></tr></table></figure>
+<p>sales_rep为表名, employee_number, surname, first_name, commission为属性, int表示整型, varchar表示变长字符, tinyint表示小整数</p>
+<p>###删除表和数据库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">#创建一个表</div><div class="line">mysql&gt; create table com(id int);</div><div class="line">#删除表使用drop关键字</div><div class="line">mysql&gt; drop table com;</div><div class="line"></div><div class="line">#切换root用户, 创建数据库com</div><div class="line">mysql&gt; create database com;</div><div class="line">#删除数据库</div><div class="line">mysql&gt; drop database com;</div></pre></td></tr></table></figure>
+<p>###插入/删除/修改记录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">#插入数据 insert into 表名(要插入的属性名) values(属性值), 字符串使用单引号</div><div class="line">mysql&gt; insert into sales_rep values(1, &apos;Rive&apos;, &apos;Sol&apos;, 10);</div><div class="line">mysql&gt; insert into sales_rep values(2, &apos;Gordimer&apos;, &apos;Charlens&apos;, 15);</div><div class="line">mysql&gt; insert into sales_rep values(3, &apos;Serote&apos;, &apos;Mike&apos;, 10);</div><div class="line"></div><div class="line">#一行添加数据</div><div class="line">mysql&gt; insert into sales_rep values</div><div class="line">     &gt;(1, &apos;Rive&apos;, &apos;Sol&apos;, 10),</div><div class="line">     &gt;(2, &apos;Gordimer&apos;, &apos;Charlens&apos;, 15),</div><div class="line">     &gt;(3, &apos;Serote&apos;, &apos;Mike&apos;, 10);</div><div class="line"></div><div class="line">#从文件中加载数据, 格式load data local infile &quot;文件名&quot; into table 表名;</div><div class="line">mysql&gt; load data local infile &quot;sales_rep.sql&quot; into table sales_rep;</div></pre></td></tr></table></figure>
+<p><strong>删除记录</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># 删除employee_number为5的记录</div><div class="line">mysql&gt; delete from sales_rep where employee_number = 5;</div></pre></td></tr></table></figure>
+<p><strong>修改记录</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#修改employee_number的记录的commission为12</div><div class="line">mysql&gt; update sales_rep set commission = 12 where employee_number = 1;</div></pre></td></tr></table></figure>
+<p>###数据检索</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">#检索所有插入的数据</div><div class="line">mysql&gt; select * from sales_rep;</div><div class="line">#检索surname为&apos;Gordimer&apos;的记录</div><div class="line">mysql&gt; select * from sales_rep where surname=&apos;Gordimer&apos;;</div></pre></td></tr></table></figure>
+<p>###模式匹配</p>
+<p><code>like和%</code>进行模糊查找</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># 输出已surname已R开头的数据</div><div class="line">mysql&gt; select * from sales_rep where surname like &apos;R%&apos;;</div></pre></td></tr></table></figure>
+<p>###排序</p>
+<p><strong>order by</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">#数据按照surname排序输出, 当surname相同时, 使用first_name排序</div><div class="line">mysql&gt; select * from sales_rep order by surname, first_name;</div><div class="line"></div><div class="line">#递减排序使用关键字desc, 默认使用升序asc</div><div class="line">mysql&gt; select * from sales_rep order by surname desc;</div></pre></td></tr></table></figure>
+<p><strong>多列排序</strong>时, 使用逗号隔开排序规则, <code>order by排序优先次序为从左到右</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mysql&gt; select ename, job, sal from emp  order by deptno asc, sal desc;</div></pre></td></tr></table></figure>
+<p><strong>按照字符串部分子串排序</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#按照job中最后两个字符进行排序</div><div class="line">mysql&gt; select ename, job from emp order by substr(job, length(job) - 1);</div></pre></td></tr></table></figure>
+<p>书中说: <code>找到字符串末尾(字符串长度)并减2, 则其实诶之就是字符串中倒数第二个字符</code></p>
+<blockquote>
+<p>但在我测试过程用应该是建1, 则是对最后两个字符排序(疑问?)</p>
+</blockquote>
+<p><strong>根据数据项的键排序</strong></p>
+<p>使用case语句</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">如果job是salesman, 按照comm, 否则, 按照sal排序</div><div class="line">mysql&gt; select ename, sal, job, comm from emp</div><div class="line">    -&gt; order by case when job = &apos;salesman&apos; then comm else sal end;</div></pre></td></tr></table></figure>
+<p>###限制数据数量</p>
+<p>limit</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#按surname降序输出两行</div><div class="line">mysql&gt; select * from sales_rep order by surname desc limit 2;</div></pre></td></tr></table></figure>
+<p>从表中随机返回n条记录</p>
+<ul>
+<li><code>order by</code>可以接受函数的返回值, 并使用它来改变结果集的顺序</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">select ename, job from emp order by rand() limit 5;</div></pre></td></tr></table></figure>
+<p>###最大值/最小值/计数/平均/综合</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">#查询commission的最大值</div><div class="line">mysql&gt; select max(commission) from sales_rep;</div><div class="line">#查询最小值</div><div class="line">mysql&gt; select min(commission) from sales_rep;</div><div class="line">#表中不重复surname的个数</div><div class="line">mysql&gt; select count(distinct surname) from sales_rep;</div><div class="line">#commission的平均值</div><div class="line">mysql&gt; select avg(commission) from sales_rep;</div><div class="line">#commission的总和</div><div class="line">mysql&gt; select sum(commission) from sales_rep;</div><div class="line">#right()从字符串右端算起, 按位返回字符串</div><div class="line">mysql&gt; select right(date_joined, 5), right(birthday, 5) from sales_rep;</div></pre></td></tr></table></figure>
+<p>###去重</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">#使用distinct, 去掉查询字段相同的记录</div></pre></td></tr></table></figure>
+<p>###改变表结构</p>
+<p><strong>添加列</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">#给表添加一列名为data_joined, 类型为date</div><div class="line">mysql&gt; alter table sales_rep add date_joined date;</div><div class="line">#添加一类名为year_born, 类型为year</div><div class="line">alter table sales_rep add year_born year;</div></pre></td></tr></table></figure>
+<p><strong>修改列定义</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">将year_born改为 列名为birthday, 类型为data</div><div class="line">mysql&gt; alter table sales_rep change year_born birthday date;</div></pre></td></tr></table></figure>
+<p><strong>重命名表</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">mysql&gt; alter table sales_rep rename cash_flow;</div><div class="line">#恢复原来表名</div><div class="line">mysql&gt; alter table cash_flow rename to sales_rep;</div></pre></td></tr></table></figure>
+<p><strong>删除列</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#删除列名为enhancement_value的一列</div><div class="line">mysql&gt; alter table sales_rep drop enhancement_value;</div></pre></td></tr></table></figure>
+<p>###日期函数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">#给date类型设置日期</div><div class="line">mysql&gt; update sales_rep set date_joined = &apos;2014-02-15&apos;, birthday = &apos;2000-02-14&apos; where employee_number = 1;</div><div class="line"></div><div class="line"></div><div class="line">#使用日期函数, 设置显示日期格式</div><div class="line">mysql&gt; select date_format(date_joined, &apos;%m/%d/%y&apos;) from sales_rep;</div><div class="line"># 使用year()输出年, month()输出月, dayofmonth()输出一个月的第几日</div><div class="line">mysql&gt; select year(birthday), month(birthday), dayofmonth(birthday) from sales_rep;</div></pre></td></tr></table></figure>
+<p>###高级查找(别名, concat, 多表查询, case表达式)</p>
+<p><strong>as起别名</strong>(类似pytho中import包时用as起别名)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mysql&gt; select year(birthday) as year, month(birthday) as month, dayofmonth(birthday) as day from sales_rep;</div></pre></td></tr></table></figure>
+<p><strong>在别名的时候用别名做限定条件</strong></p>
+<blockquote>
+<p>from语句是在where之前完成的</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#将查询结果作为内敛视图</div><div class="line">mysql&gt; select * from (select sal as salary, comm as commission from emp) x where salary &lt; 5000;</div></pre></td></tr></table></figure>
+<p><strong>concat连接列</strong></p>
+<p>将多列作为一列进行输出</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#将first_name, 一个空格, surname连接在一起输出</div><div class="line">mysql&gt; select concat(first_name, &apos; &apos;, surname) as name, month(birthday) as month from sales_rep order by month;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mysql&gt; select concat(ename, &apos; works as a &apos;, job) as msg from emp where deptno = 10;</div></pre></td></tr></table></figure>
+<p>###多表查询</p>
+<p>创建两个表并插入数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">mysql&gt; create table client(</div><div class="line">    -&gt; id int,</div><div class="line">    -&gt; first_name varchar(40),</div><div class="line">    -&gt; surname varchar(30)</div><div class="line">    -&gt; );</div><div class="line">mysql&gt; create table sales(</div><div class="line">    -&gt; code int,</div><div class="line">    -&gt; sales_rep int,</div><div class="line">    -&gt; customer int,</div><div class="line">    -&gt; value int</div><div class="line">    -&gt; );</div><div class="line">    </div><div class="line">mysql&gt; insert into customer values</div><div class="line">    -&gt; (1, &apos;Yvaonne&apos;, &apos;Clegg&apos;),</div><div class="line">    -&gt; (2, &apos;Johnny&apos;, &apos;Chaka&apos;),</div><div class="line">    -&gt; (3, &apos;Winston&apos;, &apos;Powers&apos;),</div><div class="line">    -&gt; (4, &apos;Patricia&apos;, &apos;Mankunku&apos;);</div><div class="line">mysql&gt; insert into sales values</div><div class="line">    -&gt; (1, 1, 1, 2000),</div><div class="line">    -&gt; (2, 4, 3, 250),</div><div class="line">    -&gt; (3, 2, 3, 500),</div><div class="line">    -&gt; (4, 1, 4, 450),</div><div class="line">    -&gt; (5, 3, 1, 3800),</div><div class="line">    -&gt; (6, 1, 2, 500);</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">code为1, 且两表中employee_number和sales_rep的记录输出, select后面部分列出要返回的字段</div><div class="line">mysql&gt; select sales_rep, customer, value, first_name, surname from sales, sales_rep where code = 1  and sales_rep.employee_number= sales.sales_rep;</div></pre></td></tr></table></figure>
+<p><strong>case表达式</strong></p>
+<p>对select中的列值执行<code>if-else</code>操作</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">mysql&gt; select ename, sal,</div><div class="line">    -&gt; case when sal &lt;= 2000 then &apos;underpaid&apos;</div><div class="line">    -&gt; when sal &gt;= 4000 then &apos;overpaid&apos;</div><div class="line">    -&gt; else &apos;ok&apos;        #else语句是可选的</div><div class="line">    -&gt; end as status    #对case语句返回的列取别名</div><div class="line">    -&gt; from emp;</div></pre></td></tr></table></figure>
+<p>###查询中分组(不懂)</p>
+<p>group by指的是按照某个属性分组, 与其他组互不干扰</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#查询每个sales_rep的value值的和</div><div class="line">mysql&gt; select sales_rep, sum(value) as sum from sales group by sales_rep;</div></pre></td></tr></table></figure>
+<p>##常用类型</p>
+<p><strong>数字类型</strong></p>
+<ul>
+<li>int(整型), 表示整数</li>
+<li>float/double分别表示单精度和双精度浮点数</li>
+</ul>
+<p><strong>字符类型</strong></p>
+<ul>
+<li>char(M) 固定长度为M的字符串, 字符串长度不够会补上空格 , <code>搜索时大小写无关</code></li>
+<li>varchar(M), 可变长字符串(<code>相比char一般比较节省内存</code>), <code>搜索时大小写无关</code></li>
+<li>text, 最大65535个字符, <code>搜索时大小写无关</code></li>
+<li>blob, 最大65535个字符, <code>搜索时大小写相关</code></li>
+</ul>
+<p><strong>日期和时间类型</strong></p>
+<ul>
+<li>date, 默认格式<code>YYYY-MM-DD</code>, 可以使用<code>date_format()</code>函数更改输出方式</li>
+<li>timestamp(M), 时间戳, <code>YYYYMMDDHHMMSS</code>, 可以指定不同长度的时间戳(<code>M只影响显示</code>)</li>
+<li>time, 格式<code>HH:MM:SS</code></li>
+</ul>
+<p>##表类型</p>
+<table>
+<thead>
+<tr>
+<th>表类型</th>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>静态表</td>
+<td>速度快, 易缓存</td>
+<td>要求更多的磁盘空间</td>
+</tr>
+<tr>
+<td>动态表</td>
+<td>占磁盘空间小</td>
+<td>需要维护, 不易出问题后重建</td>
+</tr>
+<tr>
+<td>压缩表</td>
+<td>只读表类型, 占用很少磁盘空间</td>
+<td>每条记录分开压缩, 不能同时访问</td>
+</tr>
+<tr>
+<td>merge表</td>
+<td>表尺寸小, 某些情况下速度快</td>
+<td>eq_ref搜索慢, replace不能工作</td>
+</tr>
+<tr>
+<td>heap表</td>
+<td>散列索引, 最快</td>
+<td>数据存在内存, 出现问题易丢失</td>
+</tr>
+</tbody>
+</table>
+<p>#高级SQL</p>
+<p>三表连接查找</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">mysql&gt; select sales_rep.first_name, sales_rep.surname,</div><div class="line">    -&gt; value, customer.first_name, customer.surname</div><div class="line">    -&gt; from sales, sales_rep, customer where sales_rep.employee_number = sales.sales_rep</div><div class="line">    -&gt; and customer.id = sales.customer;</div></pre></td></tr></table></figure>
+<p>sales_rep表的employee_number与sales的sales_rep关联<br>customer表的id和sales的customer相关, <code>构成了连接条件</code></p>
+<ul>
+<li><code>等值</code>连接是一种内连接, 通过两个表或者多个表相等条件, 将两个表的行组合到一个表中.(<code>内连接是连接的原始类型, 返回的每一行都包含来自每个表的数据</code>)</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mysql&gt; select ename, loc from emp, dept where emp.deptno = dept.deptno and emp.deptno = 10;</div></pre></td></tr></table></figure>
+<p>##内连接</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">#下面两句是等价的</div><div class="line">mysql&gt; select first_name, surname, value from customer, sales where customer.id = sales.customer;</div><div class="line">#注意inner join 表名 on 相关字段的SQL语句</div><div class="line">mysql&gt; select first_name, surname, value from customer inner join sales on customer.id = sales.customer;</div></pre></td></tr></table></figure>
+<p>##左连接</p>
+<p>左连接就是返回左边匹配行, 不考虑右边的表是否有相应的行. <code>返回匹配的全部行的必须是左表, left join关键字之前</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#语法</div><div class="line">select field1, field2 from table1 left join table2 on field1 = field2;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mysql&gt; select first_name, surname, value from sales left join customer on id = customer;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>右连接连接的顺序与左连接相反</p>
+</blockquote>
+<p>##union链接</p>
+<p>union用来把不同的select结果连接成一个, 每个语句必须有相同个数的列</p>
+<blockquote>
+<p>union可能会进行去重处理, 不去重可以使用union all进行连接</p>
+<p>union语句中<code>order by</code>是在整个union上进行的, 如果只想在某一个上使用可以请用小括号, union默认不返回重复记录</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">#创建一个表用于union查询</div><div class="line">mysql&gt; create table old_customer(</div><div class="line">    -&gt; id int,</div><div class="line">    -&gt; first_name varchar(30),</div><div class="line">    -&gt; surnamr varchar(40));</div><div class="line">#插入数据</div><div class="line">mysql&gt; insert into old_customer values</div><div class="line">    -&gt; (5432, &apos;Thulani&apos;, &apos;Salis&apos;),</div><div class="line">    -&gt; (2342, &apos;Shahiem&apos;, &apos;Papo&apos;);</div><div class="line">#两个查询语句有相同的列</div><div class="line">mysql&gt; select id, first_name, surname from old_customer union select id, first_name, surname from customer;</div></pre></td></tr></table></figure>
+<p>##查询结果添加到另一个表</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">#创建一个用于插入的表</div><div class="line">mysql&gt; create table customer_sales_values(</div><div class="line">    -&gt; first_name varchar(30),</div><div class="line">    -&gt; surname varchar(40),</div><div class="line">    -&gt; value int);</div><div class="line">mysql&gt; insert into customer_sales_values(first_name, surname, value)</div><div class="line">    -&gt; select first_name, surname, sum(value) from sales natural join customer group by first_name, surname;</div></pre></td></tr></table></figure>
+<p>#索引和查询优化</p>
+<blockquote>
+<p>在MySQL中, 有四种类型的索引, <code>主键, 唯一索引, 全文索引和普通索引</code></p>
+</blockquote>
+<p><strong>主键(Primary Key)就是值唯一并且没有值为NULL的域的索引</strong></p>
+<ul>
+<li>主键不能包含<code>NULL</code></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">#创建表, 并设置主键</div><div class="line">mysql&gt; create table pk_test(</div><div class="line">    -&gt; f1 int not NULL,</div><div class="line">    -&gt; primary key(f1));</div><div class="line">    </div><div class="line">#已存在的表上创建主键, 语法: alter table tablename add primary key(fieldname1 [, fieldname2])</div><div class="line">mysql&gt; alter table customer modify id int not null, add primary key(id);</div></pre></td></tr></table></figure>
+<p><strong>普通索引容许重复的值</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">#创建普通索引语法 mysql&gt; create table(fieldname columntype, fieldname2 columntype, index[indexname](fieldname1 [,fieldname2...]));</div><div class="line">#创建后添加索引: alter table tablename add index[indexname](fieldname1 [,fieldname2...]);</div><div class="line">mysql&gt; alter table sales add index(value);</div></pre></td></tr></table></figure>
+<p><strong>全文索引</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">#创建全文索引语法 mysql&gt; create table(fieldname columntype, fieldname2 columntype, fulltext[indexname](fieldname1 [,fieldname2...]));</div><div class="line">mysql&gt; insert into ft2 values</div><div class="line">    -&gt; (&apos;Waiting for the barbarians&apos;),</div><div class="line">    -&gt; (&apos;In the Heart of the Country&apos;),</div><div class="line">    -&gt; (&apos;The master of Patersbury&apos;),</div><div class="line">    -&gt; (&apos;Writing and Being&apos;),</div><div class="line">    -&gt; (&apos;Heart of the Beast&apos;);</div><div class="line">    -&gt; (&apos;Heart of the Beest&apos;),</div><div class="line">    -&gt; (&apos;The beginning and the End&apos;),</div><div class="line">    -&gt; (&apos;Master Master&apos;),</div><div class="line">    -&gt; (&apos;A barBarian at my door&apos;);</div><div class="line">Query OK, 4 rows affected (0.00 sec)</div><div class="line">#创建表后再添加全文索引:alter table tablename add fulltext[indexname](fieldname1 [,fieldname2...]);</div><div class="line">mysql&gt; create table ft(f1 varchar(255), f2 text, f3 blob, f4 int);</div><div class="line">mysql&gt; alter table ft add fulltext(f1, f2);</div></pre></td></tr></table></figure>
+<p>全文索引的用法</p>
+<blockquote>
+<p>文本域查找与大小写无关</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># match()匹配属性, against()匹配值</div><div class="line">mysql&gt; select * from ft2 where match(f1) against (&apos;master&apos;);</div></pre></td></tr></table></figure>
+<p><strong>唯一索引除了不容许有重复的记录外, 与普通索引一样</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">#创建普通索引语法 mysql&gt; create table(fieldname columntype, fieldname2 columntype, unique(fieldname1 [,fieldname2...]));</div><div class="line">mysql&gt; create table ui_test(f1 int, f2 int, unique(f1));</div><div class="line">mysql&gt; insert into ui_test values(1, 2);</div><div class="line">#f1域不能包含重复值</div><div class="line">mysql&gt; insert into ui_test values(1, 3);</div><div class="line">ERROR 1062 (23000): Duplicate entry &apos;1&apos; for key &apos;f1&apos;</div><div class="line"></div><div class="line">#创建后添加索引: alter table tablename add unique[indexname](fieldname1 [,fieldname2...]);</div></pre></td></tr></table></figure>
+<p>##删除或者改变索引</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">#删除主键</div><div class="line">alter table tablename drop primary key;</div><div class="line">#删除普通, 唯一, 全文索引, 需要制定索引名</div><div class="line">alter table tablename frop index indexname;</div><div class="line">#显示全部索引名</div><div class="line">show keys from tablename;</div></pre></td></tr></table></figure>
+<p>##选择索引</p>
+<ul>
+<li>有查找需要使用索引的时候, 考虑创建索引</li>
+<li>创建索引返回的行越少越好</li>
+<li>私用短索引</li>
+<li>不要创建太多的索引</li>
+</ul>
+<p>#SQL Cookbook</p>
+<p>##查找空值</p>
+<p>查找空值切记不能用<code>=</code>操作, 会返回<code>Empty Set</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mysql&gt; select * from emp where comm is null;</div></pre></td></tr></table></figure>
+<p>##空值转换为实际值返回</p>
+<blockquote>
+<p>改变输入的形式, 但并不改变表中的数据</p>
+</blockquote>
+<p>coalesce()函数有1个或者多个参数, comm非空时返回comm, null时返回0,  也可以用<code>case语句判断实现</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mysql&gt; select coalesce(comm, 0) from emp;</div></pre></td></tr></table></figure>
+<p>##从一个表中查找与其他表不匹配的记录</p>
+<p><code>外连接</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">mysql&gt; select d.* from dept d left outer join emp e</div><div class="line">    -&gt; on (d.deptno = e.deptno) where e.deptno is null;</div></pre></td></tr></table></figure>
+<p>##插入更新删除</p>
+<p>##插入技巧</p>
+<p>##从一个表向另外的表中复制行</p>
+<p>解决方案: 在insert语句后面紧跟一个用来产生索要插入行的查询</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">mysql&gt; create table dept_east(</div><div class="line">    -&gt; deptno int,</div><div class="line">    -&gt; dname  varchar(30),</div><div class="line">    -&gt; loc varchar(30));</div><div class="line">mysql&gt; insert into dept_east(deptno, dname, loc)</div><div class="line">    -&gt; select deptno, dname, loc from dept</div><div class="line">    -&gt; where loc in(&apos;new york&apos;, &apos;boston&apos;);</div></pre></td></tr></table></figure>
+<p>##赋值表定义</p>
+<blockquote>
+<p>只复制已有表的定义, 不复制其中的记录, 创建表的时候, 使用<code>一个不返回任何行的子查询, where的条件时钟为false</code></p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">mysql&gt; create table dept_2</div><div class="line">    -&gt; as</div><div class="line">    -&gt; select * from dept where 1 = 0;</div></pre></td></tr></table></figure>
+<p>##修改技巧</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mysql&gt; update emp set sal = sal * 1.10 where deptno = 20;</div></pre></td></tr></table></figure>
+<p>##删除技巧</p>
+<p>###删除所有记录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mysql&gt; delete from dept_2;</div></pre></td></tr></table></figure>
+<p>#参考链接</p>
+<ul>
+<li><code>&lt;MySQL从入门到精通&gt;(前四章)</code></li>
+<li><code>&lt;SQL Cookbook&gt;(前四章)</code><br><a href="http://www.cnblogs.com/nerxious/archive/2012/12/28/2837513.html" target="_blank" rel="external">MySQL学习笔记4：完整性约束</a><br><a href="http://cenalulu.github.io/mysql/mysql-book-for-newbie/" target="_blank" rel="external">MySQL入门书籍和方法分享</a></li>
+</ul>
+</div></article></div></main><footer><div class="paginator"><a href="/2015/05/31/字符串数组排序算法总结及算法实现-Java/" class="prev">上一篇</a><a href="/2015/05/19/人生若只如初面试/" class="next">下一篇</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

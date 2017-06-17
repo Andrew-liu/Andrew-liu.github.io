@@ -1,0 +1,85 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> IOS程序启动原理 · Snow Memory | Andrew Liu</title><meta name="description" content="IOS程序启动原理 - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">IOS程序启动原理</h1><div class="post-info">Nov 10, 2014</div><div class="post-content"><blockquote>
+<p>重点 : <code>模型</code>, <code>代理</code></p>
+</blockquote>
+<p>θ = {$ W^{IH}, W^{HO}, B^H, B^O $} </p>
+<p>#1. 项目中的常用文件</p>
+<ul>
+<li>Tests文件用于单元测试</li>
+<li>Supporting files文件夹下<code>Info.plist</code>的文件，该文件对工程做一些运行期的配置，非常重要，不能删除<ul>
+<li>Localiztion native development region(CFBundleDevelopmentRegion)-本地化相关</li>
+<li>Bundle display name(CFBundleDisplayName)-程序安装后显示的名称,限制在10－12个字符，如果超出，将被显示缩写名称</li>
+<li>Icon file(CFBundleIconFile)-app图标名称,一般为Icon.png</li>
+<li>Bundle version(CFBundleVersion)-应用程序的版本号，每次往App Store上发布一个新版本时，需要增加这个版本号</li>
+<li>Main storyboard file base name(NSMainStoryboardFile)-主storyboard文件的名称</li>
+<li>Bundle identifier(CFBundleIdentifier)-项目的唯一标识，部署到真机时用到</li>
+</ul>
+</li>
+<li><code>.pch</code>文件，是一个头文件(Xcode6没有找到)<ul>
+<li>pch头文件的内容能被项目中的其他所有源文件共享和访问</li>
+<li>一般在pch文件中定义一些全局的宏</li>
+</ul>
+</li>
+</ul>
+<a id="more"></a>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">#ifdef DEBUG //在调试模式下，才有定义DEBUG,调试阶段</div><div class="line">#define Log(...) NSLog(__VA_ARGS__)</div><div class="line">#else    //发布阶段</div><div class="line">#define Log(...) /* */ </div><div class="line">#endif</div></pre></td></tr></table></figure>
+<p>#2. UIApplicaiton</p>
+<ul>
+<li>UIApplication对象是应用程序的象征</li>
+<li>每一个应用都有自己的UIApplication对象，而且是<code>单例模式</code></li>
+<li>通过[UIApplication sharedApplication]可以获得这个单例对象</li>
+<li>一个iOS程序启动后创建的第一个对象就是UIApplication对象</li>
+<li>利用UIApplication对象，能进行一些应用级别的操作</li>
+</ul>
+<p><strong>UIApplication的常用属性</strong></p>
+<ul>
+<li>设置应用程序图标右上角的红色提醒数字<br><code>@property(nonatomic) NSInteger applicationIconBadgeNumber;</code></li>
+<li>设置联网指示器的可见性<br><code>@property(nonatomic,getter=isNetworkActivityIndicatorVisible) BOOL networkActivityIndicatorVisible;</code></li>
+<li>UIApplication有个功能十分强大的openURL:方法<br><code>- (BOOL)openURL:(NSURL*)url;</code></li>
+<li>在iOS7中，默认情况下，状态栏都是由UIViewController管理的，UIViewController实现下列方法就可以轻松管理状态栏的可见性和样式<br>状态栏的样式<br><code>- (UIStatusBarStyle)preferredStatusBarStyle;</code><br>状态栏的可见性<br><code>- (BOOL)prefersStatusBarHidden;</code></li>
+</ul>
+<blockquote>
+<p>main函数中执行了一个UIApplicationMain这个函数</p>
+</blockquote>
+<p><code>int UIApplicationMain(int argc, char *argv[], NSString *principalClassName, NSString *delegateClassName);</code></p>
+<ul>
+<li>argc、argv：直接传递给UIApplicationMain进行相关处理即可</li>
+<li>principalClassName：指定应用程序类名（app的象征），该类必须是UIApplication(或子类)。如果为nil,则用UIApplication类作为默认值</li>
+<li>delegateClassName：指定应用程序的代理类，该类必须遵守UIApplicationDelegate协议</li>
+</ul>
+<p>UIApplicationMain函数会根据principalClassName创建UIApplication对象，根据delegateClassName创建一个delegate对象，并将该delegate对象赋值给UIApplication对象中的delegate属性</p>
+<p>接着会建立应用程序的Main Runloop（事件循环），进行事件的处理(首先会在程序完毕后调用delegate对象的application:didFinishLaunchingWithOptions:方法)</p>
+<p>程序正常退出时UIApplicationMain函数才返回</p>
+<p><img src="http://byson.img42.wal8.com/img42/434369_20140909170142/141508798703.png" alt="代理"></p>
+<p>#3. UIWindow</p>
+<ul>
+<li>UIWindow是一种特殊的UIView，通常在一个app中只会有一个UIWindow</li>
+<li>iOS程序启动完毕后，创建的<code>第一个视图控件就是UIWindow</code>，接着创建控制器的view，最后将控制器的view添加到UIWindow上，于是控制器的view就显示在屏幕上了</li>
+<li>一个iOS程序之所以能显示到屏幕上，完全是因为它有UIWindow,也就说，<code>`没有UIWindow，就看不见任何UI界面</code></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> *  程序启动完毕就会调用一次</div><div class="line"> */</div><div class="line">- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions</div><div class="line">&#123;</div><div class="line">    // 1.创建window</div><div class="line">    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];</div><div class="line"></div><div class="line">    // 2.设置window的背景色</div><div class="line">    self.window.backgroundColor = [UIColor whiteColor];</div><div class="line">    </div><div class="line">    MjOneViewController *one = [[MjOneViewController alloc] init];</div><div class="line">    // 方法一 :加入到UIWindow   [self.window addSubview:one.view];</div><div class="line">    //方法二 推荐</div><div class="line">    self.window.rootViewController = one;</div><div class="line"></div><div class="line">    // 3.显示window</div><div class="line">    [self.window makeKeyAndVisible];</div><div class="line">    return YES;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>多界面的切换是通过UIWindow完成的.</p>
+</blockquote>
+<p>#4. 程序启动的完整过程</p>
+<p>1.main函数</p>
+<p>2.UIApplicationMain</p>
+<ul>
+<li>创建UIApplication对象</li>
+<li>创建UIApplication的delegate对象</li>
+</ul>
+<p>3.delegate对象开始处理(监听)系统事件(<code>没有storyboard</code>)</p>
+<ul>
+<li>程序启动完毕的时候, 就会调用代理的application:didFinishLaunchingWithOptions:方法</li>
+<li>在application:didFinishLaunchingWithOptions:中创建UIWindow</li>
+<li>创建和设置UIWindow的rootViewController</li>
+<li>显示窗口</li>
+</ul>
+<p>3.根据Info.plist获得最主要storyboard的文件名,加载最主要的storyboard(<code>有storyboard</code>)</p>
+<ul>
+<li>创建UIWindow</li>
+<li>创建和设置UIWindow的rootViewController</li>
+<li>显示窗口</li>
+</ul>
+<p><img src="http://byson.img42.wal8.com/img42/434369_20140909170142/141508797807.png" alt="图1"></p>
+<p><img src="http://byson.img42.wal8.com/img42/434369_20140909170142/141508797866.jpg" alt="图2"></p>
+</div></article></div></main><footer><div class="paginator"><a href="/2014/11/21/It-Starts-with-iGaze-Visual-Attention-Driven-Networkingwith-Smart-Glasses/" class="prev">上一篇</a><a href="/2014/11/02/2014-11-02-Node.js学习笔记/" class="next">下一篇</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

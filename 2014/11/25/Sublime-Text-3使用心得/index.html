@@ -1,0 +1,158 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Sublime Text 2/3使用心得 · Snow Memory | Andrew Liu</title><meta name="description" content="Sublime Text 2/3使用心得 - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">Sublime Text 2/3使用心得</h1><div class="post-info">Nov 25, 2014</div><div class="post-content"><hr>
+<blockquote>
+<p><a href="http://www.sublimetext.com/" target="_blank" rel="external">Sublime Text</a>号称<code>最性感的编辑器, 跨平台, 免费使用</code></p>
+<p>PS:本文主要针对Mac下的Sublime Text配置, 其他的请自行对快捷键修改, 之前写错了, Mac下使用的是Sublime Text2, 在另一台电脑用的Sublime Text3, 混肴了, 但在配置方面2/3只有少量的差别, 更多的版本差别体现在插件的支持上</p>
+</blockquote>
+<p>#0. 设置subl命令行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">#如果是在默认shell下, </div><div class="line">sudo ln -s &quot;/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl&quot; /usr/bin/subl</div><div class="line"></div><div class="line">#使用zsh的可以使用以下命令</div><div class="line">alias subl=&quot;&apos;/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl&apos;&quot;</div><div class="line">alias nano=&quot;subl&quot;</div><div class="line">export EDITOR=&quot;subl&quot;</div></pre></td></tr></table></figure>
+<p>测试使用一下命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ subl</div></pre></td></tr></table></figure></p>
+<p>使用方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">用法:</div><div class="line">subl [arguments] [files]         编辑指定的文件edit the given files</div><div class="line">   or: subl [arguments] [directories]   打开指定的目录</div><div class="line">   or: subl [arguments] -               编辑stdin</div><div class="line"></div><div class="line">参数Arguments:</div><div class="line">  --project &lt;project&gt;: 载入指定的project</div><div class="line">  --command &lt;command&gt;: 运行指定的命令</div><div class="line">  -n or --new-window:  打开一个新的窗口</div><div class="line">  -a or --add:         添加文件夹到当前窗口</div><div class="line">  -w or --wait:        返回前等待文件关闭</div><div class="line">  -b or --background:  不激活该应用程序</div><div class="line">  -s or --stay:        文件关闭后保持应用程序激活状态</div><div class="line">  -h or --help:        显示帮助并退出</div><div class="line">  -v or --version:     显示版本信息并退出</div><div class="line"></div><div class="line">如果从标准输入--wait是隐式的。 使用--stay当文件关闭是不切换到后台控制台(只与是否有等待的文件有关)</div><div class="line"></div><div class="line">文件名可以通过加:line或者:line:column后缀来指定打开的定位。</div><div class="line">用法摘自官方文档</div></pre></td></tr></table></figure></p>
+<a id="more"></a>
+<h2 id="1-修改Sublime-Text2-默认配置"><a href="#1-修改Sublime-Text2-默认配置" class="headerlink" title="#1. 修改Sublime Text2 默认配置"></a>#1. 修改Sublime Text2 默认配置</h2><p>在菜单栏选择 Sublime Text-&gt;Preferences-&gt;Setting-User(注意其中Setting-Default是默认的系统配置, 是不可修改的), 通过修改用户设置会覆盖系统对应的默认配置,下面是我的配置单, 都加油注释</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="string">"color_scheme"</span>: <span class="string">"Packages/Theme - itg.flat/itg.dark.tmTheme"</span>, <span class="comment">#主题设置, 这是下载主题后, 自动生成的, 也可以手动配置</span></div><div class="line">    <span class="string">"font_size"</span>: <span class="number">15</span>, <span class="comment">#设置字体大小, 我比较喜欢大一点的字体</span></div><div class="line">    <span class="string">"ignored_packages"</span>:  <span class="comment">#设置忽略文件类型, 第二个是默认忽略的, 第一个markdown文件我使用另一种文件打开,</span></div><div class="line">    [</div><div class="line">        <span class="string">"Markdown"</span>,</div><div class="line">        <span class="string">"Vintage"</span></div><div class="line">    ],</div><div class="line">    <span class="string">"create_window_at_startup"</span>: false, <span class="comment">#取消启动时,自动打开新窗口的设置, 这个设置很恶心, 每次启动后会自动生成一个空白窗口</span></div><div class="line">    <span class="string">"open_files_in_new_window"</span>: false, <span class="comment">#取消打开文件时会新生成一个窗口, 默认设置每次打开一个项目会重新生成一个窗口</span></div><div class="line">    <span class="string">"highlight_line"</span>: true, <span class="comment">#高亮当前编辑行, 其实高亮的不明显</span></div><div class="line">    <span class="string">"highlight_modified_tabs"</span>: true, <span class="comment">#设置文件修改时, 标签高亮提示, 这样可以提示保存</span></div><div class="line">    <span class="string">"show_encoding"</span>: true, <span class="comment">#在窗口右下角显示打开文件的编码</span></div><div class="line">    <span class="string">"original_color_scheme"</span>: <span class="string">"Packages/Theme - itg.flat/itg.dark.tmTheme"</span>,  <span class="comment">#主题设置</span></div><div class="line">    <span class="string">"translate_tabs_to_spaces"</span>: true <span class="comment">#将tab键的形式改为四个空格</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="2-添加快捷键前端网页调试功能"><a href="#2-添加快捷键前端网页调试功能" class="headerlink" title="#2. 添加快捷键前端网页调试功能"></a>#2. 添加快捷键前端网页调试功能</h2><blockquote>
+<p>这个功能是我以前在github的项目里看到的, 已经找不到项目源地址了, 感谢原作者</p>
+</blockquote>
+<p>一、点击菜单Tools -&gt; New Plugin…，在创建好的py文件输入下列内容：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> sublime, sublime_plugin</div><div class="line"><span class="keyword">import</span> webbrowser</div><div class="line"> </div><div class="line">url_map = &#123;</div><div class="line">    <span class="string">'/Users/andrew_liu/HTML/'</span> : <span class="string">'file:///Users/andrew_liu/HTML/'</span>,<span class="comment">#这里需要进行个人电脑的配置, 配置个人项目路径</span></div><div class="line">&#125;</div><div class="line"> </div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">OpenBrowserCommand</span><span class="params">(sublime_plugin.TextCommand)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">run</span><span class="params">(self, edit)</span> :</span></div><div class="line">        window = sublime.active_window()</div><div class="line">        window.run_command(<span class="string">'save'</span>)</div><div class="line">        url = self.view.file_name()</div><div class="line">        flag = <span class="keyword">False</span></div><div class="line">        <span class="keyword">for</span> path, domain <span class="keyword">in</span> url_map.items():</div><div class="line">            <span class="keyword">if</span> url.startswith(path):</div><div class="line">                url = url.replace(path, domain).replace(<span class="string">'\\'</span>, <span class="string">'\/'</span>)</div><div class="line">                flag = <span class="keyword">True</span></div><div class="line">                <span class="keyword">break</span></div><div class="line">        <span class="keyword">if</span> <span class="keyword">not</span> flag:</div><div class="line">            url = <span class="string">'file://'</span> + url</div><div class="line">        webbrowser.open_new(url) <span class="comment">#这里使用默认的浏览器调试</span></div></pre></td></tr></table></figure>
+<p>将文件保存到Packages/User目录（Packages可通过菜单里的Browser Packages…打开），文件名随意，如open_browser.py。插件部分完工了。</p>
+<p>二、接下来，为刚才的插件分配快捷键。点菜单Tools -&gt; Command Palette…，或者<code>shift+cmd+p</code>，打开命令集，选择“key Bindings - User”打开个人快捷键配置，输入下列内容：</p>
+<p><code>[{ &quot;keys&quot;: [&quot;ctrl+shift+b&quot;], &quot;command&quot;: &quot;open_browser&quot; }]</code><br>这就是要做的全部工作，可以测试下了。打开一个html文件，ctrl+shift+b试试，没意外的话文件会在默认浏览器打开了。url_map里配置的站点目录到URL的映射应该也是可用的。</p>
+<h2 id="3-添加包管管理神器"><a href="#3-添加包管管理神器" class="headerlink" title="#3. 添加包管管理神器"></a>#3. 添加包管管理神器</h2><p>最近Package Control好像被墙了, 我的另一台电脑老是上不去, 具体不太清清楚, 天朝丧心病狂大家懂得, 所以如果一直上不去, 请<code>翻墙</code></p>
+<p>安装过程: 使用快捷键  <strong>control + `</strong> 或者菜单栏选择<code>View &gt; Show Console</code></p>
+<ul>
+<li>Sublime Text3在控制台输入</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">import urllib.request,os,hashlib; h = &apos;7183a2d3e96f11eeadd761d777e62404&apos; + &apos;e330c659d4bb41d3bdf022e94cab3cd0&apos;; pf = &apos;Package Control.sublime-package&apos;; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( &apos;http://packagecontrol.io/&apos; + pf.replace(&apos; &apos;, &apos;%20&apos;)).read(); dh = hashlib.sha256(by).hexdigest(); print(&apos;Error validating download (got %s instead of %s), please try manual install&apos; % (dh, h)) if dh != h else open(os.path.join( ipp, pf), &apos;wb&apos; ).write(by)</div></pre></td></tr></table></figure>
+<ul>
+<li>Sublime Text2在控制台输入</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">import urllib2,os,hashlib; h = &apos;7183a2d3e96f11eeadd761d777e62404&apos; + &apos;e330c659d4bb41d3bdf022e94cab3cd0&apos;; pf = &apos;Package Control.sublime-package&apos;; ipp = sublime.installed_packages_path(); os.makedirs( ipp ) if not os.path.exists(ipp) else None; urllib2.install_opener( urllib2.build_opener( urllib2.ProxyHandler()) ); by = urllib2.urlopen( &apos;http://packagecontrol.io/&apos; + pf.replace(&apos; &apos;, &apos;%20&apos;)).read(); dh = hashlib.sha256(by).hexdigest(); open( os.path.join( ipp, pf), &apos;wb&apos; ).write(by) if dh == h else None; print(&apos;Error validating download (got %s instead of %s), please try manual install&apos; % (dh, h) if dh != h else &apos;Please restart Sublime Text to finish installation&apos;)</div></pre></td></tr></table></figure>
+<p>打开包管理神器  请使用快捷键<code>shift + cmd + p</code>, 然后输入package或者一些简写</p>
+<p>#4. Sublime Text 常用快捷键</p>
+<table>
+<thead>
+<tr>
+<th>快捷键组合</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>shift + cmd + p</code></td>
+<td>打开命令面板</td>
+</tr>
+<tr>
+<td><strong>control + `</strong></td>
+<td>控制台</td>
+</tr>
+<tr>
+<td><code>cmd + n</code></td>
+<td>新建标签</td>
+</tr>
+<tr>
+<td><code>cmd + 数字</code></td>
+<td>标签切换</td>
+</tr>
+<tr>
+<td><code>cmd + option + 2</code></td>
+<td>分成两屏</td>
+</tr>
+<tr>
+<td><code>control + 数字</code></td>
+<td>分屏时移动到不同的屏幕</td>
+</tr>
+<tr>
+<td><code>cmd + delelte</code></td>
+<td>删除光标前所有字符, 貌似是Mac快捷键</td>
+</tr>
+<tr>
+<td><code>cmd + f</code></td>
+<td>查找</td>
+</tr>
+<tr>
+<td><code>option + cmd + f</code></td>
+<td>查找替换</td>
+</tr>
+<tr>
+<td><code>cmd + t</code></td>
+<td>文件跳转</td>
+</tr>
+<tr>
+<td><code>control + g</code></td>
+<td>行跳转, 类似vim中的num + gg</td>
+</tr>
+<tr>
+<td><code>cmd + r</code></td>
+<td>函数跳转</td>
+</tr>
+<tr>
+<td><code>cmd + /</code></td>
+<td>给选中行添加或去掉注释</td>
+</tr>
+<tr>
+<td><code>cmd + [或 cmd + ]</code></td>
+<td>智能行缩进</td>
+</tr>
+<tr>
+<td><code>cmd + k + b</code></td>
+<td>开关侧边栏</td>
+</tr>
+</tbody>
+</table>
+<p>更多快捷键可查看<a href="http://www.sublimetext.com/docs/3/" target="_blank" rel="external">官方文档</a></p>
+<h2 id="5-推荐插件"><a href="#5-推荐插件" class="headerlink" title="#5. 推荐插件"></a>#5. 推荐插件</h2><blockquote>
+<p>插件是非常重要的一部分, 一个普通的编辑器难以满足大部分人需要, 更难以满足程序员多样化的编程语言, 所以需要使用插件打造<code>个性化的类IDE</code>, 相比与IDE有启动快, 干净, 干扰少的优点</p>
+</blockquote>
+<p>##5.1 主题类:</p>
+<ul>
+<li>包含大量配色主题的插件包<br>首先介绍一个包含大量配色包的网站, <a href="http://colorsublime.com/" target="_blank" rel="external">Colorsublime</a>, 里面各种各样的配色让人眼花缭乱<br><a href="https://github.com/Colorsublime/Colorsublime-Plugin" target="_blank" rel="external">Colorsublime Plugin</a></li>
+</ul>
+<p>安装方法:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">shift + cmd + p 打开命令面板</div><div class="line">输入 “Package Control: Install Package” 命令</div><div class="line">输入 Colorsublime plugin, 找到后回车安装</div><div class="line">安装成功后在preferences中选择配色</div></pre></td></tr></table></figure></p>
+<p><a href="https://github.com/Colorsublime/Colorsublime-Plugin" target="_blank" rel="external">Colorsublime Plugin github项目地址</a></p>
+<p><img src="http://picturebag.qiniudn.com/Snip20141125_6.png" alt="Colorsublime"></p>
+<ul>
+<li>iTg主题, 我的最爱</li>
+</ul>
+<p>安装方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">shift + cmd + p 打开命令面板</div><div class="line">输入 “Package Control: Install Package” 命令</div><div class="line">输入Theme - itg.flat, 找到后回车安装</div><div class="line">安装成功后在preferences中选择主题</div></pre></td></tr></table></figure></p>
+<p><a href="https://github.com/itsthatguy/theme-itg-flat" target="_blank" rel="external">项目github地址</a></p>
+<p><img src="http://picturebag.qiniudn.com/Snip20141125_5.png" alt="itg-flag"></p>
+<p><img src="http://picturebag.qiniudn.com/Snip20141125_4.png" alt="itg-flag"></p>
+<ul>
+<li>著名的Soda主题</li>
+</ul>
+<p>安装方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">shift + cmd + p 打开命令面板</div><div class="line">输入 “Package Control: Install Package” 命令</div><div class="line">输入soda, 找到Theme-Soda,找到后回车安装</div><div class="line">安装成功后在preferences中选择Setting-User更改主题设置:</div><div class="line">&#123;</div><div class="line">    &quot;theme&quot;: &quot;Soda Light 3.sublime-theme&quot;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><a href="https://github.com/buymeasoda/soda-theme/" target="_blank" rel="external">github项目地址</a></p>
+<p><img src="http://picturebag.qiniudn.com/Snip20141125_2.png" alt="Soda-Light"></p>
+<p><img src="http://picturebag.qiniudn.com/Snip20141125_3.png" alt="Soda-Dark"></p>
+<p>##5.2. 其他插件</p>
+<p>安装方法都通过Package Control<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">shift + cmd + p 打开命令面板</div><div class="line">输入 “Package Control: Install Package” 命令</div><div class="line">输入安装插件的简写或全拼,找到后回车安装</div></pre></td></tr></table></figure></p>
+<ul>
+<li>alignment<br>这个忘了干嘛的了, 好像是控制所有类型文本的缩进</li>
+<li>all Autocomplete<br>sublime只对当前文件进行本文件中的查找不全, <code>all Autocomplete</code>是对全部打开的文件进行查找不全, 选择更多更全面</li>
+<li>converttoUTF8<br>编辑的所有文件都使用UTF-8编码</li>
+<li>docblockr<br>强大的文档注释功能, 只要在文档中输入<code>/*</code>然后按一下tab, 就会根据代码自动生成注释,</li>
+<li>emmet<br>前端神器, 减少大量的工作量, 使用方法可以参考<a href="http://www.iteye.com/news/27580" target="_blank" rel="external">Emmet：HTML/CSS代码快速编写神器</a>或者官方文档</li>
+<li>git<br>支持sublime上的git操作, 这个就不用多说了</li>
+<li>markdownediting或者markdownPerview<br>这个是写Markdown必备的。可以在包管理器中安装。装完之后，写作Markdown时（右下角显示语法为Markdown），可以按ctrl+b，直接就会生成HTML，并在浏览器中显示。</li>
+<li>jsformat<br>JavaScript代码格式化</li>
+<li>sidebarenhancement<br>这是用来增强左边的侧边栏。左侧边栏可以在View -&gt; Side Bar -&gt; Show Side Bar中打开，可以用Project -&gt; Add Folder to Project…往侧边栏加入常用的文件夹。装完这个插件，侧边栏的右键菜单会多一些功能，挺实用的。</li>
+<li><p>Bracket Highlighter<br>这是用来做括号匹配高亮的，可以在包管理器中安装。Sublime Text 2自带的括号匹配只有小小的一横线，太不显眼了，这个可以让高亮变成大大的一坨，不过我觉得它大得会盖住光标了。</p>
+</li>
+<li><p>SublimeLinter<br>语法检测工具, 可以检测到所写代码的语法错误,并高亮显示错误<br><a href="http://sublimelinter.readthedocs.org/en/latest/about.html" target="_blank" rel="external">用户手册</a><br>其中需要额外安装一下包, 如<code>SublimeLinter-pyflakes and SublimeLinter-pep8.SublimeLinter-jshint, SublimeLinter-pyyaml, SublimeLinter-csslint, SublimeLinter-html-tidy, and SublimeLinter-json</code></p>
+</li>
+</ul>
+<p><a href="https://github.com/SublimeLinter" target="_blank" rel="external">更多</a></p>
+<ul>
+<li>Djaneiro<br>支持模版和关键词高亮, 提供有用的代码片段</li>
+</ul>
+<hr>
+<p>未安装:</p>
+<ul>
+<li>Anaconda<br><a href="http://damnwidget.github.io/anaconda/" target="_blank" rel="external">打造python IDE</a><blockquote>
+<p>Anaconda turns your Sublime Text 3 in a full featured Python development IDE including autocompletion, code linting, IDE features, autopep8 formating, McCabe complexity checker and Vagrant for Sublime Text 3</p>
+</blockquote>
+</li>
+</ul>
+</div></article></div></main><footer><div class="paginator"><a href="/2014/11/27/Python代码风格-译/" class="prev">上一篇</a><a href="/2014/11/25/推荐那些功能强大的在线工具/" class="next">下一篇</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>
