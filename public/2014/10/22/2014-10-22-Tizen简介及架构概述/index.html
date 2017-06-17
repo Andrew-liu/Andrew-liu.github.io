@@ -1,0 +1,186 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Tizen简介及架构概述 · Snow Memory | Andrew Liu</title><meta name="description" content="Tizen简介及架构概述 - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">Tizen简介及架构概述</h1><div class="post-info">Oct 22, 2014</div><div class="post-content"><p>##1.1. Tizen简介</p>
+<ol>
+<li>基于Linux开发</li>
+<li>十个Tizen的合作伙伴(<code>建立更完善的标准</code>)</li>
+</ol>
+<p>##1.2. Tizen的架构</p>
+<ul>
+<li>WebAPI   Web是一个根本的Tizen开发环境</li>
+<li>NativeAPI   快速轻量级原生应用可以平滑的运行在Tizen手机上</li>
+</ul>
+<blockquote>
+<p>Linux内核, 首个使用SMACK引擎; 设备驱动; 硬件适配层 : 可插入式应用架构, OpenGL ES/EGL图像驱动</p>
+<p>原生架构, 包括12个主要的架构</p>
+<p>Web框架, 标准HTML5和Tizen设备API,</p>
+</blockquote>
+<a id="more"></a>
+<p>##1.3. 开发环境</p>
+<ol>
+<li>支持不同设备应用的开发, 只需要安装一个SDK</li>
+<li>支持不同的操作系统 windows, Mac, Linux</li>
+<li>多合一功能, 提供静态和动态分析和其他的动态工具</li>
+</ol>
+<blockquote>
+<p>Tizen的优势</p>
+</blockquote>
+<ol>
+<li>HTML5的支持</li>
+<li>开发新的API会有具体的路径, 遵照W3C,减少开发难度</li>
+<li>图像显示, 使用了硬件加速, 支持2D/3D(3D支持WebGL)</li>
+<li>启动时间的优化(<code>具体时间取决于不同的应用环境和需求</code>)</li>
+<li>高质量的音频和视频(<code>希望支持所有不同格式的音频和视频而不需要转码, 通过可插入式的架构, 浏览器和web应用支持富媒体</code>)</li>
+<li>强大的安全性(<code>应用存储安全, 反病毒框架, 数据的保护和私有, B2B支持</code>)</li>
+<li>UI可扩展性</li>
+</ol>
+<p>##1.4. 未来发展和结论</p>
+<ul>
+<li>最新版本增加了对智能手表的支持</li>
+<li>未来20153.0版本将会支持MUC <code>Multi-user CrossWalk</code></li>
+</ul>
+<ol>
+<li>基于Linux的完全开源平台</li>
+<li>对于智能系统是一个优秀的平台</li>
+</ol>
+<p>#2. HTML5应用</p>
+<p>##2.1. 背景知识</p>
+<p>HTML5的新特点:</p>
+<ol>
+<li>CSS3与HTML5的紧密结合</li>
+<li><p>图形和视频/音频在HTML5中得到加强</p>
+</li>
+<li><p>零安装和及时的升级</p>
+</li>
+<li>离线缓存支持未联网的应用</li>
+<li>图像&amp;音频&amp;视频得到加强</li>
+<li>跨平台和跨浏览器都可以应用</li>
+<li>高效全双工</li>
+</ol>
+<p>##2.2. 应用技术</p>
+<ul>
+<li>网络会议</li>
+<li>在线教育</li>
+<li>合作工作</li>
+<li>定制Tizen</li>
+</ul>
+<p>系统分为两部分 : </p>
+<ol>
+<li>服务器Node.js Share.Js和WebRTC</li>
+<li>客户端使用bootstrap, Share.js和WebRTC(client)</li>
+</ol>
+<blockquote>
+<p>HTML5 Canvas vs Paper.js</p>
+</blockquote>
+<ol>
+<li>Paper.js开源的向量图形脚本</li>
+<li>paper.js提供面向对象的API</li>
+<li>paper.js强化了2D效果</li>
+</ol>
+<blockquote>
+<p>通过HTML5形成协作, <code>OT(operation transform)</code>, ShareJS实现了OT, 事件的一致性可以通过OT来实现</p>
+</blockquote>
+<ol>
+<li>一种协作机制</li>
+</ol>
+<blockquote>
+<p>WebRTC正在引领一个革命</p>
+</blockquote>
+<ul>
+<li>提供一种实时通信</li>
+<li>WebRTC API </li>
+</ul>
+<blockquote>
+<p>HTML5正在使Tizen更加强大, 因为Tizen完全支持HTML5, </p>
+</blockquote>
+<ol>
+<li>HTML5新技术<ul>
+<li>统一的官方标准</li>
+<li>使网络更易于清理, 易于学习, 更快</li>
+</ul>
+</li>
+<li>移动开发<ul>
+<li>越来越多的开发者选择HTML5开发移动应用, 移动和PC正在扩展支持HTML5</li>
+</ul>
+</li>
+</ol>
+<p>#3. 面向Tizen的上下文应用</p>
+<ol>
+<li>Google Now(实时的获取正确的信息, )</li>
+<li>Cover(<code>使用上下文触发通过时间, 移动或者位置</code>)</li>
+</ol>
+<p>五大技术力量 :</p>
+<ul>
+<li>移动性</li>
+<li>社交媒体</li>
+<li>云服务和大数据</li>
+<li>传感器(<code>一个移动设备至少七个传感器, 相机麦克风屏幕等</code>)</li>
+<li>基于位置的服务</li>
+</ul>
+<p>##3.1. 情景context</p>
+<blockquote>
+<p>Sensors</p>
+</blockquote>
+<p>Tizen提供传感器的管理类</p>
+<blockquote>
+<p>Big Data</p>
+</blockquote>
+<p>使用位置进行提醒服务 : 当用户到某个地方, 提醒用户进行某个定制号的计划.</p>
+<p><code>IOT(Internet of Things)</code></p>
+<ul>
+<li>网络连接所有的对象</li>
+<li>网络连接数百万的传感器</li>
+<li>在用户周围新的感知方式和交互方式</li>
+</ul>
+<blockquote>
+<p>可穿戴设备</p>
+</blockquote>
+<p>1, 对于用户第一人视角的感知</p>
+<ol>
+<li>可穿戴设备的小屏幕, 上下文信息应该联系紧密</li>
+<li>更准确基于数据的健康分析</li>
+<li>用户间无障碍的交流</li>
+<li>简单</li>
+</ol>
+<p>#4. Qt和Tizen的结合</p>
+<ol>
+<li>支持多平台</li>
+<li>社区支持</li>
+<li>许可模式(<code>开源许可, 商用许可</code>)</li>
+</ol>
+<p>#5. Tizen SDK<br>跨平台: <code>mobile, wearable, TV, camera, IVI, PC, Printer</code></p>
+<p>##5.1. TizenSDK的特点</p>
+<blockquote>
+<p>开发Tizen应用的集合的工具包</p>
+</blockquote>
+<ul>
+<li><p><code>IDE, GUI Builder, Simulator, Debugging, Profiling, Add-On SDK(插件形式安装在TizenSDK,扩展tizen的功能)</code></p>
+</li>
+<li><p>开发环境(基于W3C和的web应用, 基于C/C++的原生应用) </p>
+</li>
+<li>开发Web应用的UI<ul>
+<li>生成CSS/JS/HTML代码</li>
+</ul>
+</li>
+<li>多设备分辨率的指南<ul>
+<li>使一个应用有不同分辨率</li>
+</ul>
+</li>
+<li>模拟器(<code>事件插入器生成真实设备信号</code>)<ul>
+<li>其中管理器会设置分辨率和启动仿真器</li>
+</ul>
+</li>
+<li>Debugging和Profiling<ul>
+<li>支持各种debug工具</li>
+<li>动态分析工具</li>
+</ul>
+</li>
+<li>Add-on SDK(<code>拓展Tizen平台的服务, 性能, 包括服务器端服务, 硬件依赖</code>)</li>
+</ul>
+<p>##5.2. 未来挑战</p>
+<ul>
+<li>远程Debugging在Qt Creator上的集成</li>
+<li>集成Tizen的安全提升机制</li>
+<li>Tizen的存储原则</li>
+<li>QtWeb引擎</li>
+<li>未来集成: 地图, NFC和蓝牙等</li>
+</ul>
+</div></article></div></section><footer><div class="paginator"><a href="/2014/10/22/2014-10-22-Tizen移动应用开发/" class="prev">PREV</a><a href="/2014/10/22/2014-10-22-Tizen开发者峰会/" class="next">NEXT</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

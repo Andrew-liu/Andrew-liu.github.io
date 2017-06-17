@@ -1,0 +1,91 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 手把手教你写Sublime中的Snippet · Snow Memory | Andrew Liu</title><meta name="description" content="手把手教你写Sublime中的Snippet - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">手把手教你写Sublime中的Snippet</h1><div class="post-info">Dec 11, 2014</div><div class="post-content"><hr>
+<blockquote>
+<p><a href="https://www.sublimetext.com/" target="_blank" rel="external">Sublime Text</a>号称最性感的编辑器, 并且越来越多人使用, 美观, 高效</p>
+</blockquote>
+<p>关于如何使用<a href="https://www.sublimetext.com/" target="_blank" rel="external">Sublime text</a>可以参考我的另一篇文章, 相信你会喜欢上的..<br><a href="http://www.jianshu.com/p/25cdc7d608bb" target="_blank" rel="external">Sublime Text 2使用心得</a></p>
+<blockquote>
+<p>现在介绍一下Snippet, <code>Snippets are smart templates that will insert text for you and adapt it to their context</code>. Snippet 是插入到文本中的智能模板并使这段文本适当当前代码环境. 程序员总是会不断的重写一些简单的代码片段, 这种工作乏味/无聊, 而Snippet的出现会让Code更加高效.</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="1-Snippe创建-存储和格式"><a href="#1-Snippe创建-存储和格式" class="headerlink" title="#1. Snippe创建,存储和格式"></a>#1. Snippe创建,存储和格式</h2><blockquote>
+<p><strong>(这里snippet称作代码片段)</strong></p>
+</blockquote>
+<p><code>Snippet</code>可以存储在任何的文件夹中, 并且以<code>.sublime-snippet</code>为文件扩展名, 默认是存储在<code>.sublime-snippet</code>文件夹下.</p>
+<blockquote>
+<p>Snippet文件是以<code>.sublime-snippet</code>为扩展的XML文件, 可以命名为<code>XXX.sublime-snippet</code>, 创建自己的snippet的方式为菜单栏<code>Tools | New Snippet..</code></p>
+</blockquote>
+<p>下面看一下新建的文件格式:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&lt;snippet&gt;</div><div class="line">    &lt;content&gt;&lt;![CDATA[</div><div class="line">Hello, $&#123;1:this&#125; is a $&#123;2:snippet&#125;.</div><div class="line">]]&gt;&lt;/content&gt;</div><div class="line">    &lt;!-- Optional: Set a tabTrigger to define how to trigger the snippet --&gt;</div><div class="line">    &lt;!-- &lt;tabTrigger&gt;hello&lt;/tabTrigger&gt; --&gt;</div><div class="line">    &lt;!-- Optional: Set a scope to limit where the snippet will trigger --&gt;</div><div class="line">    &lt;!-- &lt;scope&gt;source.python&lt;/scope&gt; --&gt;</div><div class="line">&lt;/snippet&gt;</div></pre></td></tr></table></figure>
+<p>为了方便理解简化以上代码:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&lt;snippet&gt;</div><div class="line">    &lt;content&gt;&lt;![CDATA[Type your snippet here]]&gt;&lt;/content&gt;</div><div class="line">    &lt;!-- Optional: Tab trigger to activate the snippet --&gt;</div><div class="line">    &lt;tabTrigger&gt;hello&lt;/tabTrigger&gt;</div><div class="line">    &lt;!-- Optional: Scope the tab trigger will be active in --&gt;</div><div class="line">    &lt;scope&gt;source.python&lt;/scope&gt;</div><div class="line">    &lt;!-- Optional: Description to show in the menu --&gt;</div><div class="line">    &lt;description&gt;My Fancy Snippet&lt;/description&gt;</div><div class="line">&lt;/snippet&gt;</div></pre></td></tr></table></figure>
+<p>简要介绍一下snippet四个组成部分:</p>
+<ul>
+<li><code>content</code>:其中必须包含<code>&lt;![CDATA[…]]&gt;</code>,否则无法工作, <code>Type your snippet here</code>用来写你自己的代码片段</li>
+<li><code>tabTrigger</code>:用来引发代码片段的字符或者字符串, 比如在以上例子上, 在编辑窗口输入<code>hello</code>然后按下tab就会在编辑器输出<code>Type your snippet here</code>这段代码片段</li>
+<li><code>scope</code>: 表示你的代码片段会在那种语言环境下激活, 比如上面代码定义了<code>source.python</code>, 意思是这段代码片段会在python语言环境下激活.</li>
+<li><code>description</code> :展示代码片段的描述, 如果不写的话, 默认使用代码片段的文件名作为描述</li>
+</ul>
+<h2 id="2-snippet环境变量"><a href="#2-snippet环境变量" class="headerlink" title="#2. snippet环境变量"></a>#2. snippet环境变量</h2><p>列举一下可能用到的环境变量, 这些环境变量是在Sublime中已经预定义的.</p>
+<table>
+<thead>
+<tr>
+<th>环境变量名</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$TM_FILENAME</td>
+<td>用户文件名</td>
+</tr>
+<tr>
+<td>$TM_FILEPATH</td>
+<td>用户文件全路径</td>
+</tr>
+<tr>
+<td>$TM_FULLNAME</td>
+<td>用户的用户名</td>
+</tr>
+<tr>
+<td>$TM_LINE_INDEX</td>
+<td>插入多少列, 默认为0</td>
+</tr>
+<tr>
+<td>$TM_LINE_NUMBER</td>
+<td>一个snippet插入多少行</td>
+</tr>
+<tr>
+<td>$TM_SOFT_TABS</td>
+<td>如果设置translate_tabs_to_spaces : true 则为Yes</td>
+</tr>
+<tr>
+<td>$TM_TAB_SIZE</td>
+<td>每个Tab包含几个空格</td>
+</tr>
+</tbody>
+</table>
+<p>同一通过下面的代码片段进行验证:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">&lt;snippet&gt;</div><div class="line">   &lt;content&gt;&lt;![CDATA[</div><div class="line">=================================</div><div class="line">$TM_FILENAME   用户文件名</div><div class="line">$TM_FILEPATH   用户文件全路径</div><div class="line">$TM_FULLNAME    用户的用户名</div><div class="line">$TM_LINE_INDEX   插入多少列, 默认为0</div><div class="line">$TM_LINE_NUMBER   一个snippet插入多少行</div><div class="line">$TM_SOFT_TABS  如果设置translate_tabs_to_spaces : true 则为Yes</div><div class="line">$TM_TAB_SIZE   每个Tab包含几个空格</div><div class="line">=================================</div><div class="line">]]&gt;&lt;/content&gt;</div><div class="line">    &lt;!-- Optional: Set a tabTrigger to define how to trigger the snippet --&gt;</div><div class="line">    &lt;tabTrigger&gt;hello&lt;/tabTrigger&gt;</div><div class="line">    &lt;!-- Optional: Set a scope to limit where the snippet will trigger --&gt;</div><div class="line">    &lt;scope&gt;source.python&lt;/scope&gt;</div><div class="line">&lt;/snippet&gt;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>验证方式 : 保存自定义snippet,在python文件夹下输入hello按下tab</p>
+</blockquote>
+<h2 id="3-snippet-Fields"><a href="#3-snippet-Fields" class="headerlink" title="#3. snippet Fields"></a>#3. snippet Fields</h2><p>设置<code>Fields</code>, 可以通过tab键循环的改变代码片段的一些值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">&lt;snippet&gt;</div><div class="line">   &lt;content&gt;&lt;![CDATA[</div><div class="line">=================================</div><div class="line">First Name: $1</div><div class="line">Second Name: $2</div><div class="line">Address: $3</div><div class="line">=================================</div><div class="line">]]&gt;&lt;/content&gt;</div><div class="line">    &lt;!-- Optional: Set a tabTrigger to define how to trigger the snippet --&gt;</div><div class="line">    &lt;tabTrigger&gt;hello&lt;/tabTrigger&gt;</div><div class="line">    &lt;!-- Optional: Set a scope to limit where the snippet will trigger --&gt;</div><div class="line">    &lt;scope&gt;source.python&lt;/scope&gt;</div><div class="line">&lt;/snippet&gt;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>验证方式, 在python文件夹下, 输入hello按下tab, 会出现已经定义的代码片段, 不停的按下tab会发现输入光标在$1, $2, $3的位置跳转, 跳转顺序由数字由小到大决定, <code>Shift+Tab</code>可以进行向上跳转, 可以通过<code>Esc</code>结束跳转</p>
+</blockquote>
+<h2 id="4-snippet-Mirrored-Fields"><a href="#4-snippet-Mirrored-Fields" class="headerlink" title="#4. snippet Mirrored Fields"></a>#4. snippet Mirrored Fields</h2><p>设置snippet镜像区域,会使相同编号的位置同时进行编辑</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">&lt;snippet&gt;</div><div class="line">   &lt;content&gt;&lt;![CDATA[</div><div class="line">=================================</div><div class="line">First Name: $1</div><div class="line">Second Name: $1</div><div class="line">Address: $1</div><div class="line">=================================</div><div class="line">]]&gt;&lt;/content&gt;</div><div class="line">    &lt;!-- Optional: Set a tabTrigger to define how to trigger the snippet --&gt;</div><div class="line">    &lt;tabTrigger&gt;hello&lt;/tabTrigger&gt;</div><div class="line">    &lt;!-- Optional: Set a scope to limit where the snippet will trigger --&gt;</div><div class="line">    &lt;scope&gt;source.python&lt;/scope&gt;</div><div class="line">&lt;/snippet&gt;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>验证方法: 在python文件中, 输入hello按下tab,出现代码片段,会出现三行同行编辑的光标, 这时进行编辑可以同时进行三行相同的编辑</p>
+</blockquote>
+<h2 id="5-snippet-Placeholders"><a href="#5-snippet-Placeholders" class="headerlink" title="#5. snippet Placeholders"></a>#5. snippet Placeholders</h2><p>snippet 占位符含义类似于python的默认参数, 通过对Field做出一点修改, 可以定义Field的默认值, 并且可以通过tab键可以对不同的默认值进行修改</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">&lt;snippet&gt;</div><div class="line">   &lt;content&gt;&lt;![CDATA[</div><div class="line">=================================</div><div class="line">First Name: $&#123;1:Guillermo&#125;</div><div class="line">Second Name: $&#123;2:López&#125;</div><div class="line">Address: $&#123;3:Main Street 1234&#125;</div><div class="line">User name: $1</div><div class="line">Environment Variable : $&#123;4:$TM_FILEPATH &#125;  #可以设置默认占位符为环境变量</div><div class="line">Test: $&#123;5:Nested $&#123;6:Placeholder&#125;&#125;</div><div class="line">=================================</div><div class="line">]]&gt;&lt;/content&gt;</div><div class="line">    &lt;!-- Optional: Set a tabTrigger to define how to trigger the snippet --&gt;</div><div class="line">    &lt;tabTrigger&gt;hello&lt;/tabTrigger&gt;</div><div class="line">    &lt;!-- Optional: Set a scope to limit where the snippet will trigger --&gt;</div><div class="line">    &lt;scope&gt;source.python&lt;/scope&gt;</div><div class="line">&lt;/snippet&gt;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>验证方式: 在pyton文件中输入hello,然后按下tab, 输入代码片段后, 两个$1的field可以同时修改默认值, 然后继续按下tab键可以修改$2的默认值…, 还可以占位符设置嵌套</p>
+</blockquote>
+<p>写到这里基本上大家都应该可以根据需求编写简单的snippet了, 恭喜你..</p>
+<h2 id="6-snippet-Substitutions"><a href="#6-snippet-Substitutions" class="headerlink" title="#6. snippet Substitutions"></a>#6. snippet Substitutions</h2><p>高级应用可以使用<a href="http://docs.sublimetext.info/en/latest/extensibility/snippets.html#substitutions" target="_blank" rel="external">Perl的正则表达式</a></p>
+<p>最后送上简单的python的snippet<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line">&lt;snippet&gt;</div><div class="line">    &lt;content&gt;&lt;![CDATA[</div><div class="line">&quot;&quot;&quot;</div><div class="line"></div><div class="line">文档注释</div><div class="line"></div><div class="line">Args : </div><div class="line">    $&#123;1&#125;:</div><div class="line"></div><div class="line">Returns : </div><div class="line">    $&#123;2&#125;:</div><div class="line"></div><div class="line">Raises : </div><div class="line">    $&#123;3&#125;:</div><div class="line"></div><div class="line">&quot;&quot;&quot;</div><div class="line">]]&gt;&lt;/content&gt;</div><div class="line">    &lt;!-- Optional: Set a tabTrigger to define how to trigger the snippet --&gt;</div><div class="line">    &lt;tabTrigger&gt;&quot;&quot;&quot;&lt;/tabTrigger&gt;</div><div class="line">    &lt;!-- Optional: Set a scope to limit where the snippet will trigger --&gt;</div><div class="line">    &lt;scope&gt;source.python&lt;/scope&gt;</div><div class="line">    &lt;!-- Optional: Description to show in the menu --&gt;</div><div class="line">    &lt;description&gt;Documentation Comments&lt;/description&gt;</div><div class="line">&lt;/snippet&gt;</div><div class="line"></div><div class="line">###</div><div class="line">&lt;snippet&gt;</div><div class="line">    &lt;content&gt;&lt;![CDATA[def $&#123;1:foo&#125;():</div><div class="line">    doc = &quot;$&#123;2:The $1 property.&#125;&quot;</div><div class="line">    def fget(self):</div><div class="line">        $&#123;3:return self._$1&#125;</div><div class="line">    def fset(self, value):</div><div class="line">        $&#123;4:self._$1 = value&#125;</div><div class="line">    def fdel(self):</div><div class="line">        $&#123;5:del self._$1&#125;</div><div class="line">    return locals()</div><div class="line">$1 = property(**$1())$0]]&gt;&lt;/content&gt;</div><div class="line">    &lt;tabTrigger&gt;property&lt;/tabTrigger&gt;</div><div class="line">    &lt;scope&gt;source.python&lt;/scope&gt;</div><div class="line">    &lt;description&gt;New Property&lt;/description&gt;</div><div class="line">&lt;/snippet&gt;</div></pre></td></tr></table></figure></p>
+<h2 id="7-拓展阅读和参考链接"><a href="#7-拓展阅读和参考链接" class="headerlink" title="#7. 拓展阅读和参考链接"></a>#7. 拓展阅读和参考链接</h2><p><a href="http://docs.sublimetext.info/en/latest/extensibility/snippets.html" target="_blank" rel="external">Snippets</a><br><a href="http://docs.sublimetext.info/en/latest/extensibility/syntaxdefs.html#scopes-and-scope-selectors" target="_blank" rel="external">Syntax Definitions</a><br><a href="http://www.boost.org/doc/libs/1_56_0/libs/regex/doc/html/boost_regex/syntax/perl_syntax.html" target="_blank" rel="external">Perl Regular Expression Syntax</a><br><a href="http://www.boost.org/doc/libs/1_56_0/libs/regex/doc/html/boost_regex/format/boost_format_syntax.html" target="_blank" rel="external">Boost-Extended Format String Syntax</a></p>
+</div></article></div></section><footer><div class="paginator"><a href="/2014/12/14/Python-多线程/" class="prev">PREV</a><a href="/2014/12/10/Python-Socket网络编程/" class="next">NEXT</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

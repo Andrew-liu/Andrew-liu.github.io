@@ -1,0 +1,55 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Scala模式匹配和Try · Snow Memory | Andrew Liu</title><meta name="description" content="Scala模式匹配和Try - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">Scala模式匹配和Try</h1><div class="post-info">Feb 7, 2016</div><div class="post-content"><p>本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh" target="_blank" rel="external">署名-非商业用途-保持一致</a>的创作共用协议.</p>
+<blockquote>
+<p>2015年最后一天来一发.</p>
+</blockquote>
+<p>从面向对象语言转来学习函数式语言, 疑惑还是非常多的..</p>
+<ul>
+<li>没有<code>return</code>关键字, 默认的最后执行结果返回</li>
+<li>迷一般的模式匹配</li>
+<li><code>map(映射)</code>语法(虽然之前在Python中用过类似的)</li>
+<li>表达式和关键字区别是非常大的.</li>
+<li>还有至今不懂的<code>monad</code></li>
+</ul>
+<a id="more"></a>
+<blockquote>
+<p>模式匹配是数据结构中字符串的一种基本运算, 给定一个子串, 要求在某个字符串中找出与该子串相同的所有子串, 而在Scala中, 模式匹配可以认为针对各种数据结构进行匹配</p>
+</blockquote>
+<h2 id="比switch更强大"><a href="#比switch更强大" class="headerlink" title="比switch更强大"></a>比switch更强大</h2><p>最开始我以为模式匹配用来替代其他语言中的Switch语句的, 后来我发现这个认识太浅薄了, 模式匹配远比Switch强大太多</p>
+<ul>
+<li>不需要明确的在每个逻辑最后追加<code>break</code>, 默认是逻辑匹配后自动break</li>
+<li><code>case _</code>替代其他语言中的<code>default</code>语句. 如果没有不加这句, 比呢器没有匹配的模式, 会抛出<code>MatchError</code>异常</li>
+<li>match表达式可以匹配任意类型的变量</li>
+<li>match不是语句而是<code>表达式</code>, <code>表达式本身是有返回值的!</code></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">def originMatch(name: String) = name match &#123;</div><div class="line">    case &quot;Andrew&quot; =&gt; println(&quot;My name is $name&quot;)</div><div class="line">    case &quot;Andrewliu&quot; =&gt; println(&quot;He name is $name&quot;)</div><div class="line">    case &quot;Liu&quot; =&gt; println(&quot;helloworld&quot;)</div><div class="line">    case _ =&gt; println(&quot;Everything&quot;)</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<h2 id="捕获异常与Try"><a href="#捕获异常与Try" class="headerlink" title="捕获异常与Try"></a>捕获异常与Try</h2><p>scala中的<code>try-catch</code>语句写起来和其他语言是差不多的, 其中异常的处理可以通过case进行具体的异常匹配,然后执行对应的逻辑</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">def tryCatch() = &#123;</div><div class="line">    try &#123;</div><div class="line">      1 / 0</div><div class="line">    &#125; catch &#123;</div><div class="line">      case e: ArithmeticException =&gt; println(&quot;分母为0&quot;)</div><div class="line">    &#125; finally &#123;</div><div class="line">      println(&quot;finally&quot;)</div><div class="line">    &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p><code>try-catch</code>是面向对象语言的常用形式, 那么更加函数式的异常捕获呢? <code>使用Try</code></p>
+<p>Try有两个子类型:</p>
+<ol>
+<li><code>Success[A]</code>: 代表成功的计算</li>
+<li>封装了<code>Throwable</code>的<code>Failure[A]</code>, 代表出错的计算</li>
+</ol>
+<p>如果当前处理逻辑可能导致异常, 可以简单使用<code>Try[A]</code>作为函数的返回类型</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">def tryMethod(name: String): Try[String] = &#123;</div><div class="line">    Try &#123;</div><div class="line">      println(&quot;My name is $name&quot;)</div><div class="line">      throw new IOException(&quot;IOException&quot;)</div><div class="line">    &#125; match &#123;</div><div class="line">      case Success(result) =&gt; Try(&quot;hello world&quot;)</div><div class="line">      case Failure(e) =&gt; println(&quot;hello world, This is a IOException&quot;); Try(&quot;This is a Exception&quot;)</div><div class="line">    &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>此处Success是当Try中逻辑正行执行时执行, 返回为Failure[String], Failure是在Try逻辑中出现异常时, 返回值编程了Failure[String]</p>
+<h2 id="类型匹配"><a href="#类型匹配" class="headerlink" title="类型匹配"></a>类型匹配</h2><p>在Python中使用isinstance来判断变量的类型, 而且必须要要记住对应的<code>type</code>, 每次都要查手册才行.</p>
+<p>模式匹配来进行变量类型的匹配是极为感人的, 并且可以对匹配的变量进行重新命名, 简直感人.</p>
+<p>类型匹配发生在<code>运行期</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">def patternMatch(para: Any): Unit = &#123;</div><div class="line">    para match &#123;</div><div class="line">      case i: Int if i &lt; 0 =&gt; i - 1</div><div class="line">      case i: Int =&gt; i + 1</div><div class="line">      case d: Double if d &lt; 0.0 =&gt; d - 0.1</div><div class="line">      case d: Double =&gt; d + 0.1</div><div class="line">      case text: String =&gt; text + &quot;s&quot;</div><div class="line">      case _ =&gt; println(&quot;Any&quot;)</div><div class="line">    &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>注意case语句中是可以有<code>if语句对变量进行判断</code>, 如果在case后跟着一个变量名, 当条件匹配后, 会将值赋值给这个变量, <code>比如上面的case i: Int if i &lt; 0匹配后, para会赋值给i</code></p>
+</blockquote>
+<h2 id="样式类与模式匹配的结合"><a href="#样式类与模式匹配的结合" class="headerlink" title="样式类与模式匹配的结合"></a>样式类与模式匹配的结合</h2><p><code>模式匹配</code> 解绑一个给定的数据结构, 这都归功于<code>提取器</code>.</p>
+<p>提取器的功能与<code>构造器</code>相反, 提取器从传递给它的对象中提取出构造对象的参数. 在<code>单例对象</code>使用unapply来提取固定数量的对象</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">// 使用unapply方法来提取参数, 当提取多个值时Option中应该包含多个类型</div><div class="line">class MyExtractor(val name: String, val male: String)</div><div class="line">object  MyExtractor &#123;</div><div class="line">  def unapply(extractor: MyExtractor): Option[String] = Some(extractor.name)</div><div class="line">&#125;</div><div class="line"></div><div class="line">// 调用</div><div class="line">def useUnapply(extractor: MyExtractor): String = &#123;</div><div class="line">    case MyExtractor(name, male) =&gt; &quot;hello &quot; + name</div><div class="line">    case _ =&gt; &quot;Not unapply!&quot;</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">// 样本类, 不需要new关键字来创建对象, 并且有构造函数, 并且被设计用于模式匹配</div><div class="line">case class Calculator(brand: String, model: String)</div><div class="line"></div><div class="line">def caseClass(calc: Calculator) = calc match &#123;</div><div class="line">    case Calculator(&quot;hp&quot;, &quot;32G&quot;) =&gt; &quot;good&quot;</div><div class="line">    case Calculator(&quot;apple&quot;, &quot;25G&quot;) =&gt; &quot;better&quot;</div><div class="line">    case Calculator(&quot;xiaomi&quot;, &quot;1G&quot;) =&gt; &quot;bad&quot;</div><div class="line">    case Calculator(_, _) =&gt; &quot;hello world&quot;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>样式类经过优化, 用于模式匹配, 声明样式类时:</p>
+<ul>
+<li>构造器的每个参数默认设置为val </li>
+<li>在半生对象中<code>提供了apply和unapply</code>方法(定义apply方法后, 可以直接通过通过类名调用对象, 定义unapply用于模式匹配)</li>
+</ul>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="https://windor.gitbooks.io/beginners-guide-to-scala/content/chp6-error-handling-with-try.html" target="_blank" rel="external">Scala 初学者指南</a></li>
+<li><a href="http://hongjiang.info/scala-pattern-matching-8/" target="_blank" rel="external">http://hongjiang.info/scala-pattern-matching-1/</a></li>
+</ul>
+</div></article></div></section><footer><div class="paginator"><a href="/2016/02/19/Supervisor使用教程/" class="prev">PREV</a><a href="/2016/01/30/聊聊Redis的订阅发布/" class="next">NEXT</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> MongoDB入门指南-NoSQL · Snow Memory | Andrew Liu</title><meta name="description" content="MongoDB入门指南-NoSQL - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">MongoDB入门指南-NoSQL</h1><div class="post-info">Jun 14, 2015</div><div class="post-content"><p>本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh" target="_blank" rel="external">署名-非商业用途-保持一致</a>的创作共用协议.</p>
+<p>#简介</p>
+<p>NoSQL主要用于Web网站建设, 属于非关系型数据库, 主要解决:</p>
+<ul>
+<li>对数据库的高并发要求</li>
+<li>对海量数据的高效率存储和访问</li>
+<li>对数据库的高可扩展性和高可用性的需求</li>
+</ul>
+<blockquote>
+<p>作为一个面向文档的数据库, <code>MongoDB</code>是一个更加通用的NoSQL方案. 可以认为它是关系数据库的一个替代方案, 提供了<code>高性能, 高可用性, 自动扩展</code></p>
+</blockquote>
+<a id="more"></a>
+<ul>
+<li>一个记录在MongoDB被称为一个<code>文档</code></li>
+<li>一个<code>文档</code>由域(field)和值(value)对组成(可以理解为key-value对)</li>
+<li>值可能又包含其他文档(嵌套概念)</li>
+<li>MongoDB的文档类似与JSON对象</li>
+<li>MongoDB想所有文档存储在<code>Collections</code>中(类似与关系数据库中的表概念)</li>
+<li>MongoDB支持<code>二级索引</code></li>
+</ul>
+<blockquote>
+<p>MongoDB中的文档可以想象成Python中字典数据结构<br>注意掌握索引的应用, 加快大数据时查找速度</p>
+</blockquote>
+<p>#安装</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">#更新brew和brew cask</div><div class="line">$ brew update &amp;&amp; brew upgrade brew-cask &amp;&amp; brew cleanup &amp;&amp; brew cask cleanup</div><div class="line">#使用brew安装mongodb</div><div class="line">$ brew install mongodb</div><div class="line">#在根目录下创建用于数据库写存储数据</div><div class="line">$ mkdir -p /data/db</div><div class="line">#注意查看该目录的权限, 一定要保证是当前用户权限, 而不是root权限</div><div class="line">#运行Mongndb</div><div class="line">$ mongod</div><div class="line">#使用shell操作</div><div class="line">$ mongo</div></pre></td></tr></table></figure>
+<p>#基本操作</p>
+<p>MongoDB不需要创建表操作</p>
+<p>unicorns以及system.indexes。<code>system.indexes</code>在每个数据库中都会创建，它包含了数据库中的索引信息。</p>
+<p><strong>db相关</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"># 查询mongoDB中所有的数据库</div><div class="line">&gt; show dbs</div><div class="line"># 查看当前正在使用的数据库</div><div class="line">&gt; db</div><div class="line"># 切换数据库, 切换到learn数据库</div><div class="line">&gt; use learn</div><div class="line"># 删除当前数据库</div><div class="line">&gt; db.dropDatabase()</div><div class="line"># 查看当前使用的数据库</div><div class="line">&gt; db.getName();</div><div class="line"># 显示当前db状态</div><div class="line">&gt; db.stats();</div><div class="line"># 当前db版本</div><div class="line">&gt; db.version();</div><div class="line"># 查看当前db的链接机器地址</div><div class="line">&gt; db.getMongo();</div></pre></td></tr></table></figure>
+<p><strong>Collection相关</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"># 查看当前数据库下的所有collections</div><div class="line">&gt; show collections </div><div class="line"># 创建一个聚集集合（table）</div><div class="line">&gt; db.createCollection(“collName”, &#123;size: <span class="number">20</span>, capped: <span class="number">5</span>, max: <span class="number">100</span>&#125;);</div><div class="line"># 得到指定名称的聚集集合（table）</div><div class="line">&gt; db.getCollection(<span class="string">"account"</span>);</div><div class="line"># 得到当前db的所有聚集集合</div><div class="line">&gt; db.getCollectionNames();</div><div class="line"># 显示当前db所有聚集索引的状态</div><div class="line">&gt; db.printCollectionStats();</div></pre></td></tr></table></figure>
+<p>##插入</p>
+<ul>
+<li>使用<code>db.collection.insert()</code>向collection(相当于表名)中插入文档(document)</li>
+<li>返回一个WriteResult对象, 包含操作创建</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">db.unicorns.insert(&#123;name: 'Horny', dob: new Date(1992,2,13,7,47), loves: ['carrot','papaya'], weight: 600, gender: 'm', vampires: 63&#125;);</div><div class="line">db.unicorns.insert(&#123;name: 'Aurora', dob: new Date(1991, 0, 24, 13, 0), loves: ['carrot', 'grape'], weight: 450, gender: 'f', vampires: 43&#125;);</div><div class="line">db.unicorns.insert(&#123;name: 'Unicrom', dob: new Date(1973, 1, 9, 22, 10), loves: ['energon', 'redbull'], weight: 984, gender: 'm', vampires: 182&#125;);</div><div class="line">db.unicorns.insert(&#123;name: 'Roooooodles', dob: new Date(1979, 7, 18, 18, 44), loves: ['apple'], weight: 575, gender: 'm', vampires: 99&#125;);</div><div class="line">db.unicorns.insert(&#123;name: 'Solnara', dob: new Date(1985, 6, 4, 2, 1), loves:['apple', 'carrot', 'chocolate'], weight:550, gender:'f', vampires:80&#125;);</div><div class="line">db.unicorns.insert(&#123;name:'Ayna', dob: new Date(1998, 2, 7, 8, 30), loves: ['strawberry', 'lemon'], weight: 733, gender: 'f', vampires: 40&#125;);</div><div class="line">db.unicorns.insert(&#123;name:'Kenny', dob: new Date(1997, 6, 1, 10, 42), loves: ['grape', 'lemon'], weight: 690,  gender: 'm', vampires: 39&#125;);</div><div class="line">db.unicorns.insert(&#123;name: 'Raleigh', dob: new Date(2005, 4, 3, 0, 57), loves: ['apple', 'sugar'], weight: 421, gender: 'm', vampires: 2&#125;);</div><div class="line">db.unicorns.insert(&#123;name: 'Leia', dob: new Date(2001, 9, 8, 14, 53), loves: ['apple', 'watermelon'], weight: 601, gender: 'f', vampires: 33&#125;);</div><div class="line">db.unicorns.insert(&#123;name: 'Pilot', dob: new Date(1997, 2, 1, 5, 3), loves: ['apple', 'watermelon'], weight: 650, gender: 'm', vampires: 54&#125;);</div><div class="line">db.unicorns.insert(&#123;name: 'Nimue', dob: new Date(1999, 11, 20, 16, 15), loves: ['grape', 'carrot'], weight: 540, gender: 'f'&#125;);</div><div class="line">db.unicorns.insert(&#123;name: 'Dunx', dob: new Date(1976, 6, 18, 18, 18), loves: ['grape', 'watermelon'], weight: 704, gender: 'm', vampires: 165&#125;);</div></pre></td></tr></table></figure>
+<p>可以创建一个变量, 保存多个要插入的文档</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">var mydocuments = [</div><div class="line">&#123;name: 'Leia', dob: new Date(2001, 9, 8, 14, 53), loves: ['apple', 'watermelon'], weight: 601, gender: 'f', vampires: 33&#125;,</div><div class="line">&#123;name: 'Dunx', dob: new Date(1976, 6, 18, 18, 18), loves: ['grape', 'watermelon'], weight: 704, gender: 'm', vampires: 165&#125;</div><div class="line">]</div><div class="line">#插入到collection</div><div class="line">db.unicorns.insert(mydocuments)</div></pre></td></tr></table></figure>
+<p>##查找</p>
+<p>查找规则</p>
+<ul>
+<li>默认情况下, 会返回_id域, 可以使用<code>_id:0</code>不映射_id域</li>
+<li>在<code>mongo shell</code>中find默认返回前20个查找到的文档</li>
+<li>使用<code>find()</code>不加任何参数, 等价于find({}), 表示<code>select * from collection</code></li>
+<li>find({<field>:<value>})表示使用一个key-value作为选择条件</value></field></li>
+<li>and条件, find({<field>:<value>, <field> : <value>, …})</value></field></value></field></li>
+<li>or条件, find( $or : [{<field> : <value>}, {<field> : <value>}, …])</value></field></value></field></li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">db.users.find(               #user是collection(相当于关系数据库中的from)</div><div class="line">    &#123; age : &#123; $gt : <span class="number">18</span>&#125; &#125;,   #查询条件(相当与where)</div><div class="line">    &#123; name : <span class="number">1</span>, address : <span class="number">1</span> &#125;#映射域(相当于select后指明的列)</div><div class="line">).limit(<span class="number">5</span>)                   <span class="meta">#cursor修改符</span></div></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">#查找所有体重超过<span class="number">700</span>磅的雄性独角兽的命令</div><div class="line">db.unicorns.find(&#123;gender: <span class="string">'m'</span>, weight: &#123;$gt: <span class="number">700</span>&#125;&#125;)</div><div class="line"><span class="comment">//或者 (效果并不完全一样，仅用来为了演示不同的方法)</span></div><div class="line">db.unicorns.find(&#123;gender: &#123;$ne: <span class="string">'f'</span>&#125;, weight: &#123;$gte: <span class="number">701</span>&#125;&#125;)</div></pre></td></tr></table></figure>
+<blockquote>
+<p><code>$lt、$lte、$gt、$gte以及$ne</code>分别表示小于、小于或等于、大于、大于或等于以及不等于,<code>$exists</code>操作符用于匹配一个域是否存在, $or操作符并作用于需要进行或操作的数组, 更多查询符可以查看<a href="http://docs.mongodb.org/manual/reference/operator/query/#query-selectors" target="_blank" rel="external">Query and Projection Operators</a></p>
+</blockquote>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">db.unicorns.find(&#123;vampires: &#123;$exists: false&#125;&#125;)</div><div class="line"></div><div class="line"># 返回所有或者喜欢苹果，或者喜欢橙子，或者体重小于500磅的雌性独角兽</div><div class="line">db.unicorns.find(&#123;gender: 'f', $or: [&#123;loves: 'apple'&#125;, &#123;loves: 'orange'&#125;, &#123;weight: &#123;$lt: 500&#125;&#125;]&#125;)</div></pre></td></tr></table></figure>
+<ul>
+<li>find的第二个可选参数(<code>该参数是一个列表</code>), 用户指明find读取的域</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">#只返回name域(_id域默认总是返回)</div><div class="line">db.unicorns.find(null, &#123;name : 1&#125;)</div><div class="line">#不返回_id域</div><div class="line">db.unicorns.find(null, &#123;name : 1, _id : 0&#125;)</div></pre></td></tr></table></figure>
+<p>###排序</p>
+<p><code>1表示升序, -1表示降序</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">#只查看名字和体重, 并按照体重降序排序</div><div class="line">db.unicorns.find(null, &#123;name : 1, weight : 1, _id : 0&#125;).sort(&#123;weight : -1&#125;)</div><div class="line">#优先按照名字升序排序再按照吸血降序排序</div><div class="line">db.unicorns.find().sort(&#123;name : 1, vampires : -1&#125;)</div></pre></td></tr></table></figure>
+<p>###计数</p>
+<ul>
+<li>count命令</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#返回吸血大于50的个数</div><div class="line">db.unicorns.count(&#123;vampires : &#123;$gt : 50&#125;&#125;)</div></pre></td></tr></table></figure>
+<p>##更新</p>
+<ul>
+<li><code>update</code>根据所给条件找到文档, 然后用<code>新的文档覆盖找到的整个文档</code></li>
+</ul>
+<p><strong>接收参数:</strong></p>
+<ol>
+<li>查找需要的更新文档的匹配条件</li>
+<li>更新操作</li>
+<li>可选的参数</li>
+</ol>
+<blockquote>
+<p>默认情况下, update()更新单个文档, 如果需要更多多个文档, 使用<code>multi</code>可选参数</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#找到原来name所在域, 替换为体重文档</div><div class="line">db.unicorns.update(&#123;name : &apos;Roooooodles&apos;&#125;, &#123;weight : 590&#125;)</div></pre></td></tr></table></figure>
+<ul>
+<li>mongo的<code>$set</code>修改符可以实现仅改动某个文档的某个值或几个域</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">db.unicorns.update(&#123;name: &apos;Roooooodles&apos;&#125;, &#123;$set : &#123;weight : 590&#125;&#125;)</div></pre></td></tr></table></figure>
+<ul>
+<li><code>$inc</code>修改符激昂一个域值增加一个正或负的值</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">db.unicorns.update(&#123;name: &apos;Pilot&apos;&#125;, &#123;$inc: &#123;vampires: -2&#125;&#125;)</div></pre></td></tr></table></figure>
+<ul>
+<li><code>$push</code>修改符增加一个新的值</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">db.unicorns.update(&#123;name: &apos;Aurora&apos;&#125;, &#123;$push : &#123;love : &apos;sugar&apos;&#125;&#125;)</div></pre></td></tr></table></figure>
+<p>###插新</p>
+<p><code>upsert</code>意思为如果存在则更新, 否则插入, 使用时将update第三个参数设置为true</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">#不存在, 插入</div><div class="line">db.unicorns.update(&#123;name : &apos;liu&apos;&#125;, &#123;$inc : &#123;hit : 1&#125;&#125;, true)</div><div class="line">#再次执行, 则进行+1操作</div><div class="line">db.unicorns.update(&#123;name : &apos;liu&apos;&#125;, &#123;$inc : &#123;hit : 1&#125;&#125;, true)</div><div class="line">#或者设置</div><div class="line">db.unicorns.update(&#123;name : &apos;liu&apos;&#125;, &#123;$inc : &#123;hit : 1&#125;&#125;, &#123;upsert : true&#125;)</div></pre></td></tr></table></figure>
+<p>###多重更新</p>
+<ul>
+<li>将<code>update</code>第四个参数设置为true, 表示对所有文档进行修改</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">db.unicorns.update(&#123;&#125;, &#123;$set : &#123;vaccinated : true&#125;&#125;, false, true)</div><div class="line">#或者设置multi</div><div class="line">db.unicorns.update(&#123;&#125;, &#123;$set : &#123;vaccinated : true&#125;&#125;, &#123;multi : true&#125;)</div></pre></td></tr></table></figure>
+<p>##删除</p>
+<p>删除collection中所有文档, 更高效的删除所有文档是使用<code>drop()</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">db.unicorns.remove(&#123;&#125;)</div><div class="line">#更高效删除drop(), 不需要任何参数</div><div class="line">db.unicorns.drop()</div></pre></td></tr></table></figure>
+<p>删除符合匹配条件的文档</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">db.unicorns.remove(&#123;vaccinated : true&#125;)</div></pre></td></tr></table></figure>
+<p>#索引</p>
+<p>索引的常见组织方式:</p>
+<ul>
+<li>信息(对象/实例)关联一些特征(<code>正向索引</code>)</li>
+<li>每个特征后关联一批信息(对象/实例)(<code>反向索引又称倒排索引</code>)</li>
+</ul>
+<p>MongoDB支持高效的索引查询, 索引是一个<code>数据结构</code>, 它收集collection中文档特定字段的值, MongoDB的查询优化器能够使用这种数据结构快速的对collection的文档进行查询和排序, 索引通过<code>B-Tree</code>实现</p>
+<blockquote>
+<p>在MongoDB 3.0.0版本, ensureIndex()创建索引已经过时(不推荐使用), 请使用<code>createIndex()创建索引</code></p>
+</blockquote>
+<p><strong>索引类型</strong></p>
+<ul>
+<li><code>_id</code>索引(唯一, 默认创建)</li>
+<li>用户自定义升序/降序的单field索引</li>
+<li>复合索引(多field), 其中<code>field出现顺序与索引排序相关</code></li>
+<li>文本索引, 支持查找collection中的string内容</li>
+<li>哈希索引,对field对应的值进行哈希作为索引,(only support equality matches)</li>
+</ul>
+<p><strong>索引特点</strong></p>
+<ul>
+<li>MongoDB中索引是大小写敏感的</li>
+<li>索引保存在system.indexs中, 运行<code>db.system.indexs.find()</code>查看</li>
+</ul>
+<p><a href="http://docs.mongodb.org/manual/core/index-types/" target="_blank" rel="external">MongoDB官方文档的详细描述</a></p>
+<p>##创建索引</p>
+<p><strong>基本索引</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#当索引不存在时以name filed创建单field索引</div><div class="line">db.unicorns.createIndex(&#123;name : 1&#125;)</div></pre></td></tr></table></figure>
+<blockquote>
+<p>field对应的值表示索引类型, 1表示索引为升序, -1表示索引为降序</p>
+</blockquote>
+<p><strong>唯一索引</strong></p>
+<blockquote>
+<p>如果对要创建唯一索引的field, 存在相同的值(value不唯一), 则不能创建唯一索引</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">#以name field创建唯一索引</div><div class="line">db.unicorns.createIndex(&#123;name : 1&#125;, &#123;unique : true&#125;)</div><div class="line">#以a和b field创建唯一复合索引</div><div class="line">db.unicorns.createIndex(&#123;a : 1, b : 1&#125;, &#123;unique : true&#125;)</div><div class="line">#如果一定要创建对有相同值的键创建唯一索引, 让系统保存第一条记录, 其余删除, 使用dropDups参数</div><div class="line">db.unicorns.createIndex(&#123;name : 1&#125;, &#123;unique : true, dropDups : true&#125;)</div></pre></td></tr></table></figure>
+<p><strong>内嵌文档中的key</strong></p>
+<p>MongoDB一个文档中的某个key创建索引</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">db.unicorns.createIndex(&#123;&quot;address.city&quot; : 1&#125;)</div></pre></td></tr></table></figure>
+<p><strong>文档索引</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">db.unicorns.createIndex(&#123;&quot;address&quot; :1 &#125;)</div></pre></td></tr></table></figure>
+<p><strong>复合索引</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#以address中privince, city, postcode, room作为索引</div><div class="line">db.unicorns.createIndex(&#123;&quot;address.province&quot; : 1, &quot;address.city&quot; : 1, &quot;address.postcode&quot; : 1, &quot;addresss.room&quot; : 1&#125;)</div></pre></td></tr></table></figure>
+<p><strong>background索引</strong></p>
+<p>默认情况MongoDB在foreground(前景)中创建索引, 防止创建索引时的读写操作(同步阻塞的概念), 背景(background)允许创建索引的同时读写操作, <code>适用于大批量数据建立索引</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#背景创建索引background参数为true</div><div class="line">db.unicorns.createIndex(&#123;name : 1&#125;, &#123;background : true&#125;)</div></pre></td></tr></table></figure>
+<p><strong>文本索引(important)</strong></p>
+<p>可以对field, 值为字符串或字符串数据的field创建文本索引</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">#对name和subject创建文本索引</div><div class="line">db.unicorns.createIndex(&#123;name : &quot;text&quot;, subject : &quot;text&quot;&#125;)</div><div class="line">#设置所有包含字符串的field为索引, 并命名为TextIndex</div><div class="line">db.unicorns.createIndex(</div><div class="line">    &#123;&quot;$**&quot;: &quot;text&quot;&#125;,</div><div class="line">    &#123;name: &quot;TextIndex&quot;&#125;</div><div class="line">    )</div></pre></td></tr></table></figure>
+<p>##查看索引</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#查看当前collection中所有索引</div><div class="line">db.unicorns.getIndexs()</div></pre></td></tr></table></figure>
+<p>#删除索引</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#删除collection中某个索引</div><div class="line">db.unicorns.dropIndex(&#123;name : 1&#125;)</div></pre></td></tr></table></figure>
+<p>#适用场景和不足</p>
+<p><strong>适用场景</strong></p>
+<ol>
+<li>结构不固定, 有数据的嵌套</li>
+<li>要求高并发性</li>
+<li>频繁的数据水平拆分</li>
+<li>内存大于数据量</li>
+</ol>
+<p><strong>不足之处</strong></p>
+<ol>
+<li>比较占用硬盘空间, 性能受内存影响</li>
+<li>性能依赖内存, 同时无法指定内存大小, 容易被其他程序占用</li>
+<li>MongoDB不支持事务, 不支持join</li>
+<li>每个Document限制是最大不超过4MB</li>
+</ol>
+<p>#pymongo使用</p>
+<p>安装pymongo</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ pip install pymongo</div></pre></td></tr></table></figure>
+<p>简单使用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; from pymongo import MongoClient</div><div class="line">#使用默认的host和port链接数据库</div><div class="line">&gt;&gt;&gt; client = MongoClient()</div><div class="line"># 使用获取learn数据库</div><div class="line">&gt;&gt;&gt; db = client.learn</div><div class="line"># 获取unicorns collections</div><div class="line">&gt;&gt;&gt; collection = db.unicorns</div><div class="line"># 返回一个查询结果</div><div class="line">&gt;&gt;&gt; collection.find_one()</div></pre></td></tr></table></figure>
+<p>#参考链接</p>
+<ul>
+<li><a href="http://zh.wikipedia.org/zh-cn/NoSQL" target="_blank" rel="external">NoSQL</a></li>
+<li><a href="http://zh.wikipedia.org/zh-cn/MongoDB" target="_blank" rel="external">MongoDB</a>  Key/value硬盘存储</li>
+<li><a href="http://zh.wikipedia.org/wiki/Redis" target="_blank" rel="external">Redis</a>   Key/value RAM存储</li>
+<li><a href="http://en.wikipedia.org/wiki/MemcacheDB" target="_blank" rel="external">MemcacheDB</a>Key/value硬盘存储</li>
+<li><a href="https://github.com/justinyhuang/the-little-mongodb-book-cn/blob/master/mongodb.md" target="_blank" rel="external">The Little MongoDB Book</a></li>
+<li><a href="http://docs.mongodb.org/manual/core/introduction/" target="_blank" rel="external">Mongo offical Doc</a></li>
+<li><a href="http://docs.mongodb.org/manual/reference/sql-comparison/" target="_blank" rel="external">SQL to MongoDB Mapping Chart</a></li>
+<li><a href="http://www.cnblogs.com/hoojo/archive/2011/06/01/2066426.html" target="_blank" rel="external">mongoDB 入门指南、示例</a></li>
+</ul>
+</div></article></div></section><footer><div class="paginator"><a href="/2015/06/20/Mac下配置安卓开发环境-Eclipse/" class="prev">PREV</a><a href="/2015/06/07/深入理解计算机系统读书笔记/" class="next">NEXT</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

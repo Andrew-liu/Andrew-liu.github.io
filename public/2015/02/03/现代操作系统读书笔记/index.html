@@ -1,0 +1,174 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 现代操作系统读书笔记 · Snow Memory | Andrew Liu</title><meta name="description" content="现代操作系统读书笔记 - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">现代操作系统读书笔记</h1><div class="post-info">Feb 3, 2015</div><div class="post-content"><p>本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh" target="_blank" rel="external">署名-非商业用途-保持一致</a>的创作共用协议.</p>
+<h2 id="0-绪论"><a href="#0-绪论" class="headerlink" title="#0. 绪论"></a>#0. 绪论</h2><p>多数计算机有两种运行模式: 内核态和用户态</p>
+<ul>
+<li>操作系统运行在内核态(管态, 核心态), 具有对所有硬件的访问权</li>
+<li>用户态下, 只是用机器指令的一个子集(Shell, GUI处在用户态的最低层次)</li>
+</ul>
+<blockquote>
+<p>操作系统提供资源集的清晰抽象, 并管理硬件资源</p>
+</blockquote>
+<ol>
+<li>第一代(1945-1955): 真空管和穿孔卡片</li>
+<li>第二代(1955-1965): 晶体管和批处理系统</li>
+<li>第三代(1965-1980): 集成电路芯片和多道程序设计</li>
+<li>第四代(1980至今): 个人计算机(PC)</li>
+</ol>
+<a id="more"></a>
+<h2 id="1-进程与线程"><a href="#1-进程与线程" class="headerlink" title="#1. 进程与线程"></a>#1. 进程与线程</h2><p>计算机上所有可运行的软件, 通常也包括操作系统, 被组织成若干顺序进程, 简称<code>进程</code></p>
+<p>4种主要事件导致进程的创建:</p>
+<ol>
+<li>系统初始化</li>
+<li>正在执行的进程进行系统调用</li>
+<li>用户请求创建一个新进程</li>
+<li>一个批处理作业的初始化</li>
+</ol>
+<p>4中进程终止:</p>
+<ol>
+<li>正常退出(自愿退出)</li>
+<li>出错退出(自愿退出)</li>
+<li>严重错误(非自愿退出)</li>
+<li>被其他进程杀死(非自愿退出)</li>
+</ol>
+<blockquote>
+<p>父进程和子进程以某种形式保持关联, <code>进程只有一个父进程</code></p>
+</blockquote>
+<p><strong>进程三态及其转化 : 就绪, 执行, 阻塞</strong></p>
+<p>进程有一个地址空间和多个控制线程(又称<code>轻量级进程</code>)</p>
+<ul>
+<li>线程中有一个程序计数器, 记录接下来要执行的指令</li>
+<li>线程拥有寄存器, 保存线程当前的工作变量</li>
+<li>线程拥有堆栈, 记录执行历史, 其中每一帧保存已调用但还没有返回的过程</li>
+</ul>
+<blockquote>
+<p>线程共享进程中的<code>地址空间, 全局变量, 打开文件, 子进程, 即将发生的预警, 信号与信号处理程序, 账户信息</code></p>
+</blockquote>
+<p>三种线程及优缺点:</p>
+<ul>
+<li>用户级线程</li>
+<li>内核级线程</li>
+<li>混合机线程</li>
+</ul>
+<p>##1.1. 进程间通信(IPC)</p>
+<p>怎么避免竞争条件, 进行互斥访问?</p>
+<p>当前主要的解决方案是使用<code>信号量</code></p>
+<p>三大经典IPC问题:</p>
+<ul>
+<li>生产证-消费者问题</li>
+<li><strong>哲学家就餐问题</strong>(注意解法, 互斥访问有限资源的竞争问题)</li>
+<li>读者写者问题(数据库访问问题)</li>
+</ul>
+<p>##1.2. 调度</p>
+<blockquote>
+<p>多个进程或者线程同时竞争CPU, 有两个或者更多的处于就绪状态, 完全选择使用CPU权利的工作的部分叫做调度程序</p>
+</blockquote>
+<p>总体可以分为两大类: 抢占式和非抢占式</p>
+<h2 id="2-存储管理"><a href="#2-存储管理" class="headerlink" title="#2. 存储管理"></a>#2. 存储管理</h2><blockquote>
+<p>保证多个应用程序同时处于内存中并且不相互影响, 需要解决的关键问题: 保护和重定位</p>
+</blockquote>
+<p>地址空间是对内存的抽象.</p>
+<p>交换和虚拟内存:</p>
+<ul>
+<li>交换: 把一个进程<code>完整</code>调入内存, 使该进程运行一段时间, 然后存回内存(交换在内存中产生多个空闲区, 将小的空闲区合成一大块, 称为内存紧缩)</li>
+<li>虚拟内存: 进程在<code>只有一部分</code>被调入内存的情况下运行</li>
+</ul>
+<p>空闲内存的管理:</p>
+<ul>
+<li>位图(查找耗时)</li>
+<li>空闲链表管理方法(首次适配算法, 下次适配算法, 最佳适配算法, 最差适配算法, 快速适配算法)</li>
+</ul>
+<p>##2.1. 虚拟内存</p>
+<p>虚拟内存的基本思想: 每个程序拥有自己的地址空间, 这个空间被分割成多个快, 每块称作一页, 通过MMU将页映射到物理内存.</p>
+<p>加速分页使用TLB<br>对大内存的也表使用多级页表, 倒排页表</p>
+<p>页面置换算法:</p>
+<ul>
+<li>最优算法(理想化)</li>
+<li>NRU, LRU, 老化算法(基于LRU思想)</li>
+<li>FIFO算法, 第二次机会算法(基于FIFO)</li>
+<li>时钟算法</li>
+<li>工作集算法和工作集时钟算法</li>
+</ul>
+<p><strong>缺页终端处理</strong></p>
+<ol>
+<li>硬件陷入内核(中断),在堆栈保存程序计算器(上下文)</li>
+<li>启动汇编代码例程保存通用寄存器和其他易失信息, 以免操作系统被破坏</li>
+<li>操作系统发现缺页终端, 尝试发现需要的虚拟页面(通过硬件或者软件)</li>
+<li>获得缺页终端的虚拟地址, 操作系统检查该地址的有效性, 并检查存取和保护是否一致.</li>
+<li>如果是脏位,安排页写会磁盘, 一旦页框<code>干净</code>了,操作系统检查所需要页面在磁盘上的地址, 通过磁盘操作将其装入.</li>
+<li>当磁盘终端发生, 表示该页已被装入, 页表已经更新可以反映它的位置, 页框标记也正常.</li>
+<li>回复发生缺页中断之前的状态, 程序计算器重新指向这条指令.</li>
+<li>调度引发缺页终端的进程, 操作系统返回调用它的汇编语言例程</li>
+<li>该例程回复寄存器和其他状态信息, 返回到用户空间继续执行, 就像没发生中断一样.</li>
+</ol>
+<p><strong>分页和分段的区别</strong></p>
+<h2 id="3-文件系统"><a href="#3-文件系统" class="headerlink" title="3. 文件系统"></a>3. 文件系统</h2><blockquote>
+<p>文件是进城创建的信息逻辑单元</p>
+</blockquote>
+<p>文件的存取(注意优缺点):</p>
+<ul>
+<li>顺序存取</li>
+<li>随机存取</li>
+</ul>
+<p>文件存储的实现:</p>
+<ol>
+<li>连续分配(实现简单, 读操作性好, 磁盘会变零碎)</li>
+<li>链表分配(充分利用磁盘块, 随机存取慢)</li>
+<li>在内存中采用表的链表分配(文件分配表, 必须把整个表放在内存中)</li>
+<li>i节点(给每个文件赋予一个i节点的数据结构记录磁盘块)</li>
+</ol>
+<p><strong>共享文件中的软链接和硬链接问题</strong></p>
+<p>日志文件系统: 当系统完成即将完成的任务前崩溃时, 重新启动后, 可以查看日志, 获取崩溃前计划完成的任务, 并完成他们.</p>
+<p><code>虚拟文件系统(重要)</code></p>
+<p>##3.1. 磁盘空间管理</p>
+<ul>
+<li>磁盘块的大小设置(一般为4KB)</li>
+<li>跟踪空闲块(位图和空闲链表)</li>
+</ul>
+<p>##3.2. 文件系统性能优化</p>
+<ol>
+<li>使用高速缓存较少磁盘访问次数</li>
+<li>块提前读(主要适用于顺序存取)</li>
+<li>减少磁盘臂运动(将可以一起读到的文件放在同一个柱面)</li>
+</ol>
+<h2 id="4-输出-输出-I-O"><a href="#4-输出-输出-I-O" class="headerlink" title="#4. 输出/输出(I/O)"></a>#4. 输出/输出(I/O)</h2><p>I/O设置大致分为: <code>块设备</code>和<code>字符设备</code></p>
+<p>设备控制器的任务是把串行的位流转换为字节块, 并进行必要的错误校正工作.</p>
+<p>##4.1. DMA</p>
+<ol>
+<li>CPU通过设置DMA控制器的寄存器对它进行编程</li>
+<li>DMA控制器通过在总线上发出一个读请求到磁盘控制器而发起DMA传送</li>
+<li>数据传送, 写到内存</li>
+<li>磁盘控制器在总线上发出一个应答信号到DMA控制器</li>
+<li>完成时, DMA控制器将中断CPU</li>
+</ol>
+<blockquote>
+<p>设备与中断控制器之间的连接实际上使用的是总线上的中断线</p>
+</blockquote>
+<p>中断信号导致CPU停止当前正在做的工作并且开始做其他的事, 地址线上数字被用作指向一个<code>中断向量的表格的索引</code>, 以便读取一个新的程序计数器</p>
+<p>##4.2. I/O三种实现方式</p>
+<ul>
+<li>程序控制I/O</li>
+<li>中断驱动I/O</li>
+<li>使用DMA的I/O</li>
+</ul>
+<p>##4.3. I/O软件层次</p>
+<ol>
+<li>用户级I/O软件</li>
+<li>与设备无关的操作系统软件(执行对所有设备公共的I/O功能, 并且向用户层软件提供统一的接口)</li>
+<li>设备驱动程序(接收来自其上方与设备无关的软件发出的抽象的读写请求)</li>
+<li>中断驱动程序(中断的结果是使先前被阻塞的驱动程序现在能够继续运行)</li>
+<li>硬件</li>
+</ol>
+<h2 id="5-死锁"><a href="#5-死锁" class="headerlink" title="#5. 死锁"></a>#5. 死锁</h2><blockquote>
+<p>资源分为可抢占和不可抢占的. 死锁和不可抢占的资源有关, 有关可抢占的资源的潜在死锁通常可以通过在进程之间重新分配资源而化解.</p>
+</blockquote>
+<p>死锁定义: 如果一个进程集合中的每一个进程都在等待只能由该进程集合中的其他进程才能引发的事件, 那么该进程集合发生死锁.</p>
+<p>死锁的四个必要条件:</p>
+<ul>
+<li>互斥条件</li>
+<li>占有与等待条件</li>
+<li>不可抢占条件</li>
+<li>环路等待条件</li>
+</ul>
+<p>死锁检测可以通过有向图检测环路算法(单个资源), 使用矩阵数据结构算法(多个资源)</p>
+<p>死锁避免: 银行家算法</p>
+<p>死锁预防: (死锁避免本质上是不可能的)可以通过破坏四个必要条件</p>
+</div></article></div></section><footer><div class="paginator"><a href="/2015/02/08/试玩USRP/" class="prev">PREV</a><a href="/2015/01/29/Python源码剖析读书笔记-三/" class="next">NEXT</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

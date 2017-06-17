@@ -1,0 +1,60 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Snow Memory | Andrew Liu</title><meta name="description" content="C++ Developer, Gopher, Pythoner, love open source."><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link active">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><ul class="home post-list"><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2016/04/29/Golang-字符串操作小结/" class="post-title-link">Golang 字符串操作小结</a></h2><div class="post-info">Apr 29, 2016</div><div class="post-content"><p>本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh">署名-非商业用途-保持一致</a>的创作共用协议.</p>
+<blockquote>
+<p>本文形式为, 给出一个函数接口, 然后匹配相关example. 关注函数主要集中在<code>strings</code>和<code>strconv</code></p>
+</blockquote></div><a href="/2016/04/29/Golang-字符串操作小结/" class="read-more">...more</a></article></li><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2016/04/16/6-824-Lab-1-MapReduce-2016/" class="post-title-link">6.824 Lab 1: MapReduce(2016)</a></h2><div class="post-info">Apr 16, 2016</div><div class="post-content"><p>本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh">署名-非商业用途-保持一致</a>的创作共用协议.</p>
+<h2 id="MapReduce框架简介"><a href="#MapReduce框架简介" class="headerlink" title="MapReduce框架简介"></a>MapReduce框架简介</h2><ol>
+<li>应用提供大量输入文件, 一个Map函数, 一个Reduce函数, nReduce个<code>reduce tasks</code>.</li>
+<li>RPC服务器启动, 等该worker注册(Register)RPC中. 任务状态为可执行时, 调度器(Schedule)决定如何把task分配给worker和如何容错.</li>
+<li>Master把每个输入文件作为一个Map任务, 每个任务至少调用一次doMap. 这些任务或者直接执行或者由DoTask RPC发射, 每个对<code>doMap()</code>的调用读取合适的文件, 对每个文件调用map, 对每个map文件最后产生nReduce个文件. </li>
+<li>Master对每个reduce人物至少调用一次<code>doReduce()</code>. doReduce()收集由<code>map</code>产生的nReduce文件(f-*-), 然后对这些文件运行reduce函数. 最终产生nReduce个结果文件.</li>
+<li>Master调用<code>mr.merge()</code>, 合并所有的结果文件为一个输出文件.</li>
+<li>Master发送<code>Shutdown RPC</code>关闭workers, 然后关闭RPC服务器.</li>
+</ol></div><a href="/2016/04/16/6-824-Lab-1-MapReduce-2016/" class="read-more">...more</a></article></li><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2016/04/08/Go-goroutine同步/" class="post-title-link">Go goroutine同步</a></h2><div class="post-info">Apr 8, 2016</div><div class="post-content"><p>本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh">署名-非商业用途-保持一致</a>的创作共用协议.</p>
+<p>出现问题场景: 一个函数run()中包含多个goroutine函数并发, 这些goroutine函数会生成中间文件, 被run()函数运行结束后的check()函数检查. 当goroutine并发时, 并不会阻塞run()的上下文, 可能导致的情况为run()函数执行完毕(<code>但其中的goroutine并发函数没有执行完毕</code>), 导致check()函数执行失败.</p>
+<p><strong>所以我们需要一种操作, 直到当前所有goroutine没有执行完毕, 才进行下一步操作</strong></p>
+<blockquote>
+<p>所以需要<code>goroutine同步</code>, go提供了<code>sync包</code>和<code>channel机制</code>来解决goroutine之间的同步问题</p>
+</blockquote></div><a href="/2016/04/08/Go-goroutine同步/" class="read-more">...more</a></article></li><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2016/04/02/Google-MapReduce/" class="post-title-link">Google MapReduce</a></h2><div class="post-info">Apr 2, 2016</div><div class="post-content"><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><ul>
+<li>开始喜欢看基于工程实践总结出来的paper, 而不是功利性的paper, 没有冗长难懂的数据公式和概率统计的paper.</li>
+<li>并行计算，分布式数据，处理故障的问题与与大量复杂的业务代码掩盖了原来的简单的大数据处理计算。</li>
+<li>MapReduce通过函数式风格代码, 自动和并行的运行在集群中. 系统的运行考虑输入数据的划分, 机器间的程序调度, 处理其中出现的错误(容错), 管理机器间通信.</li>
+<li>MapReduce抽象模型灵感来自于<code>Lisp和其他函数式编程语言</code></li>
+<li>MapReduce的主要贡献: 通过简单又不失强大的接口, 在大规模商用集群中自动并行和分布式的处理大规模计算. MapReduce简单易用, 隐藏了底层的并行, 容错, 局部优化和负载均衡. 很多大数据处理逻辑都可以通过MapReduce来表达.</li>
+</ul></div><a href="/2016/04/02/Google-MapReduce/" class="read-more">...more</a></article></li><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2016/03/27/快学Go/" class="post-title-link">快学Go</a></h2><div class="post-info">Mar 27, 2016</div><div class="post-content"><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><ul>
+<li><code>Go</code>是Google开发的一种静态强类型、编译型，并发型，并具有垃圾回收功能的编程语言</li>
+<li>面向对象三大特性(封装/继承/多态), Go语言仅仅支持封装</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 使用go run test.go, 运行下面源码</span></div><div class="line"><span class="keyword">package</span> main</div><div class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    fmt.Println(<span class="string">"Hello, World"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure></div><a href="/2016/03/27/快学Go/" class="read-more">...more</a></article></li><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2016/03/19/快学Clojure/" class="post-title-link">快学Clojure</a></h2><div class="post-info">Mar 19, 2016</div><div class="post-content"><blockquote>
+<p>Why? 为了更好的了解并发和函数式语言.</p>
+</blockquote>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><ul>
+<li><code>Clojure</code>是一套现代的Lisp语言的动态语言版(Lisp方言)</li>
+<li>函数式语言, 编译型语言</li>
+<li>最开始Clojure运行在JVM上, 所有有很好的扩平台特性.</li>
+<li>函数式语言的<code>不变性</code>使它们很好的支持并发</li>
+</ul></div><a href="/2016/03/19/快学Clojure/" class="read-more">...more</a></article></li><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2016/03/05/Zhihu实习总结/" class="post-title-link">Zhihu实习总结</a></h2><div class="post-info">Mar 5, 2016</div><div class="post-content"><p>Zhihu, 一家真正的互联网基因的公司, 一家搭建传播知识平台的社区, 一个充满朝气和青春的创建公司, 一个最初梦想开始的地方.</p>
+<p>2015年10月下旬, 拿着Zhihu的实习offer, 来了一场说走就走的实习, 想想自己当时还是挺冲动的. 可能是被这家正能量的公司所吸引吧. 第一次踏入国内权利的核心, 以为会遇到各种名人, 看到各种好车, 路过各种高楼大厦. 结果, <code>北京</code>也没有什么出奇的地方, 顶多雾霾比别的城市更严重一些.</p>
+<p>11月2日, 我走入<code>知乎</code>迎接自己实习的第一天, 印象中是一个呆呆的前台小哥接待的我. 如今转眼间五个月就要结束了, 饱含着浓浓的不舍, 不过学校还有些事情需要去处理一下的.</p></div><a href="/2016/03/05/Zhihu实习总结/" class="read-more">...more</a></article></li><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2016/02/19/Supervisor使用教程/" class="post-title-link">Supervisor使用教程</a></h2><div class="post-info">Feb 19, 2016</div><div class="post-content"><p>本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh">署名-非商业用途-保持一致</a>的创作共用协议.</p>
+<p><a href="http://supervisord.org/">Supervisor: 一个进程控制系统</a>, 用来监控类UNIX系统中的进程, 能够方便的启动, 重启, 关闭进程(<code>已经尝试过Python和Scala项目</code>)</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>Supervisor使用Python开发, 必然是可以使用<code>pip</code>进行安装</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ (sudo) pip install supervisor</div></pre></td></tr></table></figure></div><a href="/2016/02/19/Supervisor使用教程/" class="read-more">...more</a></article></li><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2016/02/07/Scala模式匹配和Try/" class="post-title-link">Scala模式匹配和Try</a></h2><div class="post-info">Feb 7, 2016</div><div class="post-content"><p>本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh">署名-非商业用途-保持一致</a>的创作共用协议.</p>
+<blockquote>
+<p>2015年最后一天来一发.</p>
+</blockquote>
+<p>从面向对象语言转来学习函数式语言, 疑惑还是非常多的..</p>
+<ul>
+<li>没有<code>return</code>关键字, 默认的最后执行结果返回</li>
+<li>迷一般的模式匹配</li>
+<li><code>map(映射)</code>语法(虽然之前在Python中用过类似的)</li>
+<li>表达式和关键字区别是非常大的.</li>
+<li>还有至今不懂的<code>monad</code></li>
+</ul></div><a href="/2016/02/07/Scala模式匹配和Try/" class="read-more">...more</a></article></li><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2016/01/30/聊聊Redis的订阅发布/" class="post-title-link">聊聊Redis的订阅发布</a></h2><div class="post-info">Jan 30, 2016</div><div class="post-content"><p>本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh">署名-非商业用途-保持一致</a>的创作共用协议.</p>
+<h2 id="为什么做订阅分布"><a href="#为什么做订阅分布" class="headerlink" title="为什么做订阅分布?"></a>为什么做订阅分布?</h2><p>随着业务复杂, 业务的项目依赖关系增强, 使用消息队列帮助系统<code>降低耦合度</code>.</p>
+<ul>
+<li>订阅分布本身也是一种生产者消费者模式, 订阅者是消费者, 发布者是生产者.</li>
+<li>订阅发布模式, 发布者发布消息后, 只要有订阅方, 则多个订阅方会收到同样的消息</li>
+<li><p>生产者消费者模式,  生产者往队列里放入消息, 由多个消费者对一条消息进行抢占.</p>
+</li>
+<li><p>订阅分布模式可以将一些不着急完成的工作放到其他进程或者线程中进行离线处理.</p>
+</li>
+</ul></div><a href="/2016/01/30/聊聊Redis的订阅发布/" class="read-more">...more</a></article></li></ul></section><footer><div class="paginator"><a href="/page/2/" class="prev">PREV</a><a href="/page/4/" class="next">NEXT</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

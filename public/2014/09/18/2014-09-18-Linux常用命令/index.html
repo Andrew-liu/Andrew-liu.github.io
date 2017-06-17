@@ -1,0 +1,130 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Linux常用命令 · Snow Memory | Andrew Liu</title><meta name="description" content="Linux常用命令 - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">Linux常用命令</h1><div class="post-info">Sep 18, 2014</div><div class="post-content"><p>#1. Linux终端常用命令</p>
+<p>##1.1.1. 文件转码<br>一般转换编码都是用iconv命令来转换，命令格式如下</p>
+<blockquote>
+<p>$iconv -f gb18030 -t utf-8 file1.txt &gt; file2.txt</p>
+</blockquote>
+<p>##1.1.2. 添加手册<br>        发现乌班图还是有很多函数不全，只有一小部分pthread的函数，使用man -k pthread或apropos pthread可以查找到当前manpages中关于pthread的手册。安装manpages-posix-dev就可以了</p>
+<a id="more"></a>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$sudo apt-get install glibc-doc</div><div class="line">$sudo apt-get install manpages-posix manpages-posix-dev</div></pre></td></tr></table></figure>
+<blockquote>
+<p> 关机<br>sudo poweroff<br>sudo  shutdown now -P</p>
+<p>重启<br>sudo reboot</p>
+</blockquote>
+<p>##1.1. 查看所写代码行数<br>当前目录下： </p>
+<blockquote>
+<p>wc -l <em>.c </em>.h </p>
+</blockquote>
+<p>当前目录及子目录： </p>
+<blockquote>
+<p>find . -name <em>.c |xargs wc -l<br>find . -name </em>.cpp | xargs wc -l<br>find . -name *.h |xargs wc -l </p>
+</blockquote>
+<p>统计文件行数（单个文件）： </p>
+<blockquote>
+<p>wc -l file </p>
+</blockquote>
+<hr>
+<p>#2. git常用命令</p>
+<p>理解git里的三个区域概念非常重要。git里很多常用的命令都是围绕着这三个区域来做的。它们分别为：</p>
+<ul>
+<li>working directory，也就是你所操作的那些文件</li>
+<li>history，你所提交的所有记录，文件历史内容等等。git是个分布式版本管理系统，在你本地有项目的所有历史提交记录；文件历史记录；提交日志等等。</li>
+<li>stage(index)，暂存区域，本质上是个文件，也就是.git/index</li>
+</ul>
+<ol>
+<li><p>git clone<br>eg： git clone git://github.com/XXX/XXX.git some_project  (最后为仓库的地址)<br>将’git://github.com/XXX/XXX.git’这个URL地址的远程版本库完全克隆到本地XXX目录下面</p>
+</li>
+<li><p>git init<br>初始化当前目录，初始化后，在当前目录下会出现一个名为 .git 的目录，所有 Git 需要的数据和资源都存放在这个目录中</p>
+</li>
+<li><p>git status<br>查看当前目录相应文件在git下的状态</p>
+</li>
+<li><p>git commit<br>提交当前工作空间的修改内容<br>eg：git commit -m “update code”，<code>提交的时候必须用-m来输入一条提交信息</code></p>
+</li>
+<li><p>git add<br>将当前更改或者新增的文件加入到git的索引中<br>eg：git add test.c 就会增加test.c文件到git的索引中<br>git add .  ——  将当前所有的更改加入到git索引中</p>
+<blockquote>
+<p>staged files are files we have told git that are ready to be committed,暂存区域本质是一个文件，.git/index</p>
+</blockquote>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">git diff --staged  //可以看到暂存区域的变化</div><div class="line">//或者使用下面命令查看暂存区变化</div><div class="line">git ls-files --stage</div><div class="line"></div><div class="line">git  reset filename //从history到stage 从提交记录回到暂存区</div><div class="line">git checkout filename //从stage到work定directory</div></pre></td></tr></table></figure>
+<p><img src="http://codemacro.com/assets/res/git-objects.png" alt="git区域和对象的交互"></p>
+<ol>
+<li><p>git pull</p>
+<blockquote>
+<p>意思就是将远程的代码给拉到本地<br>从其他的版本库(既可以是远程的也可以是本地的)将代码更新到本地<br>eg：’git pull origin master 就是将origin这个版本库的代码更新到本地的master主枝</p>
+</blockquote>
+</li>
+<li><p>git rm<br>从当前的工作空间中和索引中删除文件<br>eg：git rm test.c<br>//删除git add的文件 目录要加上-r<br>git rm –cached file1 //删除文件跟踪但不删除文件系统中的文件file1</p>
+</li>
+<li><p>git push<br>将本地commit的代码更新到远程版本库中(推送的远程的代码仓库中)<br>eg：git push origin 就会将本地的代码更新到名为orgin的远程版本库中</p>
+<pre><code>第一次推送master分支时，加上了-u参数，Git不但会把本地的master分支内容推送的远程新的master分支，还会把本地的master分支和远程的master分支关联起来，在以后的推送或者拉取时就可以简化命令
+</code></pre></li>
+</ol>
+<blockquote>
+<p>第一次使用了-u 命令 以后只使用git push origin master即可</p>
+</blockquote>
+<ol>
+<li>git log , git diff , git reset –hard HEAD^</li>
+</ol>
+<blockquote>
+<p>git log //用于查看提交的每个版本</p>
+<p>git diff //用于查看提交的本版本的改变</p>
+</blockquote>
+<pre><code>在Git中，用HEAD表示当前版本也就是最新的提交,上一个版本就是HEAD^，上上一个版本就是HEAD^^，当然往上100个版本写100个^比较容易数不过来，所以写成HEAD~100。Git在内部有个指向当前版本的HEAD指针，当你回退版本的时候，Git仅仅是把HEAD从指向另一个提交版本的标签.
+</code></pre><blockquote>
+<p>$ git reset –hard HEAD^</p>
+</blockquote>
+<ol>
+<li><p>丢弃工作区的修改</p>
+<pre><code>工作区有一个隐藏目录“.git”
+git add把文件添加进去，实际上就是把文件修改添加到暂存区
+git commit提交更改，实际上就是把暂存区的所有内容提交到当前分支
+</code></pre></li>
+</ol>
+<ul>
+<li>只是修改了文件.但是还没有git add 的时候<blockquote>
+<p>git checkout – file可以丢弃工作区的修改(file是你需要撤销修改的文件名) <code>恢复到最后一次提交时候的状态</code></p>
+</blockquote>
+</li>
+</ul>
+<p><code>git checkout -- file命令中的“--”很重要，没有“--”，就变成了“创建一个新分支”的命令</code></p>
+<pre><code>git checkout其实是用版本库里的版本替换工作区的版本，无论工作区是修改还是删除，都可以“一键还原”。
+</code></pre><ul>
+<li>修改了文件,并且进行了git add<blockquote>
+<p>命令git reset HEAD file可以把暂存区的修改撤销掉（unstage），重新放回工作区</p>
+</blockquote>
+</li>
+</ul>
+<p><code>用HEAD时，表示最新的版本</code></p>
+<ol>
+<li>删除提交到git上的文件</li>
+</ol>
+<p>要从版本库中删除该文件，那就用命令git rm删掉，并且commit</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">//删除某一类文件（包含文件夹中的）使用通配符：*和单引号</div><div class="line">git rm &apos;*.txt&apos;</div></pre></td></tr></table></figure>
+<ol>
+<li>添加,修改，合并分支</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">git branch branchname</div><div class="line">//改变分支</div><div class="line">git checkout clean_up</div><div class="line">//合并分支</div><div class="line">git merge clean_up</div><div class="line">//删除分支</div><div class="line">git branch -d clean_up</div></pre></td></tr></table></figure>
+<hr>
+<p>#3. vim常用命令</p>
+<p>##3.1. <strong>字符串替换</strong></p>
+<p>：n，$s/vivian/sky/g 替换第 n 行开始到最后一行中每一行所有 vivian 为 sky<br>：s/vivian/sky/g 替换当前行所有 vivian 为 sky<br>：%s/vivian/sky/g（等同于 ：g/vivian/s//sky/g） 替换每一行中所有 vivian 为 sky </p>
+<p>##3.2. <strong>简单的光标移动</strong></p>
+<pre><code>0 → 数字零，到行头
+^ → 到本行第一个不是blank字符的位置（所谓blank字符就是空格，tab，换行，回车等）
+$ → 到本行行尾
+g_ → 到本行最后一个不是blank字符的位置。
+/pattern → 搜索 pattern 的字符串（如果搜索出多个匹配，可按n键到下一个）
+</code></pre><p>##3.3. <strong>打开/保存/退出/改变文件</strong></p>
+<pre><code>:e &lt;path/to/file&gt; → 打开一个文件
+:w → 存盘
+:saveas &lt;path/to/file&gt; → 另存为 &lt;path/to/file&gt;
+:x， ZZ 或 :wq → 保存并退出 (:x 表示仅在需要时保存，ZZ不需要输入冒号并回车)
+:q! → 退出不保存 :qa! 强行退出所有的正在编辑的文件，就算别的文件有更改。
+:bn 和 :bp → 你可以同时打开很多文件，使用这两个命令来切换下一个或上一个文件。（n到下一个文件）
+</code></pre><p>##3.4. 分屏split 和 vsplit.</p>
+<p>下面是主要的命令，可以使用VIM的帮助 :help split. 。</p>
+<pre><code>:split → 创建分屏 (:vsplit创建垂直分屏)
+&lt;C-w&gt;&lt;dir&gt; : dir就是方向，可以是 hjkl 或是 ←↓↑→ 中的一个，其用来切换分屏。
+&lt;C-w&gt;_ (或 &lt;C-w&gt;|) : 最大化尺寸 (&lt;C-w&gt;| 垂直分屏)
+&lt;C-w&gt;+ (或 &lt;C-w&gt;-) : 增加尺寸
+</code></pre></div></article></div></section><footer><div class="paginator"><a href="/2014/10/01/2014-10-01-偶遇JavaScript/" class="prev">PREV</a><a href="/2014/09/17/2014-09-17-在ubuntu上14.04上安装OpenCV2.4.9/" class="next">NEXT</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

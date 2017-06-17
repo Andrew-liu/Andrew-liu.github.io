@@ -1,0 +1,160 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 计算机网络自顶向下方法读书笔记 · Snow Memory | Andrew Liu</title><meta name="description" content="计算机网络自顶向下方法读书笔记 - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">计算机网络自顶向下方法读书笔记</h1><div class="post-info">Jan 24, 2015</div><div class="post-content"><blockquote>
+<p>本博文仅作为个人&lt;计算机网络&gt;复习使用, 并没有清楚的描述问题的细节, 主要是为了构建计算机网络知识体系.</p>
+</blockquote>
+<h2 id="1-协议分层"><a href="#1-协议分层" class="headerlink" title="#1. 协议分层"></a>#1. 协议分层</h2><ol>
+<li>应用层: 网络应用程序机器应用层协议留存的地方</li>
+<li>运输层: 提供应用成端点之间传送应用层报文的服务(TCP/UDP)</li>
+<li>网络层: 将数据包的网络层分组从一台主机移动到另一台主机(IP协议族)</li>
+<li>链路层: 将帧从一个网络元素移动到临近的网络元素,数据报从源到目的地,经过不同链路上不同链路层协议处理, 提供的服务取决于应用于该链路的特定链路层协议.(以太网/WiFi/PPP)</li>
+<li>物理层: 将帧一个一个比特从一个节点移动到下一个节点</li>
+</ol>
+<blockquote>
+<p>因特网协议栈比OSI少了两层协议: <code>会话层(数据交换的定界和同步)和表示层(数据压缩/加密/描述)</code>,原因是这两层协议由开发者决定是否重要来进行设计(我认为相当于并入了应用层, 可能一些应用并不需要这两层协议)</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="2-应用层"><a href="#2-应用层" class="headerlink" title="#2. 应用层"></a>#2. 应用层</h2><p>套接字是应用程序进程和运输层协议之间的借口, 通过套接字, 不同端系统的进程可以进行网络通信.套接字是一种软件接口(API)</p>
+<p>##2.1. 客户端服务器模型</p>
+<p>HTTP定义了web客户机如何想web服务器请求web页面, web浏览器实现了HTTP客户端, web服务器(如Apache)实现了HTTP服务器端,HTTP使用TCP作为支撑运输层协议,HTTP是无状态协议</p>
+<ul>
+<li><p>FTP文件传输: FTP客户机在21号端口向服务器发起一个用于控制的TCP链接(持久性链接), FTP客户机通过该控制链接发送用户标识和口令, FTP服务器收到文件传输命令后, 发起一个到客户机的数据链接(非持久性, 每一次文件传输建立一个新的数据链接)</p>
+</li>
+<li><p>邮件发送过程: 从发送方的用户代理开始, 使用SMTP推送到发送防的邮件服务器,邮件服务器创建一个SMTP的TCP链接, 传输(推送)到接收方的邮件服务器, 然后使用POP3/IMAP/HTTP获取到接收方的邮箱中</p>
+</li>
+<li><p>DNS(UDP):核心功能是将主机名转换为IP地址, DNS是由分层的DNS服务器实现的分布式数据库, 是一个循序主机查询分布式数据库的应用层协议</p>
+</li>
+</ul>
+<blockquote>
+<p>首先在注册域名和对应的网站IP地址, 将NS和A记录加入到DNS系统中, 此时任意用户输入域名则通过迭代/递归查询DNS服务器, 然后获得对应IP地址进行访问, 然后端系统对IP建立TCP连接, 发送HTTP请求 从而完成对一个网页的网问</p>
+<p>为发送非ASCII文本, 发送方的用户代理必须在报文中使用附加首部行(MIME)</p>
+</blockquote>
+<p>邮件访问协议: SMTP是推协议, 而要从邮件服务器读取邮件是拉数据过程, 使用POP3, IMAP</p>
+<p><strong>HTTP和STMP的区别</strong></p>
+<ol>
+<li>HTTP是一个pull protocol, 用户使用HTTP从服务器拉取数据 SMTP是push protocol, 发送邮件服务器将文件推向接收邮件服务器</li>
+<li>SMTP要求每个报文使用七位ASCII, HTTP无此限制</li>
+<li>HTTP将对象封装到HTTP响应报文, SMTP将所有报文对象放在一个报文中</li>
+</ol>
+<p>##2.2. P2P</p>
+<p>P2P文件分发: 当一个对等发接收到服务器发送的文件数据时, 它可以利用自己的上传能力重新将数据分发给其他对等方(减小了服务器的上传压力)</p>
+<p>BitTorrent(留下那个的文件分发P2P协议) : 所有对等方(形成集合称为torrent)彼此下载等长度的文件块, 当一个对等方加入集合, 初始无文件块, 随着时间推移,  下载越来越多文件块, 同时对其他对等方上传文件块. torrnet中又一个追踪器</p>
+<blockquote>
+<p>P2P区域中搜索信息: 集中式索引和查询洪泛(分布式), 层次覆盖设计, 分布式散列表</p>
+</blockquote>
+<h2 id="3-运输层"><a href="#3-运输层" class="headerlink" title="#3. 运输层"></a>#3. 运输层</h2><blockquote>
+<p>运输层是在端系统而不是在路由器中实现(提供逻辑端到端传输)</p>
+</blockquote>
+<p>多路分解: 将运输层报文段交付给正确的套接字的工作(套接字唯一的标识进程)<br>多路复用: 从源主机的不同套接字中手机数据块, 每个数据块封装首部生成报文段,将报文段传输到网络层的工作</p>
+<ul>
+<li>可靠数据传输协议rdt3.0是停等协议(导致信道利用率过低)</li>
+<li>流水线可靠传输协议(允许发送方发送多个分组而无需等待确认)差错恢复的两种方法: 回退N步(滑动窗口协议, 累计确认)和选择重传(窗口长度必须小于或等于序号空间的一半)</li>
+</ul>
+<blockquote>
+<p>TCP的可靠数据传输服务确保一个进程从其接收缓存中读到费损坏/无间隔/非冗余/按序的数据流</p>
+<p>TCP的差错恢复机制可以被看做GBN协议与选择重传协议的混合体</p>
+</blockquote>
+<p><strong>对发送方的遏制: 流量控制和拥塞控制</strong></p>
+<p>##3.1. 流量控制</p>
+<blockquote>
+<p>TCP的流量控制服务用来消除发送方使接收方缓存溢出的可能性(<code>发送方维护一个接收窗口</code>)</p>
+</blockquote>
+<p>接收方缓存需满足: 接收的数据大小 - 已读取的数据大小 &lt;= 缓存大小<br>接收窗口(动态) = 缓存大小 - (接收数据大小 - 已读取数据大小)(接口窗口为0时, 发送方持续发送只有一个字节数据的报文段)</p>
+<p>##3.2. 拥塞控制</p>
+<ul>
+<li>端到端拥塞控制(TCP拥塞控制)</li>
+<li>网络辅助的拥塞控制(ATM ARB协议)</li>
+</ul>
+<blockquote>
+<p>TCP让每个发送方根据所感知的网络拥塞程度, 来限制发送流量的速率</p>
+</blockquote>
+<p><code>发送的数据大小 - 已确认的数据大小 &lt;= min{接收窗口, 拥塞窗口}</code>, 限制了发送放中未被确认的数据量</p>
+<p>TCP拥塞控制算法 :</p>
+<ul>
+<li>加性增(每收到一次确认, 拥塞窗口增加一个MSS, 线性增长), 乘性减(出现丢包, 当前拥塞窗口减半)算法, 其中TCP拥塞控制协议的线性增长阶段被称为<code>拥塞避免</code></li>
+<li>慢启动(初始为1MSS, 指数级增长, 每收到一个确认拥塞窗口翻倍, 发生丢包后拥塞窗口减半, 然后线性增长)</li>
+<li>对超时时间做出反应</li>
+</ul>
+<blockquote>
+<p>收到3个ACK进入拥塞避免(快重传, 快速回复), 超时则进入慢启动</p>
+</blockquote>
+<h2 id="4-网络层"><a href="#4-网络层" class="headerlink" title="#4. 网络层"></a>#4. 网络层</h2><blockquote>
+<p>网络层三个主要组件: IP协议, 选路组件, 报告数据包中的差错和对某些网络层信息请求进行相应的设施(ICMP).</p>
+</blockquote>
+<p>网络层的两个主要功能:</p>
+<ul>
+<li>转发: 当一个分组到达某路由器的一条输入链路时, 该路由器必须将该分组移动到合适的输出链路</li>
+<li>路由: 当分组从发送方流入接收方时, 网络层必须决定分组所采用的路由器路径.(路由算法)</li>
+</ul>
+<p><strong>虚电路网络</strong></p>
+<ol>
+<li>虚电路建立</li>
+<li>数据传送</li>
+<li>虚电路拆除</li>
+</ol>
+<p><strong>数据包网络</strong></p>
+<p>##4.1. 路由器工作原理</p>
+<ul>
+<li>输入端口(物理层-&gt;数据链路层-&gt;查找与转发(缓存管理))</li>
+<li>输出端口((缓存管理)查找转发-&gt;数据链路层-&gt;物理层)</li>
+<li>交换结构</li>
+<li>选路处理器(选路协议)</li>
+</ul>
+<p>##4.2. 动态主机配置协议(DHCP)/NAT/ICMP</p>
+<ol>
+<li>DHCP服务器发现</li>
+<li>DHCP服务器提供</li>
+<li>DHCP请求</li>
+<li>DHCP ACK</li>
+</ol>
+<p>NAT路由器上有一张NAT转换表</p>
+<p>一个具有专有地址的地域, 在向外界发送分组时, 基本自身的IP和端口号通过转换表映射到全球因特网IP和新的端口号上, 然后接收到分组时, 通过转换表找到对应的专有地址地域的IP和端口号进行发送.</p>
+<blockquote>
+<p>NAT妨碍了P2P应用, UPnP则允许外界主机使用TCP或UDP向NAT的主机发起通信回话.</p>
+</blockquote>
+<p><strong>ICMP典型用途是差错报告</strong></p>
+<blockquote>
+<p>ICMP作为IP<code>有效荷载(数据)</code>被承载(就像TCP或UDP作为IP有效荷载被承载)</p>
+</blockquote>
+<p>##4.3. 选路算法</p>
+<ul>
+<li>全局选路算法: 链路状态算法(具有全局状态, 网络拓扑和所有链路费用作为Dijkstra算法的输入)</li>
+<li>分布式选路算法: 距离向量算法(没有节点拥有关于所有网络链路费用的完整信息)</li>
+</ul>
+<p>解决规模和管理自治的问题通过将路由器组织进自制系统(AS), 在一个自治系统内运行的选路算法叫做自治系统内部选路协议(RIP, OSPF).自治系统间选路协议(BGP4)用来从相邻AS获取可达性信息以及向该AS的所有路由器传播可达性信息.</p>
+<p>##4.4. 广播和多播</p>
+<p>广播选路: 网络层提供了一个源节点到网络中的所有其他节点交付分组的服务</p>
+<blockquote>
+<p>广播选路算法: N次单播, 洪泛(广播风暴), 受限洪泛(序号控制洪泛, 反向路径转发), 生成树广播</p>
+</blockquote>
+<p>多播选路: 单个源节点能够向其他网络节点的一个<code>子集</code>发送分组的拷贝</p>
+<blockquote>
+<p>多播选路算法: 距离向量多播选路协议</p>
+</blockquote>
+<h2 id="5-数据链路层"><a href="#5-数据链路层" class="headerlink" title="#5. 数据链路层"></a>#5. 数据链路层</h2><blockquote>
+<p>网络层任务是将运输层报文段从源主机端到端的传送到目的主机, 而数据链路层任务是将网络层的数据通过路径中的<code>单段链路节点到节点的传送</code>, 数据报在不同的路径链路上可能由不同链路层协议承载.</p>
+</blockquote>
+<p>可能提供的服务:</p>
+<p>成帧, 链路接入, 可靠交付, 流量控制, 差错检测, 差错纠正, 半双工和全双工</p>
+<blockquote>
+<p>链路层(软硬件的结合体)的主体部分是在<code>网络适配器</code>中实现的</p>
+</blockquote>
+<p>两种类型的网络链路:</p>
+<ul>
+<li>点对点链路(PPP和HDLC)</li>
+<li>广播链路(如何卸掉多个发送和接受节点对一个共享广播信道的访问, <code>多路访问协议</code>)</li>
+</ul>
+<p>##5.1. 多路访问协议</p>
+<ul>
+<li>信号划分协议(TDM, FDM, CDMA)</li>
+<li>随机接入协议(ALOHA协议, CSMA协议)</li>
+<li>轮流协议(轮询协议, 令牌传递协议)</li>
+</ul>
+<p>##5.2. 链路层编址/ARP协议</p>
+<blockquote>
+<p>每个节点的是配置具有链路层地址(MAC地址)</p>
+</blockquote>
+<p>ARP协议将一个IP地址解析为MAC地址</p>
+<p>##5.3. PPP协议</p>
+<blockquote>
+<p>点对点协议是运行于点对点链路之上的链路层协议</p>
+</blockquote>
+</div></article></div></section><footer><div class="paginator"><a href="/2015/01/29/Python源码剖析读书笔记-三/" class="prev">PREV</a><a href="/2015/01/20/Python中logging模块/" class="next">NEXT</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Python代码风格<译> · Snow Memory | Andrew Liu</title><meta name="description" content="Python代码风格&lt;译&gt; - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">Python代码风格<译></h1><div class="post-info">Nov 27, 2014</div><div class="post-content"><hr>
+<blockquote>
+<p>其实翻译并没有想象中那么简单, 在豆瓣上看过很多对于翻译的吐槽, 没有真正去做一件事情就没有资格去评论其中的对与错, 简单的一次翻译体会到了翻译的个中艰辛, 这篇翻译主要起于自己想制定一个适合自己的Python编码规范, 其中内容并没有认真校对, 见谅, 能力有限. 有错误请指出, 感谢.</p>
+</blockquote>
+<p>当你询问一个程序员为什么最爱Python语言, 他们常说它可读性很高. 确实, 高度的可读性是设计Python语言的核心.</p>
+<p>一个使Python代码易读,易理解的原因是Python语言相对完善的编码风格和<code>Pythonic</code>的风格</p>
+<p>并且, 当一个经验丰富的Python开发者指着一段代码说”这段代码不是Pythonic风格”, 这常常意味着这些代码没有遵循一个普遍的代码准则, 没有通过最好的方式表达出它的意图.</p>
+<p>在一些情况下, 没有一个约定的最好方式在Python代码中表达意图, 但这样的情况是比较少的.</p>
+<a id="more"></a>
+<h2 id="1-一般概念"><a href="#1-一般概念" class="headerlink" title="#1. 一般概念"></a>#1. 一般概念</h2><p>##1.1. 代码明确<br>虽然任何类型的<code>黑魔法</code>都可以通过Python实现, 但是最明确和直接的方式是最好的</p>
+<p><strong>Bad</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">make_complex</span><span class="params">(*args)</span>:</span></div><div class="line">    x, y = args</div><div class="line">    <span class="keyword">return</span> dict(**locals())</div></pre></td></tr></table></figure>
+<p><strong>Good</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">make_complex</span><span class="params">(x, y)</span>:</span></div><div class="line">    <span class="keyword">return</span> &#123;<span class="string">'x'</span>: x, <span class="string">'y'</span>: y&#125;</div></pre></td></tr></table></figure>
+<p>在上面优秀的代码中, 函数明确接收调用中x和y, 明确的返回字典. 开发者通过读第一行和最后一行可以知道函数的用法.</p>
+<p>##1.2. 一行一句</p>
+<p>虽然在一些复杂语句中被允许, 并展现这些语句的简洁和表达能力, 例如:列表生成式, 但将不相关的语句放在一行中是很差的代码风格</p>
+<p><strong>Bad</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">print</span> <span class="string">'one'</span>; <span class="keyword">print</span> <span class="string">'two'</span></div><div class="line"></div><div class="line"><span class="keyword">if</span> x == <span class="number">1</span>: <span class="keyword">print</span> <span class="string">'one'</span></div><div class="line"></div><div class="line"><span class="keyword">if</span> &lt;complex comparison&gt; <span class="keyword">and</span> &lt;other complex comparison&gt;:</div><div class="line">    <span class="comment"># do something</span></div></pre></td></tr></table></figure>
+<p><strong>Good</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">print</span> <span class="string">'one'</span></div><div class="line"><span class="keyword">print</span> <span class="string">'two'</span></div><div class="line"></div><div class="line"><span class="keyword">if</span> x == <span class="number">1</span>:</div><div class="line">    <span class="keyword">print</span> <span class="string">'one'</span></div><div class="line"></div><div class="line">cond1 = &lt;complex comparison&gt;</div><div class="line">cond2 = &lt;other complex comparison&gt;</div><div class="line"><span class="keyword">if</span> cond1 <span class="keyword">and</span> cond2:</div><div class="line">    <span class="comment"># do something</span></div></pre></td></tr></table></figure>
+<p>##1.3. 函数参数</p>
+<p>函数的参数可以有四种不同的方式:</p>
+<ol>
+<li>位置参数</li>
+</ol>
+<blockquote>
+<p>位置参数是任意且没有默认值的, 他们是最简单的参数形式, 可以被用少量的函数参数, 用来表达函数意义并且没有参数顺序. 例如, <code>send(message, recipient)</code>或者<code>point(x, y)</code>.</p>
+</blockquote>
+<ol>
+<li>关键字参数</li>
+</ol>
+<blockquote>
+<p>关键字参数有默认值, 常用语函数参数可以可选. 当一个有多于两个或者三个位置函数, 函数样式就难以记忆, 这样使用有默认值的关键字参数是非常有帮助的. 例如, <code>send(message, to, cc = None, bcc = None)</code>. 这里<code>cc和bcc</code>是可选的, 当没有传值时默认为None</p>
+</blockquote>
+<ol>
+<li>任意参数列表</li>
+</ol>
+<blockquote>
+<p>任意参数列表是函数传值的第三种方式, 如果一个函数意图通过定义可扩展数目的位置参数实现更好的表达, 那么可以定义<code>*args</code>参数. 在函数体中, <code>args</code>是所有剩余参数构成的元组. 例如,  <code>send(message, *args)</code>可以通过接受一下形式调用: <code>send(&#39;Hello&#39;, &#39;God&#39;, &#39;Mom&#39;, &#39;Cthulhu&#39;)</code>, 并且在函数体中 <code>args</code> 等于 <code>(&#39;God&#39;, &#39;Mom&#39;, &#39;Cthulhu&#39;)</code>.(就是将除了确定的参数, 剩余参数存储在一个元组中)</p>
+</blockquote>
+<ol>
+<li>关键字参数字典</li>
+</ol>
+<blockquote>
+<p>关键字参数字典是最后一种函数传参, 如果一个函数需要不确定数目的参数, 可以使用<code>**kwargs</code>. 在函数体中<code>kwargs</code>是所有没有在函数定义中定义的参数形成的字典,</p>
+</blockquote>
+<p>由程序员决定在写函数时使用哪一种参数. 如果上面的建议被采纳, 写出</p>
+<ul>
+<li>易读的(名字和参数不需要解释)</li>
+<li>已修改的(增加新的关键字参数不会影响其他部分的代码)</li>
+</ul>
+<p>的参数是可能,也是享受的.</p>
+<hr>
+<p>##1.4. 避免魔杖</p>
+<p><code>Hackers</code>, 强大的工具, Python提供丰富的<code>hooks</code>和<code>tools</code>, 允许做几乎所有令人棘手的技巧. 例如:</p>
+<ul>
+<li>改变对象的创建和初始化</li>
+<li>改变Python解释器引入模块</li>
+<li>在Python中嵌入C语言</li>
+</ul>
+<p>然后, 这些操作都有缺陷, 更好的方式是使用最直接的方式达到目的. 主要的缺陷在于当使用这些方式时, 可读性发生很大改变. 许多代码分析工具, 例如: <code>pylint</code>或者<code>pyflakes</code>不能分析这些<code>Magic</code>代码</p>
+<p>Python开发者应该知道这些近乎无限的可能性, 因为使用这些方式没有不可解决的问题. 但是知道什么时候和怎么样使用他们是非常重要的.</p>
+<p>##1.5. We are all consenting adults</p>
+<p>通过上面知道Python有许多技巧, 其中一些是有潜在危险的.一个好的范例是任何用户都能重写对象的属性和方法: Python中没有<code>private</code>关键字.这种哲学不同于高等编程语言, 如Java, Java中又许多防止滥用的机制.这种哲学在表达<code>We are all consenting adults</code></p>
+<p>Python社区喜欢依赖一系列约定说明, 这些元素是不能直接访问的</p>
+<p>私有属性和实现细节的主要约定是对所有<code>Internals</code>添加前缀下划线,如果用户破坏约定去访问标记元素, 当被修改的代码与客户代码有关, 可能产生任何问题</p>
+<p>使用这些约定是被广泛鼓励的: 任何不想被客户代码使用的属性和方法都应该加上下划线前缀, 这样更易区分责任和修改代码;私有属性公有化总是有可能的, 而公有属性私有化可能更难操作.</p>
+<p>##1.6. 返回值</p>
+<p>当定义负责函数时, 常在函数体中使用多个返回语句. 然而, 为了保证明确的意图和可读性, 应在函数体中避免使用多个返回语句,</p>
+<p>在函数中有两种返回值情况: 当函数正常处理,返回结果; 当一个错误情况产生, 支出错误输入参数或者其他原因导致函数不能完成任务.</p>
+<p>如果在第二种情况不想抛出异常, 应该返回一个例如:<code>None或者False</code>的结果,指明函数没有正常执行. 在这种情况下, 最好返回检测到的错误信息. 这会帮助改善函数结构.</p>
+<p>在正常情况下, 当一个函数中有多个停止点(<code>exit point</code>)时, 会变得很难去调式返回结果, 所以最好保持单个停止点. 这会帮助分离代码路径.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">complex_function</span><span class="params">(a, b, c)</span>:</span></div><div class="line">    <span class="keyword">if</span> <span class="keyword">not</span> a:</div><div class="line">        <span class="keyword">return</span> <span class="keyword">None</span>  <span class="comment"># Raising an exception might be better</span></div><div class="line">    <span class="keyword">if</span> <span class="keyword">not</span> b:</div><div class="line">        <span class="keyword">return</span> <span class="keyword">None</span>  <span class="comment"># Raising an exception might be better</span></div><div class="line">    <span class="comment"># Some complex code trying to compute x from a, b and c</span></div><div class="line">    <span class="comment"># Resist temptation to return x if succeeded</span></div><div class="line">    <span class="keyword">if</span> <span class="keyword">not</span> x:</div><div class="line">        <span class="comment"># Some Plan-B computation of x</span></div><div class="line">    <span class="keyword">return</span> x  <span class="comment"># One single exit point for the returned value x will help</span></div><div class="line">              <span class="comment"># when maintaining the code.</span></div></pre></td></tr></table></figure>
+<h2 id="2-惯用法-Idioms"><a href="#2-惯用法-Idioms" class="headerlink" title="#2. 惯用法(Idioms)"></a>#2. 惯用法(Idioms)</h2><p>编程惯用法是一种代码编写的方式, Python惯用法通常被称为<code>Pythonic</code>.</p>
+<p>下面是一些Python惯用法:</p>
+<p>如果你知道list或者tuple的长度, </p>
+<ol>
+<li>可以通过解包(unpacking)给它的元素命名.例如:<code>enumerate()</code>给list的每个元素提供两个元素的tuple</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> index, item <span class="keyword">in</span> enumerate(some_list):</div><div class="line">    <span class="comment"># do something with index and item</span></div></pre></td></tr></table></figure>
+<ol>
+<li>可以使用下面用法交换元素</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">a, b = b, a</div></pre></td></tr></table></figure>
+<ol>
+<li>嵌套解包任务</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">a, (b, c) = <span class="number">1</span>, (<span class="number">2</span>, <span class="number">3</span>)</div></pre></td></tr></table></figure>
+<ol>
+<li>在Python3中, 引入了一个扩展解包的新方法</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">a, *rest = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</div><div class="line"><span class="comment"># a = 1, rest = [2, 3]</span></div><div class="line">a, *middle, c = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]</div><div class="line"><span class="comment"># a = 1, middle = [2, 3], c = 4</span></div></pre></td></tr></table></figure>
+<ol>
+<li>创建一个可忽略(ignored)变量</li>
+</ol>
+<p>如果需要赋值但不需要变量, 可以使用<code>__</code> (英文标点下的双下划线)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">filename = <span class="string">'foobar.txt'</span></div><div class="line">basename, __, ext = filename.rpartition(<span class="string">'.'</span>)</div></pre></td></tr></table></figure>
+<blockquote>
+<p>Note:</p>
+<blockquote>
+<p>许多Python风格建议使用<code>_</code>(单下划线)而不是双下划线. 单下划线普遍在<code>gettext()</code>函数中用作别名, 也常被用在互动操作中保存最后一次操作的值. 使用双下划线清晰方便, 并能够消除一些使用情况的干扰</p>
+</blockquote>
+</blockquote>
+<ol>
+<li>创建一个长度为N的list, 其中所有的元素相同</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">four_nones = [<span class="keyword">None</span>] * <span class="number">4</span></div></pre></td></tr></table></figure>
+<ol>
+<li>创建一个长度为N的list</li>
+</ol>
+<p>因为list是可变的, *操作对于同样的list创建N引用的list,不会像我们想象中那样(有点疑惑).正确写法应该使用列表生成式</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">four_lists = [[] <span class="keyword">for</span> __ <span class="keyword">in</span> xrange(<span class="number">4</span>)]</div></pre></td></tr></table></figure>
+<ol>
+<li>对<code>空字符串</code>使用<code>str.join()</code>来创建一个字符串是一个普遍用法</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">letters = [<span class="string">'s'</span>, <span class="string">'p'</span>, <span class="string">'a'</span>, <span class="string">'m'</span>]</div><div class="line">word = <span class="string">''</span>.join(letters)</div><div class="line"></div><div class="line"><span class="comment">#这种用法可以用在list和tuple</span></div></pre></td></tr></table></figure>
+<p>有时我们需要在很多东西中搜索, 看一下:list和dictionary</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">d = &#123;<span class="string">'s'</span>: [], <span class="string">'p'</span>: [], <span class="string">'a'</span>: [], <span class="string">'m'</span>: []&#125;</div><div class="line">l = [<span class="string">'s'</span>, <span class="string">'p'</span>, <span class="string">'a'</span>, <span class="string">'m'</span>]</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">lookup_dict</span><span class="params">(d)</span>:</span></div><div class="line">    <span class="keyword">return</span> <span class="string">'s'</span> <span class="keyword">in</span> d</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">lookup_list</span><span class="params">(l)</span>:</span></div><div class="line">    <span class="keyword">return</span> <span class="string">'s'</span> <span class="keyword">in</span> l</div></pre></td></tr></table></figure>
+<p>虽然函数看起来一样, <code>lookup_dict</code>利用哈希表的特性,两者性能完全不同,在list需要遍历每个元素查找,非常耗时. 通过分析字典的哈希, 找到字典中的key非常快速.</p>
+<p>##2.1. Zen of Python</p>
+<p>也被称称为<a href="https://www.python.org/dev/peps/pep-0020" target="_blank" rel="external">PEP 20</a>, Python设计准则</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; import this</div><div class="line">The Zen of Python, by Tim Peters</div><div class="line"></div><div class="line">Beautiful is better than ugly.</div><div class="line">Explicit is better than implicit.</div><div class="line">Simple is better than complex.</div><div class="line">Complex is better than complicated.</div><div class="line">Flat is better than nested.</div><div class="line">Sparse is better than dense.</div><div class="line">Readability counts.</div><div class="line">Special cases aren't special enough to break the rules.</div><div class="line">Although practicality beats purity.</div><div class="line">Errors should never pass silently.</div><div class="line">Unless explicitly silenced.</div><div class="line">In the face of ambiguity, refuse the temptation to guess.</div><div class="line">There should be one-- and preferably only one --obvious way to do it.</div><div class="line">Although that way may not be obvious at first unless you're Dutch.</div><div class="line">Now is better than never.</div><div class="line">Although never is often better than *right* now.</div><div class="line">If the implementation is hard to explain, it's a bad idea.</div><div class="line">If the implementation is easy to explain, it may be a good idea.</div><div class="line">Namespaces are one honking great idea -- let's do more of those!</div></pre></td></tr></table></figure>
+<p>优秀的python的风格范例, 可以看 <a href="http://stackoverflow.com/questions/228181/the-zen-of-python" target="_blank" rel="external">this Stack Overflow question</a> 或者 <a href="http://artifex.org/~hblanks/talks/2011/pep20_by_example.pdf" target="_blank" rel="external">these slides from a Python user group</a></p>
+<p>##2.2. PEP8</p>
+<p><a href="https://www.python.org/dev/peps/pep-0008" target="_blank" rel="external">PEP8</a>是Python编码风格.</p>
+<p>使你的代码遵照PEP8是一个很好的主意, 当团队项目开发时, 使代码一致,<a href="https://github.com/jcrocholl/pep8" target="_blank" rel="external">PEP8 命令行项目</a>帮助你检查代码是否符合PEP8,安装这个工具在命令行运行下面的命令:</p>
+<pre><code>$ pip install pep8
+</code></pre><p>然后在文件或者很多文件中运行,会得到违反PEP8的报告</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$ pep8 optparse.py</div><div class="line">optparse.py:<span class="number">69</span>:<span class="number">11</span>: E401 multiple imports on one line</div><div class="line">optparse.py:<span class="number">77</span>:<span class="number">1</span>: E302 expected <span class="number">2</span> blank lines, found <span class="number">1</span></div><div class="line">optparse.py:<span class="number">88</span>:<span class="number">5</span>: E301 expected <span class="number">1</span> blank line, found <span class="number">0</span></div><div class="line">optparse.py:<span class="number">222</span>:<span class="number">34</span>: W602 deprecated form of raising exception</div><div class="line">optparse.py:<span class="number">347</span>:<span class="number">31</span>: E211 whitespace before <span class="string">'('</span></div><div class="line">optparse.py:<span class="number">357</span>:<span class="number">17</span>: E201 whitespace after <span class="string">'&#123;'</span></div><div class="line">optparse.py:<span class="number">472</span>:<span class="number">29</span>: E221 multiple spaces before operator</div><div class="line">optparse.py:<span class="number">544</span>:<span class="number">21</span>: W601 .has_key() <span class="keyword">is</span> deprecated, use <span class="string">'in'</span></div></pre></td></tr></table></figure>
+<h2 id="3-约定"><a href="#3-约定" class="headerlink" title="#3. 约定"></a>#3. 约定</h2><p>遵循下面的约定会使你的代码可读性更高.</p>
+<ol>
+<li>检查是否变量等于一个常量</li>
+</ol>
+<p>不需要明确的与<code>None, True, 0</code>比较, 只需要直接使用<code>if语句</code>, 那些值被认为是<code>false</code>可以查看<a href="https://docs.python.org/2/library/stdtypes.html#truth-value-testing" target="_blank" rel="external">Truth Value Testing</a></p>
+<p><strong>Bad</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> attr == <span class="keyword">True</span>:</div><div class="line">    <span class="keyword">print</span> <span class="string">'True!'</span></div><div class="line"></div><div class="line"><span class="keyword">if</span> attr == <span class="keyword">None</span>:</div><div class="line">    <span class="keyword">print</span> <span class="string">'attr is None!'</span></div></pre></td></tr></table></figure>
+<p><strong>Good</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Just check the value</span></div><div class="line"><span class="keyword">if</span> attr:</div><div class="line">    <span class="keyword">print</span> <span class="string">'attr is truthy!'</span></div><div class="line"></div><div class="line"><span class="comment"># or check for the opposite</span></div><div class="line"><span class="keyword">if</span> <span class="keyword">not</span> attr:</div><div class="line">    <span class="keyword">print</span> <span class="string">'attr is falsey!'</span></div><div class="line"></div><div class="line"><span class="comment"># or, since None is considered false, explicitly check for it</span></div><div class="line"><span class="keyword">if</span> attr <span class="keyword">is</span> <span class="keyword">None</span>:</div><div class="line">    <span class="keyword">print</span> <span class="string">'attr is None!'</span></div></pre></td></tr></table></figure>
+<ol>
+<li>访问字典元素</li>
+</ol>
+<p>不要使用<code>dict.has_key()</code>方法, 使用<code>x in d</code>语法或者传入一个默认参数到<code>dict.get()</code></p>
+<p><strong>Bad</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">d = &#123;<span class="string">'hello'</span>: <span class="string">'world'</span>&#125;</div><div class="line"><span class="keyword">if</span> d.has_key(<span class="string">'hello'</span>):</div><div class="line">    <span class="keyword">print</span> d[<span class="string">'hello'</span>]    <span class="comment"># prints 'world'</span></div><div class="line"><span class="keyword">else</span>:</div><div class="line">    <span class="keyword">print</span> <span class="string">'default_value'</span></div></pre></td></tr></table></figure>
+<p><strong>Good</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">d = &#123;<span class="string">'hello'</span>: <span class="string">'world'</span>&#125;</div><div class="line"></div><div class="line"><span class="keyword">print</span> d.get(<span class="string">'hello'</span>, <span class="string">'default_value'</span>) <span class="comment"># prints 'world'</span></div><div class="line"><span class="keyword">print</span> d.get(<span class="string">'thingy'</span>, <span class="string">'default_value'</span>) <span class="comment"># prints 'default_value'</span></div><div class="line"></div><div class="line"><span class="comment"># Or:</span></div><div class="line"><span class="keyword">if</span> <span class="string">'hello'</span> <span class="keyword">in</span> d:</div><div class="line">    <span class="keyword">print</span> d[<span class="string">'hello'</span>]</div></pre></td></tr></table></figure>
+<ol>
+<li>列表操作使用简洁方式</li>
+</ol>
+<p><a href="https://docs.python.org/2/tutorial/datastructures.html#list-comprehensions" target="_blank" rel="external">列表生成式</a>提供强大简洁的list工作方式.<code>map()和filter()</code>函数使用不同的, 更简洁的语法操作list</p>
+<p><strong>Bad</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Filter elements greater than 4</span></div><div class="line">a = [<span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]</div><div class="line">b = []</div><div class="line"><span class="keyword">for</span> i <span class="keyword">in</span> a:</div><div class="line">    <span class="keyword">if</span> i &gt; <span class="number">4</span>:</div><div class="line">        b.append(i)</div></pre></td></tr></table></figure>
+<p><strong>Good</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">a = [<span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]</div><div class="line">b = [i <span class="keyword">for</span> i <span class="keyword">in</span> a <span class="keyword">if</span> i &gt; <span class="number">4</span>]</div><div class="line"><span class="comment"># Or:</span></div><div class="line">b = filter(<span class="keyword">lambda</span> x: x &gt; <span class="number">4</span>, a)</div></pre></td></tr></table></figure>
+<p><strong>Bad</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Add three to all list members.</span></div><div class="line">a = [<span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]</div><div class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(len(a)):</div><div class="line">    a[i] += <span class="number">3</span></div></pre></td></tr></table></figure>
+<p><strong>Good</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">a = [<span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]</div><div class="line">a = [i + <span class="number">3</span> <span class="keyword">for</span> i <span class="keyword">in</span> a]</div><div class="line"><span class="comment"># Or:</span></div><div class="line">a = map(<span class="keyword">lambda</span> i: i + <span class="number">3</span>, a)</div></pre></td></tr></table></figure>
+<p>使用<code>enumerate()</code>保持list计数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">a = [<span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]</div><div class="line"><span class="keyword">for</span> i, item <span class="keyword">in</span> enumerate(a):</div><div class="line">    <span class="keyword">print</span> i, item</div><div class="line"><span class="comment"># prints</span></div><div class="line"><span class="comment"># 0 3</span></div><div class="line"><span class="comment"># 1 4</span></div><div class="line"><span class="comment"># 2 5</span></div></pre></td></tr></table></figure>
+<ol>
+<li>读取文件</li>
+</ol>
+<p>使用<code>with open</code>语法读取文件, 会自动关闭读取文件</p>
+<p><strong>Bad</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">f = open(<span class="string">'file.txt'</span>)</div><div class="line">a = f.read()</div><div class="line"><span class="keyword">print</span> a</div><div class="line">f.close()</div></pre></td></tr></table></figure>
+<p><strong>Good</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">with</span> open(<span class="string">'file.txt'</span>) <span class="keyword">as</span> f:</div><div class="line">    <span class="keyword">for</span> line <span class="keyword">in</span> f:</div><div class="line">        <span class="keyword">print</span> line</div></pre></td></tr></table></figure>
+<p><code>with</code>语句更好是因为它总是会去确定你的文件是否关闭, 即使<code>with</code>中引发异常</p>
+<ol>
+<li>连接行</li>
+</ol>
+<p>当一个逻辑行长度超过可接受的限制, 需要划分为多行, 如果一行最后一个字符是<code>反斜线\</code>,Python解释器会连接下一行.这在一些情况下很有帮助, 但是它<code>非常脆弱</code>应该避免使用: 在行末反斜线加一个空格,会破坏代码并可能产生意外结果.</p>
+<p>一个更好的解决方案是使用圆括号括住代码. 没有匹配的圆括号.使用中括号和花括号也能起到效果.</p>
+<p><strong>Bad</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">my_very_big_string = <span class="string">"""For a long time I used to go to bed early. Sometimes, \</span></div><div class="line">    when I had put out my candle, my eyes would close so quickly that I had not even \</div><div class="line">    time to say “I’m going to sleep.”"""</div><div class="line"></div><div class="line"><span class="keyword">from</span> some.deep.module.inside.a.module <span class="keyword">import</span> a_nice_function, another_nice_function, \</div><div class="line">    yet_another_nice_function</div></pre></td></tr></table></figure>
+<p><strong>Good</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">my_very_big_string = (</div><div class="line">    <span class="string">"For a long time I used to go to bed early. Sometimes, "</span></div><div class="line">    <span class="string">"when I had put out my candle, my eyes would close so quickly "</span></div><div class="line">    <span class="string">"that I had not even time to say “I’m going to sleep.”"</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="keyword">from</span> some.deep.module.inside.a.module <span class="keyword">import</span> (</div><div class="line">    a_nice_function, another_nice_function, yet_another_nice_function)</div></pre></td></tr></table></figure>
+<p>然后, 更多时候对于很长的逻辑行并没有划分, 你试图在一行做更多的事情, 这会妨碍可读性.</p>
+<p>翻译结束…</p>
+<p><a href="http://docs.python-guide.org/en/latest/writing/style/#code-style" target="_blank" rel="external">Code Style</a></p>
+</div></article></div></section><footer><div class="paginator"><a href="/2014/11/28/Python编码规范/" class="prev">PREV</a><a href="/2014/11/25/Sublime-Text-3使用心得/" class="next">NEXT</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

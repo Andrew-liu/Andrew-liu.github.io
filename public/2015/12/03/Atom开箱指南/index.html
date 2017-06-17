@@ -1,0 +1,222 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Atom开箱指南 · Snow Memory | Andrew Liu</title><meta name="description" content="Atom开箱指南 - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">Atom开箱指南</h1><div class="post-info">Dec 3, 2015</div><div class="post-content"><p>本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh" target="_blank" rel="external">署名-非商业用途-保持一致</a>的创作共用协议.</p>
+<h2 id="简介和安装"><a href="#简介和安装" class="headerlink" title="简介和安装"></a>简介和安装</h2><p><img src="http://ww4.sinaimg.cn/large/ab508d3djw1eymt6nor7uj21kw0xzqdr.jpg" alt="大图"></p>
+<blockquote>
+<p>狗带一个官方简介: Atom是一个现代文本编辑器, 高度可定制而不需要写烦人的配置文件, <code>另外Github出品必属精品, 现在应该是社区推动了</code>, 我是世界最大男性交友网站的脑残粉…</p>
+</blockquote>
+<ul>
+<li>自带包管理<code>apm</code></li>
+<li>智能补全, 预装文件浏览树</li>
+<li>跨平台编辑(好像我在说废话, 有名的Editor都能做到这些</li>
+<li>颜控必备, 丰富UI和语法高亮, 还能自己进行配置</li>
+<li>听说对前端开发很友好</li>
+</ul>
+<a id="more"></a>
+<ul>
+<li>直接<a href="https://atom.io/" target="_blank" rel="external">Atom官方</a>下载app.</li>
+<li>使用 <a href="https://github.com/caskroom/homebrew-cask" target="_blank" rel="external">homebrew-cask</a>安装.</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># 通过brew安装cask</div><div class="line">$ brew install caskroom/cask/brew-cask</div><div class="line"># 使用cask安装Atom</div><div class="line">$ brew cask install atom</div></pre></td></tr></table></figure>
+<h2 id="修改设置"><a href="#修改设置" class="headerlink" title="修改设置"></a>修改设置</h2><blockquote>
+<p>Atom基本是可以开箱即用的, 不过还需要修改一些小设置</p>
+</blockquote>
+<ul>
+<li><code>Preferences</code>-&gt;<code>Settings</code>-&gt;选取<code>Soft Tabs</code></li>
+<li><code>Tab Length: 4</code></li>
+</ul>
+<p><strong>即设置Tab使用4个空格</strong></p>
+<h2 id="常用快捷键"><a href="#常用快捷键" class="headerlink" title="常用快捷键"></a>常用快捷键</h2><table>
+<thead>
+<tr>
+<th>快捷键</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>shift + cmd + p</code></td>
+<td>命令版(可以看到所有快捷键)</td>
+</tr>
+<tr>
+<td><code>alt + shift + s</code></td>
+<td>查看文件相关语言的代码块(snippet)</td>
+</tr>
+<tr>
+<td><code>cmd + f</code></td>
+<td>搜索当前文件</td>
+</tr>
+<tr>
+<td><code>cmd+shift+f</code></td>
+<td>搜索整个项目</td>
+</tr>
+<tr>
+<td><code>alt + cmd + [</code></td>
+<td>代码折叠, 我不喜欢用</td>
+</tr>
+<tr>
+<td><code>alt + cmd + ]</code></td>
+<td>代码展开</td>
+</tr>
+<tr>
+<td><code>cmd + /</code></td>
+<td>快速注释当前行</td>
+</tr>
+<tr>
+<td><code>cmd + [</code></td>
+<td>代码左缩进</td>
+</tr>
+<tr>
+<td><code>cmd + ]</code></td>
+<td>代码右缩进</td>
+</tr>
+<tr>
+<td><code>cmd + b</code></td>
+<td>快速跳转打开的文件</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th><strong>光标移动</strong>快捷键</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>alt+B或alt+left</code></td>
+<td>光标按单词左移</td>
+</tr>
+<tr>
+<td><code>alt+F或alt+right</code></td>
+<td>光标按单词右移</td>
+</tr>
+<tr>
+<td><code>cmd+right或ctrl+e</code></td>
+<td>光标移动到行最右最后一个非空字符</td>
+</tr>
+<tr>
+<td><code>cmd+left或ctrl+a</code></td>
+<td>光标移动到行最左第一个非空字符</td>
+</tr>
+<tr>
+<td><code>cmd + up</code></td>
+<td>光标移动到文件头</td>
+</tr>
+<tr>
+<td><code>cmd + down</code></td>
+<td>贯标移动到文件尾</td>
+</tr>
+<tr>
+<td><code>ctrl + g</code></td>
+<td>行跳转, 语法为行号:列号</td>
+</tr>
+<tr>
+<td><code>cmd + r</code></td>
+<td>按当前文件方法跳转</td>
+</tr>
+<tr>
+<td><code>cmd + t</code></td>
+<td>全项目模糊查找关键字并跳转</td>
+</tr>
+<tr>
+<td><code>ctrl + m</code></td>
+<td>按照括号匹配跳转</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>书签功能: 通过<code>cmd + F2</code>给某一行设置书签, 书签的标志出现在行号右侧, 通过<code>F2</code>进行书签跳转. <code>此功能超赞</code></p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th><strong>选择和编辑快捷键</strong></th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ctrl+shift+p</code></td>
+<td>向上选中行</td>
+</tr>
+<tr>
+<td><code>ctrl+shift+n</code></td>
+<td>向下选中行</td>
+</tr>
+<tr>
+<td><code>cmd + a</code></td>
+<td>选中整个文本</td>
+</tr>
+<tr>
+<td><code>cmd + l</code></td>
+<td>选中整行</td>
+</tr>
+<tr>
+<td><code>cmd + d</code></td>
+<td>多重选中, 用过sublime的都很熟悉</td>
+</tr>
+<tr>
+<td><code>ctrl+shit+k</code></td>
+<td>删除整行</td>
+</tr>
+<tr>
+<td><code>cmd + delete</code></td>
+<td>删除光标到行首</td>
+</tr>
+<tr>
+<td><code>alt + delete</code></td>
+<td>按单词删除</td>
+</tr>
+</tbody>
+</table>
+<h2 id="推荐插件"><a href="#推荐插件" class="headerlink" title="推荐插件"></a>推荐插件</h2><blockquote>
+<p>插件的安装推荐使用<code>apm</code>, (不要直接用setting中install装, 会爆炸的… Ps: Python党多装python相关插件</p>
+</blockquote>
+<p><strong>Atom包管理用法:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"># 安装指定包</div><div class="line">$ apm install &lt;package_name&gt;</div><div class="line"># 安装指定版本的包</div><div class="line">$ apm install &lt;package_name&gt;@&lt;package_version&gt;</div><div class="line"># 查找包</div><div class="line">$ apm search &lt;package_name&gt;</div><div class="line"># 查看包更多详情</div><div class="line">$ apm view &lt;packge_name&gt;</div><div class="line"># 查看当前已安装包(包含默认Atom捆绑和个人安装)</div><div class="line">$ apm list</div></pre></td></tr></table></figure>
+<p><strong>首先祭出个人已安装的package列表,然后一一介绍</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">/Users/andrew_liu/.atom/packages (9)</div><div class="line">├── activate-power-mode@0.3.2</div><div class="line">├── autocomplete-python@1.0.1</div><div class="line">├── emmet@2.3.16</div><div class="line">├── linter@1.11.3</div><div class="line">├── linter-flake8@1.9.2</div><div class="line">├── linter-pep8@1.0.1</div><div class="line">├── python-tools@0.6.7</div><div class="line">├── script@3.2.0</div><div class="line">└── seti-ui@0.8.1</div></pre></td></tr></table></figure>
+<ul>
+<li>代码爆炸效果插件 <a href="https://atom.io/packages/activate-power-mode" target="_blank" rel="external">activate-power-mode</a></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ apm install activate-power-mode</div></pre></td></tr></table></figure>
+<p>代码爆炸式, 编辑器也会同时发生晃动, 现在已经有了解决方案<a href="https://github.com/JoelBesada/activate-power-mode/issues/63" target="_blank" rel="external">编辑器同时晃动解决方案</a>.</p>
+<p>效果不多说, <a href="https://github.com/JoelBesada/activate-power-mode" target="_blank" rel="external">效果链接</a>, 装逼必备, 不过编辑器晃得眼晕</p>
+<ul>
+<li>代码风格审查 <a href="https://atom.io/packages/linter" target="_blank" rel="external">linter</a></li>
+</ul>
+<blockquote>
+<p>注意: 安装linter需要安装相关语言代码的风格审查工具才能生效, <a href="http://atomlinter.github.io/" target="_blank" rel="external">全语言风格审查列表</a></p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ apm linter</div><div class="line">$ (sudo) pip install pep8</div><div class="line">$ (sudo) pip install flake8</div><div class="line"># 安装插件</div><div class="line">$ apm install pep8</div><div class="line">$ apm install linter-flake8</div></pre></td></tr></table></figure>
+<ul>
+<li>前端神器 <a href="https://github.com/emmetio/emmet-atom" target="_blank" rel="external">emmet</a></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ apm install emmet</div></pre></td></tr></table></figure>
+<p>不多说了, <a href="http://andrewliu.in/2014/11/25/Sublime-Text-3%E4%BD%BF%E7%94%A8%E5%BF%83%E5%BE%97/#5-2-_其他插件">传送门: 使用emmet</a></p>
+<ul>
+<li>函数定义跳转 <a href="https://atom.io/packages/python-tools" target="_blank" rel="external">python-tools</a></li>
+</ul>
+<p>支持快速变量重命名, 快速函数定义跳转(<code>ctrl+alt+g</code>), 选中string文本</p>
+<ul>
+<li>Python自动补全 <a href="https://atom.io/packages/autocomplete-python" target="_blank" rel="external">autocomplete-python</a></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ apm install python-tools</div></pre></td></tr></table></figure>
+<p>官方Atom插件中已经捆绑了<code>language-python插件</code>.  不过此插件提供了更强大变量名函数和标准库的补全.</p>
+<ul>
+<li>脚本运行 script</li>
+</ul>
+<p>通过文件名(<code>cmd + i</code>), 选中的代码或者行号来运行代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ apm install script</div></pre></td></tr></table></figure>
+<p><img src="http://ww4.sinaimg.cn/large/ab508d3djw1eymtu4t7quj20w612gtei.jpg" alt="运行脚本"></p>
+<ul>
+<li>编程语言图标定制主题 <a href="https://atom.io/themes/seti-ui" target="_blank" rel="external">seti-ui</a></li>
+</ul>
+<p>一个针对编程语言文件的图标进行定制的UI主题, 另有搭配的<a href="https://atom.io/themes/seti-syntax" target="_blank" rel="external">语法高亮主题</a></p>
+<p><img src="http://ww3.sinaimg.cn/large/ab508d3djw1eymtzmkbjrj216u10wgsx.jpg" alt="样式"></p>
+<p><code>Ps</code>: 没有提到Git相关插件, 因为本人喜欢用命令行git.</p>
+<blockquote>
+<p>解锁更多姿势可以查看<code>Atom官方文档</code></p>
+</blockquote>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="https://atom.io/docs" target="_blank" rel="external">Atom官方文档直通车</a><br><a href="http://andrewliu.in/2014/11/25/Sublime-Text-3%E4%BD%BF%E7%94%A8%E5%BF%83%E5%BE%97/#0-_设置subl命令行">Sublime Text 2/3使用心得</a></p>
+</div></article></div></section><footer><div class="paginator"><a href="/2015/12/12/Python单元测试和Mock测试/" class="prev">PREV</a><a href="/2015/11/27/计算机研究生到底该怎么读/" class="next">NEXT</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

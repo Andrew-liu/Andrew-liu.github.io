@@ -1,0 +1,80 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Mac下安装HBase及详解 · Snow Memory | Andrew Liu</title><meta name="description" content="Mac下安装HBase及详解 - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">Mac下安装HBase及详解</h1><div class="post-info">Apr 19, 2015</div><div class="post-content"><p>本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh" target="_blank" rel="external">署名-非商业用途-保持一致</a>的创作共用协议.</p>
+<h2 id="1-千篇一律的HBase简介"><a href="#1-千篇一律的HBase简介" class="headerlink" title="#1. 千篇一律的HBase简介"></a>#1. 千篇一律的HBase简介</h2><p>HBase是Hadoop的数据库, 而Hive数据库的管理工具, HBase具有<code>分布式, 可扩展及面向列存储</code>的特点(<strong>基于谷歌BigTable</strong>). HBase可以使用本地文件系统和HDFS文件存储系统, 存储的是松散的数据(<strong>key-value的映射关系</strong>).</p>
+<blockquote>
+<p>HBase位于HDFS的上层, 向下提供存储, 向上提供运算</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="2-HBase安装"><a href="#2-HBase安装" class="headerlink" title="#2. HBase安装"></a>#2. HBase安装</h2><blockquote>
+<p>HBase有单机, 伪分布式, 全分布式运行模式</p>
+</blockquote>
+<p>依赖:</p>
+<ul>
+<li>匹配HBase的Hadoop版本</li>
+<li>Java JDK 1.6+</li>
+<li>SSH</li>
+</ul>
+<p><strong>安装</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ brew install hbase</div><div class="line"># 安装在/usr/local/Cellar/hbase/1.0.0</div></pre></td></tr></table></figure>
+<p><strong>配置HBase</strong></p>
+<p>在<code>conf/hbase-env.sh</code>设置JAVA_HOME</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ cd /usr/local/Cellar/hbase/1.0.0/libexec/conf</div><div class="line">$ vim hbase-env.sh</div><div class="line"></div><div class="line">export JAVA_HOME=&quot;/usr/bin/java&quot;</div></pre></td></tr></table></figure>
+<p>在<code>conf/hbase-site.xml</code>设置HBase的核心配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">$ vim hbase-site.xml</div><div class="line"></div><div class="line">&lt;configuration&gt;</div><div class="line">  &lt;property&gt;</div><div class="line">    &lt;name&gt;hbase.rootdir&lt;/name&gt;</div><div class="line">    //这里设置让HBase存储文件的地方</div><div class="line">    &lt;value&gt;file:///Users/andrew_liu/Downloads/hbase&lt;/value&gt;</div><div class="line">  &lt;/property&gt;</div><div class="line">  &lt;property&gt;</div><div class="line">    &lt;name&gt;hbase.zookeeper.property.dataDir&lt;/name&gt;</div><div class="line">    //这里设置让HBase存储内建zookeeper文件的地方</div><div class="line">    &lt;value&gt;/Users/andrew_liu/Downloads/zookeeper&lt;/value&gt;</div><div class="line">  &lt;/property&gt;</div><div class="line">&lt;/configuration&gt;</div></pre></td></tr></table></figure>
+<p><code>/usr/local/Cellar/hbase/1.0.0/bin/start-hbase.sh</code>提供HBase的启动</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ ./start-hbase.sh                                          </div><div class="line">starting master, logging to /usr/local/Cellar/hbase/1.0.0/libexec/bin/../logs/hbase-andrew_liu-master-Andrew-liudeMacBook-Pro.local.out</div></pre></td></tr></table></figure>
+<p><strong>验证是否安装成功</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ jps</div><div class="line"></div><div class="line">3440 Jps</div><div class="line">3362 HMaster # 有HMaster则说明安装成功</div><div class="line">1885</div></pre></td></tr></table></figure>
+<p><strong>启动HBase Shell</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">$ ./bin/hbase shell</div><div class="line"></div><div class="line">HBase Shell; enter &apos;help&lt;RETURN&gt;&apos; for list of supported commands.</div><div class="line">Type &quot;exit&lt;RETURN&gt;&quot; to leave the HBase Shell</div><div class="line">Version 1.0.0, r6c98bff7b719efdb16f71606f3b7d8229445eb81, Sat Feb 14 19:49:22 PST 2015</div><div class="line"></div><div class="line">1.8.7-p357 :001 &gt;</div><div class="line">1.8.7-p357 :001 &gt; exit  #退出shell</div></pre></td></tr></table></figure>
+<p><strong>停止HBase运行</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ ./bin/stop-hbase.sh</div><div class="line">stopping hbase....................</div></pre></td></tr></table></figure>
+<p>#3. 伪分布式模式</p>
+<blockquote>
+<p>必须关闭HBase</p>
+</blockquote>
+<p>修改hbase-env.sh</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">HBASE_MANAGE_ZK = true</div></pre></td></tr></table></figure>
+<p>修改hbase-site.xml, 设置HBase使用分布式模式运行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">&lt;configuration&gt;</div><div class="line">  &lt;property&gt;</div><div class="line">    &lt;name&gt;hbase.rootdir&lt;/name&gt;</div><div class="line">    //Here you have to set the path where you want HBase to store its files.</div><div class="line">    &lt;value&gt;hdfs://localhost:8020/hbase&lt;/value&gt;</div><div class="line">  &lt;/property&gt;</div><div class="line">  &lt;property&gt;</div><div class="line">    &lt;name&gt;hbase.cluster.distributed&lt;/name&gt;</div><div class="line">  &lt;value&gt;true&lt;/value&gt;</div><div class="line">&lt;/property&gt;</div><div class="line">&lt;/configuration&gt;</div></pre></td></tr></table></figure>
+<blockquote>
+<p><code>hbase.rootdir</code>路径一定要跟hadoop中<code>core-site.xml</code>中fs.default.name相同</p>
+<p> <strong>change the hbase.rootdir from the local filesystem to the address of your HDFS instance</strong>  —offical quick start</p>
+<p>在启动HBase之前, 请先启动Hadoop, 使之运行</p>
+</blockquote>
+<p>启动HBase</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">$ ./start-hbase.sh</div><div class="line">$ jps  #验证是否启动成功, 包含HMaster和HRegionServer说明启动成功</div><div class="line"></div><div class="line">6400 DataNode</div><div class="line">7872 Jps</div><div class="line">7702 HMaster  </div><div class="line">7624 HQuorumPeer</div><div class="line">6315 NameNode</div><div class="line">6508 SecondaryNameNode</div><div class="line">6716 NodeManager</div><div class="line">7804 HRegionServerHBase </div><div class="line">6623 ResourceManager</div></pre></td></tr></table></figure>
+<p>如果在启动HBase后, 提示如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">regionserver running as process 4667. Stop it first.</div><div class="line">#请执行以下操作</div><div class="line">$ kill -9 4667  #这里4667是要杀掉的进程号</div></pre></td></tr></table></figure>
+<p>启动成功HBase会在HDFS下创建/hbase目录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hdfs dfs -ls /hbase</div></pre></td></tr></table></figure>
+<h2 id="4-HBase-Shell"><a href="#4-HBase-Shell" class="headerlink" title="#4. HBase Shell"></a>#4. HBase Shell</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">$ hbase shell  #启动HBase Shell</div><div class="line"></div><div class="line">#创建表</div><div class="line">&gt; create &apos;student&apos;, &apos;description&apos;, &apos;course&apos;  #创建表名为student的表, 指明两个列名, 分别为description和course</div><div class="line"></div><div class="line">#信息明细</div><div class="line">&gt; list &apos;student&apos;  #列出list表信息</div><div class="line"></div><div class="line">#插入数据</div><div class="line">&gt; put &apos;student&apos;, &apos;row1&apos;, &apos;description:age&apos;, &apos;18&apos;  #意思为在student表row1处插入description:age的数据为18</div><div class="line">&gt; put &apos;student&apos;, &apos;row1&apos;, &apos;description:name&apos;, &apos;liu&apos;</div><div class="line">put &apos;student&apos;, &apos;row1&apos;, &apos;course:chinese&apos;, &apos;100&apos;</div><div class="line"></div><div class="line">#一次扫描所有数据</div><div class="line">&gt; scan &apos;student</div><div class="line"></div><div class="line">#使表失效 / 有效</div><div class="line">&gt; disable &apos;student&apos;</div><div class="line">&gt; enable &apos;student&apos;</div><div class="line"></div><div class="line">#删除表(要先disable)</div><div class="line">&gt;  drop &apos;student&apos;</div><div class="line"></div><div class="line">#退出shell</div><div class="line">&gt; quit</div></pre></td></tr></table></figure>
+<h2 id="5-HBase与HDFS"><a href="#5-HBase与HDFS" class="headerlink" title="#5. HBase与HDFS"></a>#5. HBase与HDFS</h2><blockquote>
+<p>HBase是一个稀疏的长期存储的, 多维度的, 排序的映射表, 通过行键, 行键 + 时间戳 或 行键 + 列(列族: 列修饰符)就可以定位特殊的数据</p>
+</blockquote>
+<p>##5.1. HBase体系结构</p>
+<p>HBase的服务器体系遵从简单的主从服务器架构, 由<code>HRegion服务器群</code>和<code>HBase服务器构成</code>, Master服务器负责管理所有的HRegion服务器, 而HBase中所有的服务器通过ZooKeeper来进行协调并处理HBase服务器运行期间可能遇到的错误.</p>
+<p>HBase逻辑上的表可能会被划分为多个HRegion, 然后存储在HRegion服务器上.</p>
+<ul>
+<li>HBase不涉及数据的直接删除和更新, 当Store中的Storefile数量超出阈值会触发合并操作</li>
+<li>HMaster的主要任务是告诉每个HRegion服务器它要维护那些HRegion</li>
+<li>ZooKeeper存储的是HBase中ROOT表和META表的位置, ZooKeeper还负责监控各个机器的状态</li>
+</ul>
+<p>##5.2. Java API</p>
+<ul>
+<li>HBaseConfiguration, 通过此类对HBase进行配置</li>
+<li>HBaseAdmin, 提供一个接口来管理HBase数据库的表信息, 提供创建, 删除表, 列出表项, <code>使表有效或无效</code>, 以及添加或删除列族成员</li>
+<li>HTableDescriptor, 包含了表的名字及对应表的列族</li>
+<li>HColumnDescriptor, 维护关于列族的信息</li>
+<li>HTable, 用来与HBase表进行通信</li>
+<li>Put, 用来对单个行执行添加操作</li>
+<li>Get, 用来获取单个行的相关信息</li>
+<li>Result, 存储Get或者Scan操作后获取的表的单行值</li>
+</ul>
+<h2 id="6-参考链接"><a href="#6-参考链接" class="headerlink" title="#6. 参考链接"></a>#6. 参考链接</h2><ul>
+<li><a href="http://hbase.apache.org/book.html#quickstart" target="_blank" rel="external">HBase Quick Start</a></li>
+<li><a href="http://freddy.cellcore.org/post/52568231952/hadoop-hbase-on-osx-10-8-mountain-lion" target="_blank" rel="external">Hadoop &amp; Hbase on OSX 10.8 Mountain Lion</a></li>
+<li><a href="http://www.tutorialspoint.com/hbase/hbase_installation.htm" target="_blank" rel="external">HBase - Installation</a></li>
+<li><code>&lt;Hadoop Action&gt;</code></li>
+<li><a href="http://www.cnblogs.com/Dreama/articles/2219190.html" target="_blank" rel="external">Hadoop+HBase 伪分布式安装配置</a></li>
+</ul>
+</div></article></div></section><footer><div class="paginator"><a href="/2015/04/25/Mac下安装Hive及使用/" class="prev">PREV</a><a href="/2015/04/18/MapReduce之倒排索引/" class="next">NEXT</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

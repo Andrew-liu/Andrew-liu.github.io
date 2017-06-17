@@ -1,0 +1,222 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 重读经典《C++ Primer》 · Snow Memory | Andrew Liu</title><meta name="description" content="重读经典《C++ Primer》 - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">重读经典《C++ Primer》</h1><div class="post-info">Aug 23, 2015</div><div class="post-content"><p>本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh" target="_blank" rel="external">署名-非商业用途-保持一致</a>的创作共用协议.</p>
+<blockquote>
+<p>时隔一年, 重读C++ Primer这本<code>圣经</code>, 怀念去年这时基友们一起debug, 一起吃饭, 一起睡觉, 一起分享知识的那个夏天, 以这篇文章纪念我的好朋友, 希望有机会我们再聚在一起<code>吃酒撸串夜灯下诉过去与未来</code>, 同时以我微薄的知识向C++之父敬礼.</p>
+<p>本文不会罗列C++基础语法, 只说明需要注意的地方, 所有需要注意的地方均为作者主观观点.</p>
+</blockquote>
+<p><strong>如有任何错误之处, 欢迎斧正.</strong></p>
+<h1 id="编程风格"><a href="#编程风格" class="headerlink" title="编程风格"></a>编程风格</h1><p>我认为学习一种语言, 一定要学习一种权威的编程风格指南, 就如python中的<code>PEP8</code>.</p>
+<p>使用约定的风格, 可以减少协同工作的障碍, 建立程序猿之间的代码友谊. 虽然朋友说要对别人的代码宽容, 而我认为这就像纵容别人犯罪一样, 遵守一定的代码风格, 能瞬间拉近程序猿之间的距离, 增加代码可读性何乐而不为呢? <code>我喜欢看开源代码的原因之一就是很多著名的开源项目优雅的编程风格</code> </p>
+<a id="more"></a>
+<p>简要的罗列一下建议遵守的编程风格(谷歌风格):</p>
+<ul>
+<li>所有头文件都应该使用 #define 防止头文件被多重包含, 命名格式当是: <code>&lt;PROJECT&gt;_&lt;PATH&gt;_&lt;FILE&gt;_H_</code></li>
+<li>当只有数据时使用 <code>struct</code>, 其它一概使用<code>class</code></li>
+<li>在类中使用特定的声明顺序: <code>public:</code> 在 <code>private:</code> 之前, 成员函数在数据成员 (变量) 前</li>
+<li>整数用<code>0</code>, 实数用<code>0.0</code>, 指针用<code>NULL</code>, 字符(串)用 <code>&#39;\0&#39;</code>.</li>
+<li>类, 结构体, 类型定义 (typedef), 枚举的每个单词首字母均大写, 不包含下划线(<code>大驼峰命名</code>)</li>
+<li>变量名一律小写, 单词之间用下划线连接. <code>类的成员变量以下划线结尾</code></li>
+<li>常量和枚举类型命名在<code>名称前加k</code>: kDaysInAWeek</li>
+<li>常规函数使用大小写混合(<code>大驼峰命名</code>), get和set函数则要求与变量名匹配(<code>set函数前加set前缀</code>) </li>
+<li>逗号后添加空格</li>
+<li>不建议使用<code>using namesapce std</code></li>
+</ul>
+<p>更多细节参考<a href="http://zh-google-styleguide.readthedocs.org/en/latest/" target="_blank" rel="external">Google 开源项目风格指南</a></p>
+<h1 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h1><p><strong>编译与执行:</strong></p>
+<ol>
+<li>预处理阶段: 根据字符#开头的命令, 修改原始C程序</li>
+<li>编译阶段: 将文本文件翻译成汇编程序</li>
+<li>汇编阶段: 汇编器将编译程序翻译成<code>机器语言指令</code>(机器可识别), 并打包成可重定位目标程序</li>
+<li>链接阶段: 将调用函数目标文件合并到程序中, 形成可执行目标文件</li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//使用GUN编译器g++, -o选项将输入写入文件, 即用来存放可执行文件</span></div><div class="line">$ g++ chapter1.cc -o chapter</div></pre></td></tr></table></figure>
+<p><strong>变量:</strong></p>
+<p>变量的作用我认为有以下几点:</p>
+<ul>
+<li>给一定大小的内存命名, 方便使用和增加可读性</li>
+<li>通过变量的类型, 来决定到底访问几个字节长的内存</li>
+<li>通过变量的来决定如何解释所读取的内存的数据(如有符号数和无符号数的解释不同)</li>
+</ul>
+<p><strong>左值与右值:</strong></p>
+<ul>
+<li>左值可以出现在赋值语句的左边</li>
+<li>右值只能出现在赋值的右边, 不能出现在赋值语句的左边</li>
+</ul>
+<p><strong>const关键字:</strong></p>
+<ol>
+<li>通过指定const变量为extern, 可以在整个程序中访问const对象</li>
+<li>const引用是指向const对象的引用, 对象可读不可写</li>
+<li>指向const对象的指针, 定义时不需要初始化, 可以对指针重新赋值(修改其中保存的内存地址, 指向其他对象), 但所指向对象中的值不能修改(内存中保存的值不能修改)</li>
+<li>const指针, const指针的值(保存的内存地址的值不能修改)不能修改, 也就是不能使const指针指向其他对象</li>
+<li>指向const对象的const指针, 既不能修改指针所指向的对象值(内存地址中保存的值), 也不能修改指针的指向(指针中保存的内存地址)</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// file1.cc</span></div><div class="line"><span class="keyword">extern</span> <span class="keyword">const</span> <span class="keyword">int</span> buf_size = <span class="number">10</span>;</div><div class="line"><span class="comment">// file2.cc</span></div><div class="line"><span class="keyword">extern</span> <span class="keyword">const</span> <span class="keyword">int</span> buf_size; <span class="comment">//使用file1.cc中的buf_size</span></div><div class="line"></div><div class="line"><span class="comment">//指向const对象的指针</span></div><div class="line"><span class="keyword">const</span> <span class="keyword">double</span> *cptr;</div><div class="line"><span class="comment">//const指针</span></div><div class="line"><span class="keyword">int</span> err_numb = <span class="number">2</span>;</div><div class="line"><span class="keyword">int</span> *<span class="keyword">const</span> cur_err = &amp;err_numb;</div></pre></td></tr></table></figure>
+<p><strong>预处理器:</strong></p>
+<ul>
+<li>使用预处理器变量避免头文件的多重包含</li>
+</ul>
+<p><strong>常用格式:</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> _XXX_H_</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> _XXX_H_</span></div><div class="line"></div><div class="line">...</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">/* _XXX_H_ */</span></span></div></pre></td></tr></table></figure>
+<p><strong>指针:</strong></p>
+<ul>
+<li>指针保存的是对象的<code>地址</code></li>
+<li>数组名会自动转换为<code>指向数组第一个元素</code>的指针.</li>
+<li>数组的下标访问数组时实际上是使用下标访问指针, <code>指针是数组的迭代器</code></li>
+<li>当类中有指针数据成员, 不能使用系统自带的拷贝构造函数(系统默认导致浅拷贝, 两个对象指针指向同一块动态分配的内存)/赋值函数(=操作符重载), <code>请自定义</code>(深拷贝)</li>
+</ul>
+<p><strong>自增/自减操作符</strong></p>
+<ul>
+<li>前自增操作加1后返回加1的结果</li>
+<li>后自增操作保存操作数原来的值, 返回未加1之前的值作为操作的结构</li>
+<li>自减操作符类似与自增操作符</li>
+</ul>
+<p><strong>sizeof操作符</strong></p>
+<blockquote>
+<p>注意<code>sizeof</code>是操作符, 用于获得类型的长度</p>
+</blockquote>
+<ul>
+<li>对数组做sizeof操作等效于将对其元素类型做sizeof操作的结果乘上数组元素的个数.</li>
+<li>对指针做sizeof将<code>返回存放指针</code>所需的内存大小</li>
+<li>对引用做sizeof将<code>返回存放此引用</code>类型对象所需所需的内存大小</li>
+</ul>
+<blockquote>
+<p><strong>switch</strong>语句执行匹配的case标号相关联的语句后, 会<code>跨越case边界</code>继续执行其他语句, 直到switch结束或者遇到break.</p>
+</blockquote>
+<p><strong>复制传参(pass by value)和引用/指针传参(pass by reference):</strong></p>
+<ul>
+<li>复制传参无法改变传入实参的值</li>
+<li>复制传参增加了时间和存储空间的开销, <code>尽量减少pass by value</code></li>
+<li>引用传参相当于传指针</li>
+<li>返回值也要尽量传递引用(不要返回局部变量的引用)</li>
+</ul>
+<p><strong>static对象:</strong></p>
+<blockquote>
+<p>类内staitc数据成员不属于某个对象(类内声明, 类外定义). 类内static函数没有this指针(用于处理staitc数据成员)</p>
+</blockquote>
+<p>static成员必须在class定义式之外被定义(除非他们是const并且是整型)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">class Test &#123;</div><div class="line">public:</div><div class="line">    Test(const int p): price(p) &#123; std::cout &lt;&lt; &quot;constructor Test.&quot; &lt;&lt; std::endl; &#125;</div><div class="line">    void setRate(const double r) &#123; this-&gt;rate = r; &#125;</div><div class="line">    double getRate() &#123; return rate; &#125;;</div><div class="line">private:</div><div class="line">    static double rate;  //declare</div><div class="line">    int price;</div><div class="line">&#125;;</div><div class="line">double Test::rate = 0.53;  //define</div><div class="line"></div><div class="line">int main(int argc, char *argv[]) &#123;</div><div class="line">    Test t(10);</div><div class="line">    Test t1(20);</div><div class="line">    std::cout &lt;&lt; t.getRate() &lt;&lt; std::endl;  </div><div class="line">    std::cout &lt;&lt; t1.getRate() &lt;&lt; std::endl;</div><div class="line">    t.setRate(2.22);</div><div class="line">    std::cout &lt;&lt; t.getRate() &lt;&lt; std::endl;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>一旦创建static对象被创建, 在程序结束前不会被销毁. 常用于生命周期跨越多个函数调用的对象</p>
+<p><strong>inline函数:</strong></p>
+<ul>
+<li>普通函数被调用: 调用前保存寄存器, 返回时恢复上下文, 复制实参, 程序还必须转向一个新的位置执行</li>
+<li>inline函数在编译时被展开, 从而消除额外的函数执行开销, 常用于小操作函数.<code>内联函数要在头文件中定义</code></li>
+</ul>
+<p><strong>重载函数:</strong></p>
+<ol>
+<li>确认候选函数(<code>C++名字查找发生在类型检查之前</code>)</li>
+<li>检查形参个数和形参类型匹配问题</li>
+</ol>
+<p><strong>函数指针:</strong></p>
+<p>重点理解: 函数指针是<code>指向函数的指针</code><br><strong>直接使用函数名等效于在函数名上取地址操作符</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">// pf是一个指针, *表明了pf的指针身份, pf的类型为bool (const string &amp;, const string &amp;)</div><div class="line">bool (*pf)(const string &amp;, const string &amp;);</div><div class="line">//类比与普通变量指针, *表示ps是指针, ps的类型为const string</div><div class="line">const string *ps;</div><div class="line">// typedef简化函数指针定义 cmpFun等价于bool * (const string &amp;, const string &amp;)</div><div class="line">typedef bool (*cmpFun)(const string &amp;, const string &amp;);</div><div class="line">cmpFun pf;</div><div class="line">//typedef简化普通变量指针 pstr等价于 const string *</div><div class="line">typedef const string *p_str;</div><div class="line">pstr ps;</div></pre></td></tr></table></figure>
+<h2 id="Stack和Heap"><a href="#Stack和Heap" class="headerlink" title="Stack和Heap"></a>Stack和Heap</h2><p>Stack是存在于某作用域的一块内存空间<br>Heap是由操作系统提供的一块全局内存空间(可动态分配获得此类空间)</p>
+<h2 id="namespace"><a href="#namespace" class="headerlink" title="namespace"></a>namespace</h2><p><strong>标准库中所有文件被包裹在std命名空间中.</strong></p>
+<p>命名空间可以是不连续的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">namespace myname &#123;</div><div class="line">    ...</div><div class="line">&#125;  // 不以分号结束</div></pre></td></tr></table></figure>
+<h2 id="异常"><a href="#异常" class="headerlink" title="异常"></a>异常</h2><p>异常通过<code>throw</code>抛出对象引发的.<strong>异常可以传递给给非引用形参任意类型的对象</strong></p>
+<ol>
+<li>通过栈展开(stack unwinding), 沿嵌套函数调用链继续向上, 直至为异常找到一个用于处理异常的catch语句</li>
+<li>捕获所有异常的catch子句形式为<code>(...)</code></li>
+<li>exception类型所定义的唯一操作是what虚函数</li>
+</ol>
+<h1 id="类"><a href="#类" class="headerlink" title="类"></a>类</h1><blockquote>
+<p>类定义了一个新的类型和新的作用域, <strong>切记类定义以分号结束</strong></p>
+<p><code>struct</code>和<code>class</code>的唯一差别在于默认访问级别上, struct的成员默认为public, class成员默认为private</p>
+</blockquote>
+<ul>
+<li><strong>类静态成员static</strong>: 静态数据成员被<code>类</code>的所有对象所共享, 包括该类派生类的对象, 也就是说, 静态数据成员属于类, 而不属于某个对象. static成员函数没有this指针, 不能被声明为虚函数.</li>
+<li><strong>隐式形参this</strong>: 类中每个成员函数都有一个<code>额外的、隐含的形参(this, const成员函数时, this的类型为const class_type *const this)</code>将该成员函数与调用该函数的类对象绑定在一起. <code>形参this初始化为调用函数的对象的地址</code></li>
+<li><strong>常量成员函数</strong>: 在成员函数形参表后声明const, 用来表明隐式形参this的类型为<code>const class_type *</code></li>
+<li><strong>构造函数</strong>: 与类同名且没有返回值, 一个类可以有多个构造函数, 构造函数不能声明为const. <code>注意:其中的构造函数的初始化列表有顺序</code></li>
+<li><strong>const成员函数</strong>: 对于一个不会改变数据的函数, 果断加上<code>const关键字</code>, 表示该函数不允许修改类的数据成员</li>
+<li><strong>虚函数</strong>: 虚函数希望派生类对此函数进行override, 纯虚函数要求派生类必须override这个函数. <code>注意: 通过基类的引用或指针调用虚函数才能引发动态绑定</code></li>
+</ul>
+<blockquote>
+<p>理解初始化列表, 初始化列表初始化数据成员(注意const对象或引用类型只能初始化不能赋值), 没有初始化列表的的构造函数在函数体中对数据成员<code>赋值</code>. <code>成员被初始化的顺序就是定义成员的顺序</code></p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">// 链式编程</div><div class="line">Screen &amp; Screen::move(char c) &#123;</div><div class="line">    contents[cursor] = c;</div><div class="line">    return *this;  // this是一个指针, 解引用后是一个类类型Screen</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="构造函数和析构函数的顺序"><a href="#构造函数和析构函数的顺序" class="headerlink" title="构造函数和析构函数的顺序"></a>构造函数和析构函数的顺序</h2><p><strong>直接上代码会比较清晰</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Foo &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    Foo() &#123; <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"Foo default constructor."</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>; &#125;</div><div class="line">    Foo(<span class="keyword">const</span> Foo &amp;foo) &#123; <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"Foo copy constructor."</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>; &#125;</div><div class="line">    ~Foo() &#123; <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"Foo deconstructor."</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;&#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">class</span> Bar &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    Bar() &#123; <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"Bar default constructor."</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>; &#125;</div><div class="line">    Bar(<span class="keyword">const</span> Bar &amp;bar) &#123; <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"Bar copy constructor."</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>; &#125;</div><div class="line">    ~Bar() &#123; <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"Bar deconstructor."</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;&#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">class</span> Yes &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    Yes() &#123; <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"Yes default constructor."</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>; &#125;</div><div class="line">    ~Yes() &#123; <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"Yes deconstructor."</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>; &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">class</span> Base &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    Base() &#123; <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"Base constructor."</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>; &#125;</div><div class="line">    ~Base() &#123; <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"Base deconstructor."</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>; &#125;</div><div class="line"><span class="keyword">private</span>:</div><div class="line">    Foo foo_;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">class</span> Derived : <span class="keyword">public</span> Base &#123;</div><div class="line"><span class="keyword">public</span>: </div><div class="line">    Derived() &#123; <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"Derived constructor."</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>; &#125;</div><div class="line">    Derived(<span class="keyword">const</span> Bar &amp;bar, <span class="keyword">const</span> Yes &amp;yes);</div><div class="line">    Derived(<span class="keyword">const</span> Yes &amp;yes, <span class="keyword">const</span> Bar &amp;bar);</div><div class="line">    ~Derived() &#123; <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"Derived deconstructor."</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;&#125;</div><div class="line"><span class="keyword">private</span>:</div><div class="line">    Bar bar_;</div><div class="line">    Yes yes_;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">Derived::Derived(<span class="keyword">const</span> Bar &amp;bar, <span class="keyword">const</span> Yes &amp;yes) &#123;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"Derived argument: (bar, yes) constructor."</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line">Derived::Derived(<span class="keyword">const</span> Yes &amp;yes, <span class="keyword">const</span> Bar &amp;bar) &#123;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"Derived argument (yes, bar) constructor."</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span> </span>&#123;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"create simple obejct foo and bar."</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">    Foo foo;</div><div class="line">    Bar bar;</div><div class="line">    Yes yes;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"create Base class "</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">    Base base;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"case 1 : (default constructor) "</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">    Derived derived1;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"case 2 : (argument bar, yes)"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">    <span class="function">Derived <span class="title">derived2</span><span class="params">(bar, yes)</span></span>;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"case 3 : (argument yes, bar)"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">    <span class="function">Derived <span class="title">derived3</span><span class="params">(yes, bar)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>运行结果:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div></pre></td><td class="code"><pre><div class="line">// 创建三个简单的对象</div><div class="line">create simple obejct foo and bar.</div><div class="line">Foo default constructor.</div><div class="line">Bar default constructor.</div><div class="line">Yes default constructor.</div><div class="line"></div><div class="line">// 创建基类对象</div><div class="line">create Base class</div><div class="line">Foo default constructor.  //先对成员变量初始化</div><div class="line">Base constructor. // 调用基类构造函数</div><div class="line"></div><div class="line">// Derived调用默认构造函数</div><div class="line">case 1 : (default constructor)</div><div class="line">Foo default constructor.  //先调用基类构造函数</div><div class="line">Base constructor.</div><div class="line">Bar default constructor.  //自身成员变量初始化</div><div class="line">Yes default constructor.</div><div class="line">Derived constructor.  //调用默认构造函数</div><div class="line"></div><div class="line">// 调用以bar, yes为参数的构造函数</div><div class="line">case 2 : (argument bar, yes)</div><div class="line">Foo default constructor.</div><div class="line">Base constructor.</div><div class="line">Bar default constructor.  //注意bar, yes构造的顺序</div><div class="line">Yes default constructor.</div><div class="line">Derived argument: (bar, yes) constructor.</div><div class="line"></div><div class="line">//调用以yes, bar为参数的构造函数</div><div class="line">case 3 : (argument yes, bar)</div><div class="line">Foo default constructor.</div><div class="line">Base constructor.</div><div class="line">Bar default constructor.  //注意bar, yes构造的顺序</div><div class="line">Yes default constructor.</div><div class="line">Derived argument (yes, bar) constructor.</div><div class="line"></div><div class="line">//析构过程(构造过程的逆)</div><div class="line">Derived deconstructor.  // case3的析构</div><div class="line">Yes deconstructor.</div><div class="line">Bar deconstructor.</div><div class="line">Base deconstructor.</div><div class="line">Foo deconstructor.</div><div class="line"></div><div class="line">Derived deconstructor.  // case2的析构</div><div class="line">Yes deconstructor.</div><div class="line">Bar deconstructor.</div><div class="line">Base deconstructor.</div><div class="line">Foo deconstructor.</div><div class="line"></div><div class="line">Derived deconstructor.  // case1的析构</div><div class="line">Yes deconstructor.</div><div class="line">Bar deconstructor.</div><div class="line">Base deconstructor.</div><div class="line">Foo deconstructor.</div><div class="line"></div><div class="line">// Base的析构</div><div class="line">Base deconstructor.</div><div class="line">Foo deconstructor.</div><div class="line"></div><div class="line">//三个简单对象的析构</div><div class="line">Yes deconstructor.</div><div class="line">Bar deconstructor.</div><div class="line">Foo deconstructor.</div></pre></td></tr></table></figure>
+<ul>
+<li>类先初始化成员变量, 然后执行构造函数内部逻辑</li>
+<li>成员对象初始化的次序完全不受它们在初始化表中次序的影响, 只由成员对象在类中声明的次序决定</li>
+<li>析构函数的调用顺序和构造函数调用顺序相反</li>
+</ul>
+<p>参考<a href="http://blog.csdn.net/gaoyingju/article/details/8790233" target="_blank" rel="external">浅出C++对象模型——理解构造函数、析构函数执行顺序</a></p>
+<h2 id="复制控制"><a href="#复制控制" class="headerlink" title="复制控制"></a>复制控制</h2><blockquote>
+<p>具有指针成员的类一般需要定义自己的复制控制(防止浅拷贝), 复制构造或赋值操作符应该显式使用基类的复制构造或赋值操作符</p>
+</blockquote>
+<ul>
+<li><strong>复制构造函数</strong>: 形参通常为const引用, 一般不设置为<code>explicit</code>. <code>禁用复制需要将复制构造函数声明为private</code>. (含有指针数据成员时, 避免浅拷贝应该定义复制构造函数)</li>
+<li><strong>赋值操作符</strong>: 类内赋值操作符重载, 包含隐式this形参, 右操作数一般为const引用, 返回值一般应该为引用.</li>
+<li><strong>析构函数</strong>: 资源回收, 尤其是指针所指向的动态分配的内存, 析构函数不可重载</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">拷贝赋值函数(赋值操作符重载): </div><div class="line"></div><div class="line"><span class="number">1.</span> 检测值是否自我赋值(self assignment, 地址比较 <span class="keyword">this</span> == &amp;object)</div><div class="line"><span class="number">2.</span> 左值内存<span class="keyword">delete</span>清空</div><div class="line"><span class="number">3.</span> 分配与右值相同大小内存</div><div class="line"><span class="number">4.</span> 赋值到左值</div></pre></td></tr></table></figure>
+<p><strong>操作符重载原则</strong></p>
+<ul>
+<li>赋值(返回对*this的引用), 下标, 调用([])和成员访问箭头必须定义为成员函数</li>
+<li>符合操作符通常定义为成员函数</li>
+<li>自增, 自减, 解引用操作符通常定义为类成员函数(改变对象状态或与类型紧密相关)</li>
+<li>算术, 相等, 关系, 位, 流操作符一般定义为普通非成员函数(设置为友元)</li>
+</ul>
+<h2 id="对象的创建"><a href="#对象的创建" class="headerlink" title="对象的创建"></a>对象的创建</h2><p><strong>C++提供两种方法分配和释放未构造的原始内存:</strong></p>
+<ol>
+<li>allocator类, 提供可感知类型的内存分配</li>
+<li>标准库中的operator new和operator delete分配和释放需要的大小的原始的、未类型化的内存</li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="number">1.</span> <span class="function">ClassName <span class="title">object</span><span class="params">(para)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">// 使用new(先分配内存malloc, 指针类型转换 然后调用构造函数)后, 需要delete(先调用析构函数, 再释放内存free)掉分配的堆内存, 防止内存泄漏</span></div><div class="line"><span class="comment">// 该表达式调用名为operator new的标准库函数分配足够大的原始的未类型化的内存</span></div><div class="line"><span class="number">2.</span> ClassName *object = <span class="keyword">new</span> ClassName(param);</div><div class="line"></div><div class="line"><span class="comment">// 当使用delete表示删除动态分配内存时, 首先对object指向的对象析构, 然后调用operator delete的标准库函数释放该对象所用的内存, operator delete不会调用析构函数</span></div><div class="line"><span class="number">3.</span> <span class="keyword">delete</span> object;</div><div class="line"></div><div class="line"><span class="comment">//placement new不分配内存, 而是使用已分配但未构造内存的初始化一个对象(接受一个指针)</span></div><div class="line"><span class="number">4.</span> <span class="keyword">new</span> (place_address) type  <span class="comment">// place_address为指针</span></div></pre></td></tr></table></figure>
+<p><a href="http://beatrice7.tk/2015/06/06/New/" target="_blank" rel="external">关于C++内存分配的new, operator new, placement new</a></p>
+<ul>
+<li>C++创建对象时<code>仅分配用于保存数据成员</code>的堆空间, 成员函数没有单独的空间</li>
+<li>C++用new创建对象时返回一个<code>对象指针</code>, object指向一个ClassName的对象, <code>C++分配给object的仅仅是存放指针值的空间</code>, 并且用new 动态创建的对象必须用delete来撤销该对象(只有delete对象才会调用其析构函数)</li>
+<li>相同class的各个对象互为友元(friend)</li>
+</ul>
+<h2 id="类模版"><a href="#类模版" class="headerlink" title="类模版"></a>类模版</h2><blockquote>
+<p>泛型编程是以独立于任何特定类型的方式编写代码</p>
+</blockquote>
+<p><strong>模板形参可以是类型形参, 也可以是非类型形参</strong></p>
+<p>模板本身并不是一种类型, 当编译器看到模板定义的时候, 不立即产生代码, <code>只有在看到用到模板时, 编译器才会对模板进行实例化</code></p>
+<ul>
+<li>在类本身的作用域内, 可以使用类模板的非限定名</li>
+<li>类外定义的类模板成员函数, 必须以关键字template开头, 后接类的模板形参表, 必须指出是那个类的成员并包含模板形参</li>
+<li>类可以拥有本身为类末班或者函数模板的成员(成员模板). 另外, 此类成员模板定义在类外部时, 需要包含两个模板的形参表</li>
+<li>模板特化, 我认为是对一些特殊模板形参进行实现(比如模板形参中包含指针的时候)</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> Type&gt; </div><div class="line"><span class="keyword">class</span> Queue &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    Queue() &#123;&#125;; <span class="comment">// 可以使用Queue&lt;Type&gt;, 由编译器推断</span></div><div class="line"><span class="keyword">private</span>:</div><div class="line">    QueueItem&lt;Type&gt; *head;  <span class="comment">// 非类作用域空间必须显式使用模板形参</span></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">destory</span><span class="params">()</span></span>;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> Type&gt; </div><div class="line"><span class="keyword">void</span> Queue&lt;Type&gt;::destory() &#123;</div><div class="line">    <span class="comment">// something</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="STL"><a href="#STL" class="headerlink" title="STL"></a>STL</h1><p><strong>输出/输出流</strong>:</p>
+<ul>
+<li>std::cout, 结果是左操作数的值, <code>输出操作返回的是输出流本身</code></li>
+<li>std::cin, 类似于<code>std::cout</code>, 输入操作符返回器做操作数作为结果</li>
+</ul>
+<p>##顺序容器</p>
+<blockquote>
+<p><strong>顺序容器</strong>：将单一类型元素聚集起来成为容器, 然后根据位置来存储和访问这些元素. 顺序容器包括<code>vector, list, deque</code>, 顺序容器的适配器<code>stack(基于deque), queue(基于deque), priority_queue(基于vector)</code></p>
+</blockquote>
+<p><strong>vector对象动态增长:</strong></p>
+<p>vector的元素<code>连续存储</code>. 其中size()函数统计vector已有元素个数, capacity()指在vector必须重新分配存储空间之前可存储的元素个数.可见vector分配存储空间的策略是<code>增幅小于1时取1, 之后每达到2的次方时倍增(变为原来容量的2倍)</code></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 测试程序</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">TestIncrease</span><span class="params">(<span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="built_in">std</span>::<span class="built_in">string</span>&gt; &amp;vec)</span> </span>&#123;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"size: "</span> &lt;&lt; vec.size() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"capacity: "</span> &lt;&lt; vec.capacity() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">TestVector</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="built_in">std</span>::<span class="built_in">string</span>&gt; vec;</div><div class="line">    TestIncrease(vec);</div><div class="line">    <span class="keyword">for</span>(<span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="built_in">std</span>::<span class="built_in">string</span>&gt;::size_type ix = <span class="number">0</span>;</div><div class="line">        ix != <span class="number">24</span>; ++ix) &#123;</div><div class="line">        vec.push_back(<span class="string">"hello"</span>);</div><div class="line">        TestIncrease(vec);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="comment">// 测试结果, 只保留重要部分</span></div><div class="line">size: <span class="number">0</span></div><div class="line">capacity: <span class="number">0</span></div><div class="line">size: <span class="number">1</span></div><div class="line">capacity: <span class="number">1</span></div><div class="line">size: <span class="number">2</span></div><div class="line">capacity: <span class="number">2</span></div><div class="line">...</div><div class="line">size: <span class="number">8</span></div><div class="line">capacity: <span class="number">8</span></div><div class="line">size: <span class="number">9</span></div><div class="line">capacity: <span class="number">16</span></div><div class="line">...</div><div class="line">size: <span class="number">16</span></div><div class="line">capacity: <span class="number">16</span></div><div class="line">size: <span class="number">17</span></div><div class="line">capacity: <span class="number">32</span></div><div class="line">...</div><div class="line">size: <span class="number">24</span></div><div class="line">capacity: <span class="number">32</span></div></pre></td></tr></table></figure>
+<p><strong>const_iterator和const的iterator:</strong></p>
+<blockquote>
+<p>迭代器可以理解为指针.</p>
+</blockquote>
+<ul>
+<li><code>const_iterator</code>创建的对象, 自身的值可以改变, 但不能改变其指向的元素的值, 对对象解引用返回的是一个const值</li>
+<li>声明const的迭代器时, 必须初始化, 初始化后, 迭代器自身不可再变, 迭代所指向的元素值可以改变(<code>这里const修饰的是迭代器</code>)</li>
+</ul>
+<h2 id="关联容器"><a href="#关联容器" class="headerlink" title="关联容器"></a>关联容器</h2><p>关联容器和顺序容器的本质区别: <strong>关联容器通过key存储和读取元素, 顺序容器通过位置存储和访问容器</strong></p>
+<ul>
+<li>map通过key的<code>小于关系</code>排序, 自定义数据结构应该重载<code>&lt;</code>操作符. map迭代器解引用产生pair对象</li>
+</ul>
+<blockquote>
+<p>关联容器<code>map, set</code></p>
+</blockquote>
+<h1 id="参考链接及书目"><a href="#参考链接及书目" class="headerlink" title="参考链接及书目"></a>参考链接及书目</h1><ul>
+<li><c++ primer=""> 第四版</c++></li>
+<li><a href="http://stackoverflow.com/questions/18914106/what-is-the-use-of-using-namespace-std" target="_blank" rel="external">What is the use of “using namespace std”?</a></li>
+<li><a href="https://msdn.microsoft.com/zh-cn/library/y4skk93w.aspx" target="_blank" rel="external">C/C++ 预处理器参考</a></li>
+<li><a href="https://github.com/gabime/spdlog" target="_blank" rel="external">Super fast C++ logging library</a></li>
+<li>C++预处理和预定义</li>
+<li><a href="http://www.prglab.com/cms/pages/c-tutorial/advanced-concepts/preprocessor-directives.php" target="_blank" rel="external">预处理指令 (Preprocessor Directives)</a></li>
+</ul>
+</div></article></div></section><footer><div class="paginator"><a href="/2015/08/29/Vultr-VPS-配置Shadowsocks/" class="prev">PREV</a><a href="/2015/08/14/Unix内核源码剖析-书摘/" class="next">NEXT</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

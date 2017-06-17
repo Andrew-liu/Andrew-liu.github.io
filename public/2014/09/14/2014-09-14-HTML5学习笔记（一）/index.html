@@ -1,0 +1,260 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> HTML5学习笔记（一） · Snow Memory | Andrew Liu</title><meta name="description" content="HTML5学习笔记（一） - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">HTML5学习笔记（一）</h1><div class="post-info">Sep 14, 2014</div><div class="post-content"><p>#1. What is HTML5?</p>
+<ul>
+<li>Html5有新的语法，界面和多媒体元素</li>
+<li>Html有新的form元素 和更方便简历web应用的新的API函数</li>
+<li>HTML5 is cross-platform, designed to work on types of hardware <code>(PCs, Tablets, Phones, TVs, etc.)</code>.</li>
+<li>Html5是跨平台，设计在多种类型的硬件上的</li>
+</ul>
+<a id="more"></a>
+<p>##1.1. What is New in HTML5?</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">&lt;!DOCTYPE html&gt; &lt;!--新的文件类型--&gt;</div><div class="line">&lt;html&gt;</div><div class="line">&lt;head&gt;</div><div class="line">&lt;meta charset=&quot;UTF-8&quot;&gt;  &lt;!-- 编码机制--&gt;</div><div class="line">&lt;title&gt;Title of the document&lt;/title&gt;</div><div class="line">&lt;/head&gt;</div><div class="line"></div><div class="line">&lt;body&gt;</div><div class="line">Content of the document......</div><div class="line">&lt;/body&gt;</div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure>
+<p>##1.2. New Attribute Syntax<br>新标准允许有四种语法属性， 以input为例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;input type=&quot;text&quot; value=&quot;John Doe&quot; disabled&gt; &lt;!--空属性--&gt;</div><div class="line">&lt;input type=&quot;text&quot; value=John Doe&gt;&lt;!--无引号属性--&gt;</div><div class="line">&lt;input type=&quot;text&quot; value=&quot;John Doe&quot;&gt;&lt;!--双引号属性--&gt;</div><div class="line">&lt;input type=&quot;text&quot; value=&apos;John Doe&apos;&gt;&lt;!--单引号属性--&gt;</div><div class="line">//四种属性都可能用到</div></pre></td></tr></table></figure>
+<p>##1.3. HTML5 - New Features</p>
+<ol>
+<li>新的语法元素，例如<code>&lt;header&gt;, &lt;footer&gt;, &lt;article&gt;, and &lt;section&gt;.</code></li>
+<li>新的form控制，例如<code>number, date, time, calendar, and range</code></li>
+<li><code>&lt;canvas&gt; and &lt;svg&gt;</code>强大的图像支持和<code>&lt;video&gt; and &lt;audio&gt;</code>多媒体支持</li>
+<li>强大的新API</li>
+</ol>
+<p>##1.4. HTML5 - Removed Elements</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">&lt;acronym&gt;</div><div class="line">&lt;applet&gt;</div><div class="line">&lt;basefont&gt;</div><div class="line">&lt;big&gt;</div><div class="line">&lt;center&gt;</div><div class="line">&lt;dir&gt;</div><div class="line">&lt;font&gt;</div><div class="line">&lt;frame&gt;</div><div class="line">&lt;frameset&gt;</div><div class="line">&lt;noframes&gt;</div><div class="line">&lt;strike&gt;</div><div class="line">&lt;tt&gt;</div></pre></td></tr></table></figure>
+<p>#2. HTML5 Browsers<br>帮助浏览器处理html5语言</p>
+<p>##2.1. Browser Support</p>
+<blockquote>
+<p>无论新旧服务器都会处理为识别的html文本为内联元素<code>inline elements.</code>，因此可以帮助浏览器处理未识别元素</p>
+</blockquote>
+<p>##2.2. The Browser Trick（欺骗）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">&lt;!DOCTYPE html&gt;</div><div class="line">&lt;html&gt;</div><div class="line"></div><div class="line">&lt;head&gt;</div><div class="line">  &lt;title&gt;Creating an HTML Element&lt;/title&gt;</div><div class="line">  &lt;script&gt;document.createElement(&quot;myHero&quot;)&lt;/script&gt; &lt;!--The JavaScript statement document.createElement(&quot;myHero&quot;) is added--&gt;</div><div class="line">  &lt;style&gt;</div><div class="line">  myHero &#123;</div><div class="line">    display: block;</div><div class="line">    background-color: #ddd;</div><div class="line">    padding: 50px;</div><div class="line">    font-size: 30px;</div><div class="line">  &#125; </div><div class="line">  &lt;/style&gt; </div><div class="line">&lt;/head&gt;</div><div class="line"></div><div class="line">&lt;body&gt;</div><div class="line"></div><div class="line">&lt;h1&gt;My First Heading&lt;/h1&gt;</div><div class="line"></div><div class="line">&lt;p&gt;My first paragraph.&lt;/p&gt;</div><div class="line"></div><div class="line">&lt;myHero&gt;My First Hero&lt;/myHero&gt;</div><div class="line"></div><div class="line">&lt;/body&gt;</div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure>
+<p>#3. HTML5 New Elements<br><code>New Semantic/Structural Elements</code><br>具体改变看文档<br><a href="http://www.w3schools.com/html/html5_new_elements.asp" target="_blank" rel="external">HTML5文档</a></p>
+<p>#4. HTML5 Semantic Elements<br>语义元素<code>Semantic elements</code>是元素的意义</p>
+<pre><code>语义元素可以清晰的给开发者和浏览器描述含义, 没有语义的元素没有告诉任何含义， 例如：`: &lt;div&gt; and &lt;span&gt;`，带有语义的元素清晰的定义了含义：&lt;form&gt;, &lt;table&gt;, and &lt;img&gt; 
+</code></pre><p>##4.1. Browser Support<br><code>IE9（IE8及以下不支持） chrome 火狐 欧朋（opera）</code></p>
+<p>##4.2. New Semantic Elements in HTML5</p>
+<ul>
+<li>现今许多web网站包含html代码，例如： <code>&lt;div id=&quot;nav&quot;&gt;, &lt;div class=&quot;header&quot;&gt;, or &lt;div id=&quot;footer&quot;&gt;, to indicate navigation links, header, and footer</code></li>
+<li>html5提供新语义元素用以更清楚的定义网站的每个模块布局<br><img src="http://www.w3schools.com/html/img_sem_elements.gif" alt="web site"></li>
+</ul>
+<p>##4.3. HTML5 <section> Element<br><code>&lt;section&gt; 元素</code>定义了一个文档中的片段</section></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;section&gt;</div><div class="line">  &lt;h1&gt;WWF&lt;/h1&gt;</div><div class="line">  &lt;p&gt;The World Wide Fund for Nature (WWF) is an international organization working on issues regarding the conservation, research and restoration of the environment, formerly named the World Wildlife Fund. WWF was founded in 1961.&lt;/p&gt;</div><div class="line">&lt;/section&gt;</div></pre></td></tr></table></figure>
+<p>##4.4. HTML5 <article> Element</article></p>
+<blockquote>
+<p><code>&lt;article&gt; element</code>表示独立，自用的内容</p>
+</blockquote>
+<p>article应该有意义，并应该尽可能在网站的剩余空间中独立分布<br><code>&lt;article&gt;</code>应该用于：</p>
+<ul>
+<li>Forum post</li>
+<li>Blog post</li>
+<li>News story</li>
+<li>Comment</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;article&gt;</div><div class="line">  &lt;h1&gt;Internet Explorer 9&lt;/h1&gt;</div><div class="line">  &lt;p&gt;Windows Internet Explorer 9 (abbreviated as IE9) was released to</div><div class="line">  the  public on March 14, 2011 at 21:00 PDT.....&lt;/p&gt;</div><div class="line">&lt;/article&gt;</div></pre></td></tr></table></figure>
+<p>##4.5. HTML5 <nav> Element<br><code>The &lt;nav&gt; element</code>定义了一个导航链接设置，</nav></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;nav&gt;</div><div class="line">&lt;a href=&quot;/html/&quot;&gt;HTML&lt;/a&gt; |</div><div class="line">&lt;a href=&quot;/css/&quot;&gt;CSS&lt;/a&gt; |</div><div class="line">&lt;a href=&quot;/js/&quot;&gt;JavaScript&lt;/a&gt; |</div><div class="line">&lt;a href=&quot;/jquery/&quot;&gt;jQuery&lt;/a&gt;</div><div class="line">&lt;/nav&gt;</div></pre></td></tr></table></figure>
+<p>##4.6. HTML5 <aside> Element<br><code>&lt;aside&gt; element</code>定义在正文的旁边（类似工具条），其内容应该与周围内容相关</aside></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;aside&gt;</div><div class="line">&lt;h4&gt;Epcot Center&lt;/h4&gt;</div><div class="line">&lt;p&gt;The Epcot Center is a theme park in Disney World, Florida.&lt;/p&gt;</div><div class="line">&lt;/aside&gt;</div></pre></td></tr></table></figure>
+<p>##4.6. HTML5 <header> <footer> Element</footer></header></p>
+<ol>
+<li><code>&lt;header&gt; element</code>表示文档或者段落的头部， <code>&lt;footer&gt;</code>表示文章段落或者文档的尾部，<code>&lt;footer&gt;</code> 通常包含文档作者，版权，使用的一系列链接，联系信息等</li>
+<li><code>&lt;header&gt;</code>应该用作介绍内容的容器（container）</li>
+<li>文档中可以用多个 <code>&lt;header&gt;</code>,<code>&lt;footer&gt;</code></li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">&lt;article&gt;</div><div class="line">  &lt;header&gt;</div><div class="line">    &lt;h1&gt;Internet Explorer 9&lt;/h1&gt;</div><div class="line">    &lt;p&gt;&lt;time pubdate datetime=&quot;2011-03-15&quot;&gt;&lt;/time&gt;&lt;/p&gt;</div><div class="line">  &lt;/header&gt;</div><div class="line">  &lt;p&gt;Windows Internet Explorer 9 (abbreviated as IE9) was released to</div><div class="line">  the  public on March 14, 2011 at 21:00 PDT.....&lt;/p&gt;</div><div class="line">&lt;/article&gt;</div><div class="line"></div><div class="line">&lt;footer&gt;</div><div class="line">  &lt;p&gt;Posted by: Hege Refsnes&lt;/p&gt;</div><div class="line">  &lt;p&gt;&lt;time pubdate datetime=&quot;2012-03-01&quot;&gt;&lt;/time&gt;&lt;/p&gt;</div><div class="line">&lt;/footer&gt;</div></pre></td></tr></table></figure>
+<p>##4.7. HTML5 <figure> and <figcaption> Elements</figcaption></figure></p>
+<p><code>&lt;figure&gt; tag</code>表示独立的内容， 如：图片，表格，代码表</p>
+<ul>
+<li>当<code>&lt;figure&gt;</code> 元素的内容是有关于主流程的时候，它的位置是独立的主流程，并且如果除去它应该不影响文档流。</li>
+<li><code>&lt;figcaption&gt; tag</code>定义了<code>&lt;figure&gt; 元素</code>的标题</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">//生成一个关于图片表格代码列表的模块</div><div class="line">&lt;figure&gt;</div><div class="line">  &lt;img src=&quot;img_pulpit.jpg&quot; alt=&quot;The Pulpit Rock&quot; width=&quot;304&quot; height=&quot;228&quot;&gt;</div><div class="line">  &lt;figcaption&gt;Fig.1 - The Pulpit Rock, Norway.&lt;/figcaption&gt;</div><div class="line">&lt;/figure&gt;</div></pre></td></tr></table></figure>
+<p>##4.8. Can We Start Using These Semantic Elements?</p>
+<blockquote>
+<p>上面所讲的都是<code>块元素</code>，为了使这些元素在过去的浏览器正确的工作，通过设置使过去的浏览器正确的render这些元素</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">header, section, footer, aside, nav, main, article, figure</div><div class="line"></div><div class="line">display: block;</div></pre></td></tr></table></figure>
+<p>##4.9. Semantic Elements in HTML5<br><a href="http://www.w3schools.com/tags/default.asp" target="_blank" rel="external">HTML Tag Reference</a></p>
+<p>#5. HTML5 Form Elements 表格<br>html5包含以下三种新的元素</p>
+<ul>
+<li><code>&lt;datalist&gt;</code></li>
+<li><code>&lt;keygen&gt;</code></li>
+<li><code>&lt;output&gt;</code>   （并非所有浏览器都支持新元素）</li>
+</ul>
+<p>##5.1. HTML5 <datalist> Element</datalist></p>
+<ul>
+<li><code>&lt;datalist&gt; element</code>描述<code>&lt;input&gt; element</code>可选项的列表</li>
+<li><code>&lt;datalist&gt; element</code>为<code>&lt;input&gt; element</code>提供了自动填充的功能，在用户输入数据的时候会在下拉菜单中看到预先定义的可选项列表</li>
+<li>使用<code>&lt;input&gt; element</code>的列表属性与<code>&lt;datalist&gt; element</code>绑定到一起</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">&lt;form action=&quot;demo_form.asp&quot; method=&quot;get&quot;&gt;</div><div class="line"></div><div class="line">&lt;input list=&quot;browsers&quot; name=&quot;browser&quot;&gt;</div><div class="line">&lt;datalist id=&quot;browsers&quot;&gt;</div><div class="line">  &lt;option value=&quot;Internet Explorer&quot;&gt;</div><div class="line">  &lt;option value=&quot;Firefox&quot;&gt;</div><div class="line">  &lt;option value=&quot;Chrome&quot;&gt;</div><div class="line">  &lt;option value=&quot;Opera&quot;&gt;</div><div class="line">  &lt;option value=&quot;Safari&quot;&gt;</div><div class="line">&lt;/datalist&gt;</div><div class="line">&lt;input type=&quot;submit&quot;&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure>
+<p>##5.2. HTML5 <keygen> Element</p>
+<blockquote>
+<p><code>&lt;keygen&gt; element</code>提供一个安全的方式去授权用户</p>
+</blockquote>
+<ul>
+<li><code>&lt;keygen&gt; element</code>表示在表格form中一个关键词对生成器， 当form中的内容被提交， 会生成一个共有一个私有的关键词</li>
+<li>私有关键词被存储在当地， 共有关键词发送到服务器。 共有关键词可用来生成用户授权证明</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;demo_keygen.asp&quot; method=&quot;get&quot;&gt;</div><div class="line">Username: &lt;input type=&quot;text&quot; name=&quot;usr_name&quot;&gt;</div><div class="line">Encryption: &lt;keygen name=&quot;security&quot;&gt;</div><div class="line">&lt;input type=&quot;submit&quot;&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure>
+<p>##5.3. HTML5 <output> Element<br><code>&lt;output&gt; element</code>代表了计算的结果（像一个运算脚本）</output></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;form oninput=&quot;x.value=parseInt(a.value)+parseInt(b.value)&quot;&gt;0</div><div class="line">&lt;input type=&quot;range&quot; id=&quot;a&quot; value=&quot;50&quot;&gt;100 +</div><div class="line">&lt;input type=&quot;number&quot; id=&quot;b&quot; value=&quot;50&quot;&gt;=</div><div class="line">&lt;output name=&quot;x&quot; for=&quot;a b&quot;&gt;&lt;/output&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure>
+<p>#6. HTML5 New Input Types<br>html5有一些新的form的输入类型，新的特征使他更有效和更好的输入控制</p>
+<ul>
+<li>new input types:</li>
+<li>color</li>
+<li>date</li>
+<li>datetime</li>
+<li>datetime-local</li>
+<li>email</li>
+<li>month</li>
+<li>number</li>
+<li>range</li>
+<li>search</li>
+<li>tel</li>
+<li>time</li>
+<li>url</li>
+<li>week</li>
+</ul>
+<p>##6.1. Input Type: number<br>number输入类型用来使输入的值包含数字，并且可以设置数字的限制（依赖与浏览器支持）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;demo_form.asp&quot;&gt;</div><div class="line">  Quantity (between 1 and 5):</div><div class="line">  &lt;input type=&quot;number&quot; name=&quot;quantity&quot; min=&quot;1&quot; max=&quot;5&quot;&gt;</div><div class="line">  &lt;input type=&quot;submit&quot; value=&quot;Send&quot;&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure>
+<p>##6.2. Input Restrictions<br><a href="http://www.w3schools.com/html/html5_form_input_types.asp" target="_blank" rel="external">form限制</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;demo_form.asp&quot;&gt;</div><div class="line">  Quantity:</div><div class="line">  &lt;input type=&quot;number&quot; name=&quot;points&quot;</div><div class="line">   min=&quot;0&quot; max=&quot;100&quot; step=&quot;10&quot; value=&quot;30&quot;&gt; &lt;!-min表示数字的最小值，max表示输入的最大值，step表示合法的数字间隔，都是输入限制， value表示输入默认值--&gt;</div><div class="line">  &lt;input type=&quot;submit&quot; value=&quot;Send&quot;&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure>
+<p>##6.3. Input Type: date 日期<br><code>date type</code>用于form 表示应该包含日期</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;demo_form.asp&quot;&gt;</div><div class="line">  Birthday:</div><div class="line">  &lt;input type=&quot;date&quot; name=&quot;bday&quot;&gt; &lt;!--生成一个可选择年月日的菜单，可以增加form限制--&gt;</div><div class="line">  &lt;input type=&quot;submit&quot; value=&quot;Send&quot;&gt;</div><div class="line">&lt;/form&gt;</div><div class="line"></div><div class="line">&lt;form action=&quot;demo_form.asp&quot;&gt;</div><div class="line">  Enter a date before 1980-01-01:</div><div class="line">  &lt;input type=&quot;date&quot; name=&quot;bday&quot; max=&quot;1979-12-31&quot;&gt;&lt;br&gt;</div><div class="line">  Enter a date after 2000-01-01:</div><div class="line">  &lt;input type=&quot;date&quot; name=&quot;bday&quot; min=&quot;2000-01-02&quot;&gt;&lt;br&gt;</div><div class="line">  &lt;input type=&quot;submit&quot; value=&quot;Send&quot;&gt; </div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure>
+<p>##6.4. Input Type: color<br><code>color type</code>表示输入包含颜色</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;demo_form.asp&quot;&gt;</div><div class="line">  Select your favorite color:</div><div class="line">  &lt;input type=&quot;color&quot; name=&quot;favcolor&quot; value=&quot;#ff0000&quot;&gt;//增加一个可选颜色的窗口</div><div class="line">  &lt;input type=&quot;submit&quot; value=&quot;Send&quot;&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure>
+<p>##6.5. Input Type: range<br><code>range type</code>表示输入应包含范围</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;demo_form.asp&quot; method=&quot;get&quot;&gt;</div><div class="line">  Points:</div><div class="line">  &lt;input type=&quot;range&quot; name=&quot;points&quot; min=&quot;0&quot; max=&quot;10&quot;&gt;&lt;!--可选范围在0到10之间，并且可以使用min, max, step, value.限制--&gt;</div><div class="line">  &lt;input type=&quot;submit&quot; value=&quot;Send&quot;&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure>
+<p>##6.6. Input Type: month<br><code>month type</code>允许用户选择年份和月份</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;demo_form.asp&quot;&gt;</div><div class="line">  Birthday (month and year):</div><div class="line">  &lt;input type=&quot;month&quot; name=&quot;bdaymonth&quot;&gt;  //类似于date属性</div><div class="line">  &lt;input type=&quot;submit&quot; value=&quot;Send&quot;&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure>
+<p>##6.7. Input Type: week<br><code>The week type</code>允许用户选择年份和星期</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;demo_form.asp&quot;&gt;</div><div class="line">  Select a week:</div><div class="line">  &lt;input type=&quot;week&quot; name=&quot;year_week&quot;&gt;</div><div class="line">  &lt;input type=&quot;submit&quot; value=&quot;Send&quot;&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure>
+<p>##6.8. Input Type: time<br><code>time type</code>允许用户选择时间， 但是没有时间选择弹窗</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;demo_form.asp&quot;&gt;</div><div class="line">  Select a time:</div><div class="line">  &lt;input type=&quot;time&quot; name=&quot;usr_time&quot;&gt;</div><div class="line">  &lt;input type=&quot;submit&quot; value=&quot;Send&quot;&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure>
+<p>##6.9. Input Type: datetime<br>The datetime type allows the user to select a date and time (with time zone).<br><code>datetime type</code>允许用户选择日期和时间，带有时间输入区域</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;demo_form.asp&quot;&gt;</div><div class="line">  Birthday (date and time):</div><div class="line">  &lt;input type=&quot;datetime&quot; name=&quot;bdaytime&quot;&gt;</div><div class="line">  &lt;input type=&quot;submit&quot; value=&quot;Send&quot;&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure>
+<p>##6.10. Input Type: datetime-local<br><code>datetime-local type</code>用户选择时间和日期</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;demo_form.asp&quot;&gt;</div><div class="line">  Birthday (date and time):</div><div class="line">  &lt;input type=&quot;datetime-local&quot; name=&quot;bdaytime&quot;&gt;</div><div class="line">  &lt;input type=&quot;submit&quot; value=&quot;Send&quot;&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure>
+<p>##6.11. Input Type: email</p>
+<ul>
+<li><code>The email type</code>用来输入一个邮箱格式的邮箱, 并且会在提交的时候检查邮箱的合法性</li>
+<li>一些智能手机能够识别邮箱类型</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;demo_form.asp&quot;&gt;</div><div class="line">  E-mail:</div><div class="line">  &lt;input type=&quot;email&quot; name=&quot;email&quot;&gt;</div><div class="line">  &lt;input type=&quot;submit&quot; value=&quot;Send&quot;&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure>
+<p>##6.12. Input Type: search<br><code>The search type</code>类似于一个文本输入框， 用于进行搜索</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;demo_form.asp&quot;&gt;</div><div class="line">  Search Google:</div><div class="line">  &lt;input type=&quot;search&quot; name=&quot;googlesearch&quot;&gt;</div><div class="line">  &lt;input type=&quot;submit&quot; value=&quot;Send&quot;&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure>
+<p>##6.13. Input Type: url<br><code>The url type</code>用于输入utl地址</p>
+<blockquote>
+<p>根据不同的浏览器。 这个url会被自动识别是否合法，一些智能手机也能识别</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;demo_form.asp&quot;&gt;</div><div class="line">  Add your homepage:</div><div class="line">  &lt;input type=&quot;url&quot; name=&quot;homepage&quot;&gt;</div><div class="line">  &lt;input type=&quot;submit&quot; value=&quot;Send&quot;&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure>
+<p>#7. HTML5 Form Attributes<br>html5中<code>&lt;form&gt;</code>和<code>&lt;input&gt;</code>有一些新的属性</p>
+<ul>
+<li><code>&lt;form&gt;</code> : <code>autocomplete</code>     <code>novalidate</code></li>
+<li><code>&lt;input&gt;:</code>: autocomplete  autofocus  form  formaction formenctype<br>formmethod formnovalidate formtarget <code>height and width</code>  list<br><code>min and max</code><br>multiple<br>pattern (regexp)<br>placeholder<br>required<br>step</li>
+</ul>
+<p>#7.1.<code>&lt;form&gt; / &lt;input&gt;</code> autocomplete Attribute</p>
+<ul>
+<li>自动补全属性指明是否form或者input打开或者关闭自动补全功能</li>
+<li>当打开自动补全，浏览器会自动填写预先输入的信息</li>
+<li>tip：可能form已经打开了自动不全，input关闭了， 反之亦然, 一些浏览器可能默认打开自动填充</li>
+<li>Note：自动补全在<code>&lt;form&gt;``&lt;input&gt;</code>中text, search, url, tel, email, password, datepickers, range, and color类型有效</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&lt;form action = &quot;demo_form.asp&quot; autocomplete = &quot;on&quot;&gt;</div><div class="line">       First name : &lt;input type = &quot;text&quot; name = &quot;fname&quot; value = &quot;liubin&quot;&gt;&lt;br&gt;</div><div class="line">       Last name : &lt;input type = &quot;text&quot; name = &quot;lname&quot; &gt;&lt;br&gt;</div><div class="line"></div><div class="line">       E-mail:&lt;input type  = &quot;email&quot; name = &quot;email&quot; autocomplete = &quot;off&quot;&gt;&lt;br&gt;</div><div class="line">       &lt;input type = &quot;submit&quot; value = &quot;Send&quot;&gt;</div><div class="line">       &lt;/form&gt;</div></pre></td></tr></table></figure>
+<p>##7.2. <code>&lt;form&gt;</code> novalidate Attribute<br><code>The novalidate attribute</code>是一个布尔属性</p>
+<blockquote>
+<p>表明一个form输入的数据在提交的时候无需验证</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;demo_form.asp&quot; novalidate&gt;</div><div class="line">E-mail: &lt;input type=&quot;email&quot; name=&quot;user_email&quot;&gt; &lt;!--提交的时候不在验证邮箱是否合法了。--&gt;</div><div class="line">&lt;input type=&quot;submit&quot;&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure>
+<p>##7.3. <code>&lt;input&gt;</code> autofocus Attribute<br><code>autofocus Attribute</code>是一个布尔属性<br><code>an &lt;input&gt; element should automatically get focus when the page loads.当加载页面的时候，自动进入input输入框状态</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;demo_form.asp&quot;&gt;</div><div class="line">  First name:&lt;input type=&quot;text&quot; name=&quot;fname&quot; autofocus&gt;&lt;br&gt;</div><div class="line">  Last name: &lt;input type=&quot;text&quot; name=&quot;lname&quot;&gt;&lt;br&gt;</div><div class="line">  &lt;input type=&quot;submit&quot;&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure>
+<p>##7.4. <code>&lt;input&gt;</code> form Attribute（不理解）<br>form属性 指定一个<code>&lt;input&gt;</code>元素属于一个或多个表单。 要引用一个以上的表单，使用表单ID的空格分隔的列表</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;demo_form.asp&quot; id=&quot;form1&quot;&gt;</div><div class="line">First name: &lt;input type=&quot;text&quot; name=&quot;fname&quot;&gt;&lt;br&gt;</div><div class="line">&lt;input type=&quot;submit&quot; value=&quot;Submit&quot;&gt;</div><div class="line">&lt;/form&gt;</div><div class="line"></div><div class="line">&lt;p&gt;The &quot;Last name&quot; field below is outside the form element, but still part of the form.&lt;/p&gt;</div><div class="line">Last name: &lt;input type=&quot;text&quot; name=&quot;lname&quot; form=&quot;form1&quot;&gt;</div></pre></td></tr></table></figure>
+<p>##7.5. <code>&lt;input&gt;</code> formaction Attribute<br>OperaSafariChromeFirefoxInternet Explorer</p>
+<ul>
+<li><code>The formaction attribute</code>指定文件的URL， 这个文件会在表单提交的时候进行输入处理</li>
+<li><code>The formaction attribute</code>不考虑form中的<code>the action attribute</code></li>
+<li>Note：这个属性与type=”submit” and type=”image”一起使用</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;demo_form.asp&quot;&gt;</div><div class="line">  First name: &lt;input type=&quot;text&quot; name=&quot;fname&quot;&gt;&lt;br&gt;</div><div class="line">  Last name: &lt;input type=&quot;text&quot; name=&quot;lname&quot;&gt;&lt;br&gt;</div><div class="line">  &lt;input type=&quot;submit&quot; value=&quot;Submit&quot;&gt;&lt;br&gt;</div><div class="line">  &lt;input type=&quot;submit&quot; formaction=&quot;demo_admin.asp&quot; value=&quot;Submit as admin&quot;&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure>
+<p>##7.6. <code>&lt;input&gt;</code> formenctype Attribute<br>OperaSafariChromeFirefoxInternet Explorer</p>
+<ul>
+<li><code>The formenctype attribute</code>指示表单数据怎么编码， 当数据提交到服务器的时候（只有在form的method = “post”）</li>
+<li><code>The formenctype attribute</code>覆盖<code>&lt;form&gt;元素</code>的<code>the enctype attribute</code></li>
+<li>Note：The formenctype attribute is used with type=”submit” and type=”image”.</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;demo_post_enctype.asp&quot; method=&quot;post&quot;&gt;</div><div class="line">  First name: &lt;input type=&quot;text&quot; name=&quot;fname&quot;&gt;&lt;br&gt;</div><div class="line">  &lt;input type=&quot;submit&quot; value=&quot;Submit&quot;&gt;</div><div class="line">  &lt;input type=&quot;submit&quot; formenctype=&quot;multipart/form-data&quot; value=&quot;Submit as Multipart/form-data&quot;&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure>
+<p>##7.7. <code>&lt;input&gt;</code> formmethod Attribute</p>
+<ul>
+<li><code>The formmethod attribute</code>定义了发送表单数据到URL的HTTP协议</li>
+<li><code>The formmethod attribute</code>覆盖<code>&lt;form&gt;元素</code>的<code>the method attribute</code></li>
+<li>Note: The formmethod attribute can be used with type=”submit” and type=”image”.</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;demo_form.asp&quot; method=&quot;get&quot;&gt;</div><div class="line">  First name: &lt;input type=&quot;text&quot; name=&quot;fname&quot;&gt;&lt;br&gt;</div><div class="line">  Last name: &lt;input type=&quot;text&quot; name=&quot;lname&quot;&gt;&lt;br&gt;</div><div class="line">  &lt;input type=&quot;submit&quot; value=&quot;Submit&quot;&gt;</div><div class="line">  &lt;input type=&quot;submit&quot; formmethod=&quot;post&quot; formaction=&quot;demo_post.asp&quot; value=&quot;Submit using POST&quot;&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure>
+<p>##7.8. <code>&lt;input&gt;</code>formnovalidate Attribute</p>
+<ol>
+<li><code>The novalidate attribute</code>是一个布尔属性</li>
+<li>表示<code>&lt;input&gt; element</code>被提交时不应该被验证</li>
+<li><code>The formnovalidate attribute</code> 覆盖<code>the &lt;form&gt; element.</code>的<code>the novalidate attribute</code></li>
+<li>Note: The formnovalidate attribute can be used with type=”submit”.</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;demo_form.asp&quot;&gt;</div><div class="line">  E-mail: &lt;input type=&quot;email&quot; name=&quot;userid&quot;&gt;&lt;br&gt;</div><div class="line">  &lt;input type=&quot;submit&quot; value=&quot;Submit&quot;&gt;&lt;br&gt;</div><div class="line">  &lt;input type=&quot;submit&quot; formnovalidate value=&quot;Submit without validation&quot;&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure>
+<p>##7.9. <code>&lt;input&gt;</code> formtarget Attribute</p>
+<ol>
+<li>The formtarget attribute表示一个名字或者一个关键词，用来表明在提交表单后在何处显示收到的response</li>
+<li><code>The formtarget attribute</code>覆盖<code>&lt;form&gt;</code>的<code>the target attribute</code></li>
+<li>Note: The formtarget attribute can be used with type=”submit” and type=”image”.</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;demo_form.asp&quot;&gt;</div><div class="line">  First name: &lt;input type=&quot;text&quot; name=&quot;fname&quot;&gt;&lt;br&gt;</div><div class="line">  Last name: &lt;input type=&quot;text&quot; name=&quot;lname&quot;&gt;&lt;br&gt;</div><div class="line">  &lt;input type=&quot;submit&quot; value=&quot;Submit as normal&quot;&gt;</div><div class="line">  &lt;input type=&quot;submit&quot; formtarget=&quot;_blank&quot; value=&quot;Submit to a new window/tab&quot;&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure>
+<p>##7.10. <code>&lt;input&gt;</code> height and width Attributes</p>
+<ol>
+<li>高度和宽度属性表明了<code>&lt;input&gt; element</code>的高度和宽度</li>
+<li>这两个属性只能被用于<code>&lt;input type=&quot;image&quot;&gt;</code></li>
+<li>总是指明图像的高度和宽度。 如果高度和宽度被设置，当网页被加载图像的空间需求会被预留。然而，没有设置这些属性，浏览器不知道图像尺寸，不能预留合适的空间。这会导致图像加载时的布局改变</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;demo_form.asp&quot;&gt;</div><div class="line">  First name: &lt;input type=&quot;text&quot; name=&quot;fname&quot;&gt;&lt;br&gt;</div><div class="line">  Last name: &lt;input type=&quot;text&quot; name=&quot;lname&quot;&gt;&lt;br&gt;</div><div class="line">  &lt;input type=&quot;image&quot; src=&quot;img_submit.gif&quot; alt=&quot;Submit&quot; width=&quot;48&quot; height=&quot;48&quot;&gt;  //提交按钮被设置成图片</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure>
+<p>##7.11. <code>&lt;input&gt;</code> list Attribute</p>
+<blockquote>
+<p><code>The list attribute</code> 是指<code>&lt;datalist&gt; elemen</code>， 它包含预先定义的选项的<code>&lt;input&gt;</code> （The list attribute refers to a <datalist> element that contains pre-defined options for an <code>&lt;input&gt;</code> element.）</datalist></p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&lt;input list=&quot;browsers&quot; name=&quot;browser&quot;&gt;</div><div class="line">&lt;datalist id=&quot;browsers&quot;&gt;</div><div class="line">  &lt;option value=&quot;Internet Explorer&quot;&gt;</div><div class="line">  &lt;option value=&quot;Firefox&quot;&gt;</div><div class="line">  &lt;option value=&quot;Chrome&quot;&gt;</div><div class="line">  &lt;option value=&quot;Opera&quot;&gt;</div><div class="line">  &lt;option value=&quot;Safari&quot;&gt;</div><div class="line">&lt;/datalist&gt;</div><div class="line">&lt;input type=&quot;submit&quot;&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure>
+<p>##7.12. <code>&lt;input&gt;</code> min and max Attributes<br>Note: The min and max attributes works with the following input types: number, range, date, datetime, datetime-local, month, time and week.<br><code>The min and max attributes</code>是指<code>&lt;input&gt;</code>中最大值和最小值<br>Note: <code>The min and max attributes</code> 与以下input 类型一起共存: number, range, date, datetime, datetime-local, month, time and week.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;demo_form.asp&quot;&gt;</div><div class="line"></div><div class="line">  Enter a date before 1980-01-01:</div><div class="line">  &lt;input type=&quot;date&quot; name=&quot;bday&quot; max=&quot;1979-12-31&quot;&gt;&lt;br&gt;</div><div class="line"></div><div class="line">  Enter a date after 2000-01-01:</div><div class="line">  &lt;input type=&quot;date&quot; name=&quot;bday&quot; min=&quot;2000-01-02&quot;&gt;&lt;br&gt;</div><div class="line"></div><div class="line">  Quantity (between 1 and 5):</div><div class="line">  &lt;input type=&quot;number&quot; name=&quot;quantity&quot; min=&quot;1&quot; max=&quot;5&quot;&gt;&lt;br&gt;</div><div class="line"></div><div class="line">  &lt;input type=&quot;submit&quot;&gt;</div><div class="line">  </div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure>
+<p>##7.13. <code>&lt;input&gt;</code> multiple Attribute</p>
+<ol>
+<li><code>The multiple attribute</code>是一个布尔属性</li>
+<li>当它出现， 表明允许用户在<code>&lt;input&gt;</code>中输入多个值</li>
+<li>Note: The multiple attribute works with the following input types: email, and file.</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;demo_form.asp&quot;&gt;</div><div class="line">  Select images: &lt;input type=&quot;file&quot; name=&quot;img&quot; multiple&gt; //可以同时选取多个文件</div><div class="line">  &lt;input type=&quot;submit&quot;&gt; </div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure>
+<p>##7.14. <code>&lt;input&gt;</code> pattern Attribute</p>
+<ol>
+<li><code>The pattern attribute</code>是指一个正则表达式， <code>&lt;input&gt;</code>元素的值被再次检查</li>
+<li>Note: The pattern attribute works with the following input types: text, search, url, tel, email, and password.</li>
+<li>Tips： 使用<code>the global title attribute</code>描述pattern来帮助用户</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;demo_form.asp&quot;&gt;</div><div class="line">  Country code: &lt;input type=&quot;text&quot; name=&quot;country_code&quot; pattern=&quot;[A-Za-z]&#123;3&#125;&quot; title=&quot;Three letter country code&quot;&gt; //title在输入不符合要求的时候会给出提示</div><div class="line">  &lt;input type=&quot;submit&quot;&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure>
+<p>##7.15. <code>&lt;input&gt;</code> placeholder Attribute 重要</p>
+<ol>
+<li><code>The placeholder attribute</code>是指对于期望的输入值的一个简单的提示</li>
+<li>在用户输入之前，这个简单提示出现在输入栏</li>
+<li>Note: The placeholder attribute works with the following input types: <code>text, search, url, tel, email, and password</code>.</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;demo_form.asp&quot;&gt;</div><div class="line">  &lt;input type=&quot;text&quot; name=&quot;fname&quot; placeholder=&quot;First name&quot;&gt;&lt;br&gt;</div><div class="line">  &lt;input type=&quot;text&quot; name=&quot;lname&quot; placeholder=&quot;Last name&quot;&gt;&lt;br&gt;</div><div class="line">  &lt;input type=&quot;submit&quot; value=&quot;Submit&quot;&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure>
+<p>##7.16. <code>&lt;input&gt;</code> required Attribute</p>
+<ol>
+<li><code>The required attribute</code>是一个布尔值</li>
+<li>当它出现，表明提交的表单不能为空， 必须被填上值 </li>
+<li>Note: The required attribute works with the following input types: <code>text, search, url, tel, email, password, date pickers, number, checkbox, radio, and file</code>.</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;demo_form.asp&quot;&gt;</div><div class="line">  Username: &lt;input type=&quot;text&quot; name=&quot;usrname&quot; required&gt;</div><div class="line">  &lt;input type=&quot;submit&quot;&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure>
+<p>##7.17. <code>&lt;input&gt;</code> step Attribute</p>
+<ol>
+<li><code>The step attribute specifies</code>是<code>&lt;input&gt;</code>中的合法的间距<blockquote>
+<p>Example: if step=”3”, legal numbers could be -3, 0, 3, 6, etc.</p>
+</blockquote>
+</li>
+<li>Tip: The step attribute can be used together with the <code>max and min attributes to create a range of legal values</code>.</li>
+<li>Note: The step attribute works with the following input types: <code>number, range, date, datetime, datetime-local, month, time and week</code>.</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;demo_form.asp&quot;&gt;</div><div class="line">  &lt;input type=&quot;number&quot; name=&quot;points&quot; step=&quot;3&quot;&gt; //此时会出现以三为间隔的数字选择栏</div><div class="line">  &lt;input type=&quot;submit&quot;&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure>
+</div></article></div></section><footer><div class="paginator"><a href="/2014/09/16/2014-09-16-MacTalk人生元编程有感/" class="prev">PREV</a><a href="/2014/09/12/2014-09-12-Mac新机软件简单指南/" class="next">NEXT</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

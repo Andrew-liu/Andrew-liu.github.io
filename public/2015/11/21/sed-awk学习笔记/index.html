@@ -1,0 +1,210 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> sed awk学习笔记 · Snow Memory | Andrew Liu</title><meta name="description" content="sed awk学习笔记 - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">sed awk学习笔记</h1><div class="post-info">Nov 21, 2015</div><div class="post-content"><p>本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh" target="_blank" rel="external">署名-非商业用途-保持一致</a>的创作共用协议.</p>
+<blockquote>
+<p>由于最近在知乎实习过中不断从大量日志中查找bug的经历, 我决定重新深入学习Shell命令, <code>以前缺少应用场景导致一些命令并无用武之地</code>.本文主要针对<code>sed和awk</code>做一个简单的学习笔记, 方便以后回顾和再总结</p>
+</blockquote>
+<h1 id="sed"><a href="#sed" class="headerlink" title="sed"></a>sed</h1><blockquote>
+<p><code>Sed</code>其实是一种非交互式的编辑器</p>
+</blockquote>
+<p>sed命令格式: <code>sed [options] {sed-commands} {input-file}</code></p>
+<a id="more"></a>
+<p><strong>sed处理流程:</strong></p>
+<blockquote>
+<p>sed中<code>sed-commands</code>执行是有先后顺序的</p>
+</blockquote>
+<ol>
+<li>读入一行内行到缓存空间(模式空间)</li>
+<li>从sed-commands中取出一条命令, 判断是否匹配pattern(一般为正则表达式)</li>
+<li>如果不匹配, 则忽略后续命令, 回到第二步取下一条命令</li>
+<li>如果匹配, 则对缓存的行执行后续的编辑命令; 完成后, 回到第二步继续取下一条命令</li>
+<li>当所有命令应用后, 输出缓存行的内容, 回到第一步读取下一行</li>
+<li>当所有行处理完则执行结束</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"># 测试文件text.txt. 内容如下(取自参考链接的博文中)</div><div class="line">John Daggett, 341 King Road, Plymouth MA</div><div class="line">Alice Ford, 22 East Broadway, Richmond VA</div><div class="line">Orville Thomas, 11345 Oak Bridge Road, Tulsa OK</div><div class="line">Terry Kalkas, 402 Lans Road, Beaver Falls PA</div><div class="line">Eric Adams, 20 Post Road, Sudbury MA</div><div class="line">Hubert Sims, 328A Brook Road, Roanoke VA</div><div class="line">Amy Wilde, 334 Bayshore Pkwy, Mountain View CA</div><div class="line">Sal Carpenter, 73 6th Street, Boston MA</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"># -e表示附加多条编辑命令, 类似与grep中的-e参数</div><div class="line"></div><div class="line"># &apos;s/MA/Andrew/&apos; 将MA替换成Andrew, s表示替换</div><div class="line">$ sed -e &apos;s/MA/Andrew/&apos; text.txt</div><div class="line"># 执行两条编辑命令</div><div class="line">$ sed -e &apos;s/MA/Andrew/&apos; -e &apos;s/PA/, Liu/&apos; text.txt</div><div class="line"># 在命令中加p, 表示只输出被编辑的行(但同时有默认的所有行输出)</div><div class="line">$ sed &apos;s/MA/Andrewliu/p&apos; text.txt</div><div class="line"></div><div class="line"># -n表示取消默认输出,p表示打印行</div><div class="line">$ sed -n &apos;s/MA/Andrewliu/p&apos; text.txt</div><div class="line"># 只打印第三行</div><div class="line">$sed -n &apos;3p&apos; /etc/passwd</div><div class="line"># 打印1，3行</div><div class="line">$sed -n &apos;1,3p&apos; /etc/passwd</div><div class="line"></div><div class="line"># d为删除命令, 不指定行号则删除所有行</div><div class="line">$ sed &apos;d&apos; text.txt</div><div class="line"># 删除第一行</div><div class="line">$ sed &apos;1d&apos; text.txt</div><div class="line"># 删除最后一行, $ 表示最后一行</div><div class="line">$ sed &apos;$d&apos; text.txt</div><div class="line"># 删除包含MA的行</div><div class="line">$ sed &apos;/MA/d&apos; text.txt</div></pre></td></tr></table></figure>
+<p><strong>sed基础命令</strong></p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>命令</th>
+<th>语法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>替换</td>
+<td>s</td>
+<td><code>[address]s/pattern/replacement/flags</code></td>
+<td>替换匹配的内容</td>
+</tr>
+<tr>
+<td>删除</td>
+<td>d</td>
+<td><code>[address]d</code></td>
+<td>删除匹配的行</td>
+</tr>
+<tr>
+<td>插入</td>
+<td>i</td>
+<td><code>[line-address]i\text</code></td>
+<td>在匹配行的前方插入文本</td>
+</tr>
+<tr>
+<td>追加</td>
+<td>a</td>
+<td><code>[line-address]a\text</code></td>
+<td>在匹配行的后方插入文本</td>
+</tr>
+<tr>
+<td>行替换</td>
+<td>c</td>
+<td><code>[address]c\text</code></td>
+<td>将匹配的行替换成文本text</td>
+</tr>
+<tr>
+<td>打印行</td>
+<td>p</td>
+<td><code>[address]p</code></td>
+<td>打印在模式空间中的行</td>
+</tr>
+<tr>
+<td>打印行号</td>
+<td>=</td>
+<td><code>[address]=</code></td>
+<td>打印当前行行号</td>
+</tr>
+<tr>
+<td>打印行</td>
+<td>l</td>
+<td><code>l  [address]l</code></td>
+<td>打印在模式空间中的行，同时显示控制字符</td>
+</tr>
+<tr>
+<td>转换字符</td>
+<td>y</td>
+<td><code>[address]y/SET1/SET2/</code></td>
+<td>将SET1中出现的字符替换成SET2中对应位置的字符</td>
+</tr>
+<tr>
+<td>读取下一行</td>
+<td>n</td>
+<td><code>n  [address]n</code></td>
+<td>将下一行的内容读取到模式空间</td>
+</tr>
+<tr>
+<td>读文件</td>
+<td>r</td>
+<td><code>[line-address]r file</code></td>
+<td>将指定的文件读取到匹配行之后</td>
+</tr>
+<tr>
+<td>写文件</td>
+<td>w</td>
+<td><code>w  [address]w file</code></td>
+<td>将匹配地址的所有行输出到指定的文件中</td>
+</tr>
+<tr>
+<td>退出</td>
+<td>q</td>
+<td><code>[line-address]q</code></td>
+<td>读取到匹配的行后即推出</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>注意i/a/c的文本内容都要另起一行</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ sed &apos;2a\  </div><div class="line">quote&gt; ---------------------------</div><div class="line">quote&gt; &apos; text.txt</div></pre></td></tr></table></figure>
+<h1 id="awk"><a href="#awk" class="headerlink" title="awk"></a>awk</h1><blockquote>
+<p>awk是强大的文本分析工具, grep用于查找, sed用于编辑, awk则可以用于文本分析. <code>awk把文件逐行读入, 以空格为默认分割符将每行切分, 然后进行分析</code></p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># 命令格式</div><div class="line">$ awk &apos;&#123;pattern + action&#125;&apos; filename</div></pre></td></tr></table></figure>
+<p>PS: <code>pattern</code>表示匹配这个模式的行才会执行命令</p>
+<ul>
+<li><code>-F</code>选项用来指定分隔符, 默认使用空格或Tab</li>
+</ul>
+<p>简单使用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"># 只打印所有信息的第一项, $0表示所有域, $1表示第一域, 默认分隔符为空格或Tab</div><div class="line">$ ls -la | awk &apos;&#123;print $1&#125;&apos;</div><div class="line"># 以:为分隔符, 打印第一列数据, -F &apos;:&apos;等价与`-F:`, 指定多个分隔符`-F &apos;[;:]&apos;`</div><div class="line">$ cat /etc/passwd |awk  -F &apos;:&apos;  &apos;&#123;print $1&#125;&apos;</div><div class="line"># 格式化输出</div><div class="line">$ cat /etc/passwd |awk  -F &apos;:&apos;  &apos;&#123;printf &quot;%s ---- %s\n&quot;, $1, $2&#125;&apos;</div><div class="line"># 匹配包含root的行</div><div class="line">$ cat /etc/passwd |awk  -F:  &apos;/root/&apos;</div></pre></td></tr></table></figure>
+<ul>
+<li><code>print</code>和<code>printf</code>为awk提供的两种打印函数, 前者为直接打印, 后者类似C语言中的格式化输出</li>
+<li>awk更是一种编程语言</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># 使用逻辑判断过滤数据, 要求第三列数据大于230</div><div class="line">cat /etc/passwd |awk  -F &apos;:&apos;  &apos;$3 &gt; 230 &#123;printf &quot;%s : %s\n&quot;, $1,$3&#125;&apos;</div></pre></td></tr></table></figure>
+<p><strong>awk一些内建变量</strong></p>
+<table>
+<thead>
+<tr>
+<th>变量名</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$0</td>
+<td>整行内容</td>
+</tr>
+<tr>
+<td>$1~$n</td>
+<td>通过分隔符分割的第n列字段</td>
+</tr>
+<tr>
+<td>ARGC</td>
+<td>命令行参数个数</td>
+</tr>
+<tr>
+<td>ARGV</td>
+<td>命令行参数排列</td>
+</tr>
+<tr>
+<td>ENVIRON</td>
+<td>支持队列中系统环境变量的使用</td>
+</tr>
+<tr>
+<td>FILENAME</td>
+<td>awk当前输入文件名</td>
+</tr>
+<tr>
+<td>FNR</td>
+<td>浏览文件的记录数, 不同文件各自的行号</td>
+</tr>
+<tr>
+<td>FS</td>
+<td>设置输入域分隔符，等价于<code>-F</code>选项</td>
+</tr>
+<tr>
+<td>NF</td>
+<td>当前记录的字段数, 也就是有多少列</td>
+</tr>
+<tr>
+<td>NR</td>
+<td>已读的记录数, 也就是行号</td>
+</tr>
+<tr>
+<td>OFS</td>
+<td>输出域分隔符, 默认为空格</td>
+</tr>
+<tr>
+<td>ORS</td>
+<td>输出记录分隔符(一行), 默认为换行符</td>
+</tr>
+<tr>
+<td>RS</td>
+<td>输入记录分隔符, 默认为换行符</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># 输出符合数据的行号和文件名</div><div class="line">$ awk  -F &apos;:&apos;  &apos;$3 &gt; 230 &#123;printf &quot;line: %s, filename: %s, %s : %s\n&quot;, NR, FILENAME, $1,$3&#125;&apos; /etc/passwd</div></pre></td></tr></table></figure>
+<p><strong>BEGIN{command}用于指定在开始前执行命令, END{command}指定在对所有行操作结束后执行命令</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># 先打印一行name, shell, 然后直接打印$1, $7列, 最后执行END中语句</div><div class="line">cat /etc/passwd |awk  -F &apos;:&apos;  &apos;BEGIN &#123;print &quot;name,shell&quot;&#125;  &#123;print $1&quot;,&quot;$7&#125; END &#123;print &quot;andrew,/bin/zsh&quot;&#125;&apos;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>更复杂的直接用awk写脚本就暂时不涉及了</p>
+</blockquote>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ul>
+<li><a href="http://kodango.com/sed-and-awk-notes-part-3" target="_blank" rel="external">Sed and awk 笔记之 sed 篇：基础命令</a></li>
+<li><a href="http://coolshell.cn/articles/9070.html" target="_blank" rel="external">AWK 简明教程</a></li>
+<li><a href="http://www.cnblogs.com/ggjucheng/archive/2013/01/13/2858470.html?hmsr=toutiao.io&amp;utm_medium=toutiao.io&amp;utm_source=toutiao.io" target="_blank" rel="external">linux awk命令详解</a></li>
+<li><a href="http://linuxtools-rst.readthedocs.org/zh_CN/latest/base/03_text_processing.html#awk" target="_blank" rel="external">awk 数据流处理工具</a></li>
+<li><a href="http://dongweiming.github.io/sed_and_awk/#/18" target="_blank" rel="external">sek和awk</a></li>
+</ul>
+</div></article></div></section><footer><div class="paginator"><a href="/2015/11/27/计算机研究生到底该怎么读/" class="prev">PREV</a><a href="/2015/11/14/Python奇技淫巧/" class="next">NEXT</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

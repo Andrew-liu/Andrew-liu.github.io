@@ -1,0 +1,25 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Introduce Hadoop · Snow Memory | Andrew Liu</title><meta name="description" content="Introduce Hadoop - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">Introduce Hadoop</h1><div class="post-info">Mar 8, 2015</div><div class="post-content"><p>本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh" target="_blank" rel="external">署名-非商业用途-保持一致</a>的创作共用协议.</p>
+<h2 id="1-Hadoop简介"><a href="#1-Hadoop简介" class="headerlink" title="#1. Hadoop简介"></a>#1. Hadoop简介</h2><blockquote>
+<p>由于几乎所有的书中都会提到Hadoop的发展史, 这里就不说Hadoop的历史时间线了.</p>
+</blockquote>
+<p><code>Hadoop是由Apache软件基金会开发的开源分布式计算平台</code>, <code>通过Hadoop分布式文件系统和MapReduce为核心为用户提供分布式基础框架</code></p>
+<ul>
+<li>HBFS是以一种分布式文件系统, 具有搞容错性的特点, 可以设计部署到低廉的硬件上, 适用于超大规模数据集的应用程序.</li>
+<li>MapReduce是一种编程模型, 用于大规模数据集的并行运算, <code>Map(映射)将输入键值对映射成一组新的键值对,Reduce(规约)对相同key下所有value进行处理后输出最终键值对</code></li>
+</ul>
+<a id="more"></a>
+<p>Hadoop生态包括MapReduce, HDFS, ZooKeeper, Common, Avro, Chukwa, Hive, HBase等项目</p>
+<h2 id="2-HDFS体系结构"><a href="#2-HDFS体系结构" class="headerlink" title="#2. HDFS体系结构"></a>#2. HDFS体系结构</h2><p>HDFS采用Master/Slave结构模型, 一个HDFS集群由<code>一个</code>NameNode(主服务器, 管理文件系统的命名空间和客户端对文件的访问操作)和<code>若干</code>DataNode(管理存储的数据, 处理文件系统客户端的文件读写请求)组成</p>
+<h2 id="3-MapReduce编程模型"><a href="#3-MapReduce编程模型" class="headerlink" title="#3. MapReduce编程模型"></a>#3. MapReduce编程模型</h2><p>MapReduce框架是由<code>一个</code>单独运行在主节点的JobTracker和运行在每个集群从节点的TaskTracker共同组成, 主节点<code>负责调度</code>构成一个作业的所有任务,  监控任务执行情况, 从节点负责处理主节点分配的任务.</p>
+<hr>
+<p><strong>整个系统:</strong></p>
+<ul>
+<li>HDFS使数据分布式存储(文件在HDFS底层被分割成一个个Block, 这些Block分散地存储在不同的DataNode上, 每个Block还可以复制数据存储在不同的DataNode上来实现容错性)</li>
+<li>MapReduce编程模型进行分布式并行计算</li>
+<li>对N个Block, 启动N个Map任务</li>
+<li>Map任务的中间结果进行一些中间操作后, JobTracker通知Reduce到某个TaskTracker去中间结果, 获得最终结果.</li>
+</ul>
+<blockquote>
+<p>初学Hadoop, 如有任何错误, 请指出, 非常感谢</p>
+</blockquote>
+</div></article></div></section><footer><div class="paginator"><a href="/2015/03/15/Java作死笔记/" class="prev">PREV</a><a href="/2015/03/05/在Mac-OSX-Yosemite上安装Hadoop/" class="next">NEXT</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

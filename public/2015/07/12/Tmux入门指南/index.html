@@ -1,0 +1,70 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Tmux入门指南 · Snow Memory | Andrew Liu</title><meta name="description" content="Tmux入门指南 - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">Tmux入门指南</h1><div class="post-info">Jul 12, 2015</div><div class="post-content"><p>本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh" target="_blank" rel="external">署名-非商业用途-保持一致</a>的创作共用协议.</p>
+<blockquote>
+<p>写到今天这篇, Termial神器初成, <code>Zsh + Oh My Zsh + iTerm2 + Tmux</code></p>
+</blockquote>
+<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>tmux是linux中一种管理窗口的程序, 不同于iTerm2, 它提供了一个Session随时存储和恢复的功能(Session概念后面会介绍), detach Session(保持Session后台运行)然后重新attach Session</p>
+<blockquote>
+<p>常用场景, 在公司Terimal中开了多个标签和文件, 下班回家忽然有了灵感想要继续编写, 使用ssh远程链接公司电脑, 然后发现标签页和文件都要重新打开, 如果使用Tmux, 下班了detach当前Session, 回家ssh远程连接后, attach Session后, 场景恢复又能愉快的继续编程了…</p>
+</blockquote>
+<a id="more"></a>
+<h1 id="Install"><a href="#Install" class="headerlink" title="Install"></a>Install</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># 安装Mac OS X下遗失的包管理Homebrew</div><div class="line">$ ruby -e &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&quot;</div><div class="line"></div><div class="line"># 安装神器Tmux</div><div class="line">$ brew install tmux</div></pre></td></tr></table></figure>
+<h1 id="Basic"><a href="#Basic" class="headerlink" title="Basic"></a>Basic</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># 启动Tmux</div><div class="line">$ tmux</div><div class="line"># 关闭Tmux</div><div class="line">$ ctrl + d </div><div class="line"># 或退出</div><div class="line">$ exit</div></pre></td></tr></table></figure>
+<blockquote>
+<p>tmux有三个基本概念：会话(Session)，窗口(Window)和面板(Pane). 当你输入tmux后, tmux实际做的事是首先创建一个会话(Session), 然后在这个会话中创建一个窗口, 你可以继续创建多个窗口(Window), 每个窗口初始只包含一个面板, 继续分屏后, 会出现多个面板(Pane) 你在其中看到的终端实际上都属于tmux的某个面板</p>
+</blockquote>
+<p>更进一步讲, <strong>Session可以包含多个Window, 每个Window又可以包含多个Pane</strong></p>
+<p><img src="http://ww1.sinaimg.cn/large/ab508d3dgw1etu6swls8oj21kw0m24d2.jpg" alt="tu"></p>
+<hr>
+<p><strong>基本操作</strong></p>
+<p>所有快捷键的执行方式:</p>
+<p><strong>重要的事情看三遍</strong><br><strong>重要的事情看三遍</strong><br><strong>重要的事情看三遍</strong></p>
+<p>按下<code>control + b</code>两个按键组合, 然后松开<code>control + b</code>(为了告诉Tmux我要用Tmux的快捷键了), 然后在按快捷键触发各种行为</p>
+<p>例如: <code>C-b ?</code>的执行过程为按下<code>control + b</code>两个按键组合, 然后松开<code>control + b</code>, 然后在按’?’键, 会显示所有快捷键的列表</p>
+<ul>
+<li><code>C-b ?</code> 列出所有快捷键, 按q或Esc返回</li>
+<li><code>C-b d</code>   detach当前会话,可暂时返回Shell界面，输入tmux attach能够重新进入之前会话</li>
+<li><code>C-b s</code>   选择并切换会话；在同时开启了多个会话时使用</li>
+</ul>
+<h1 id="Shortcut"><a href="#Shortcut" class="headerlink" title="Shortcut"></a>Shortcut</h1><p><strong>Window操作</strong></p>
+<ul>
+<li><code>C-b c</code> 创建一个新窗口</li>
+<li><code>C-b &amp;</code> 关闭当前窗口</li>
+<li><code>C-b w</code> 列出所有的窗口选择</li>
+<li><code>C-b p</code> 切换到上一个窗口</li>
+<li><code>C-b n</code> 切换到下一个窗口</li>
+<li><code>C-b 窗口号</code> 使用窗口号切换窗口(例如窗口号为1的, 则<code>C-b 1</code>)</li>
+<li><code>C-b ,</code>   重命名当前窗口，便于识别各个窗口</li>
+</ul>
+<p><strong>Pane操作</strong></p>
+<ul>
+<li><code>C-b %</code> 横向分Terminal</li>
+<li><code>C-b &quot;</code> 纵向分Terminal</li>
+<li><code>C-b 方向键</code> 则会在自由选择各面板</li>
+<li><code>C-b x</code> 关闭当前pane</li>
+<li><code>C-b q</code>   显示面板编号</li>
+</ul>
+<p><strong>Session</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"># 创建一个新的session</div><div class="line">$ tmux new -s &lt;name-of-my-session&gt;</div><div class="line"></div><div class="line"># 在当前session中创建一个新的Session, 并保证之前session依然存在</div><div class="line"># C-b : 然后输入下面命令</div><div class="line">new -s &lt;name-of-my-new-session&gt;</div><div class="line"></div><div class="line"># 进入名为test的session</div><div class="line">$ tmux attach -t test</div></pre></td></tr></table></figure>
+<ul>
+<li><code>C-b s</code> 列出所有会话</li>
+<li><code>C-b d</code> detach当前session(可以认为后台运行)</li>
+</ul>
+<h1 id="Pro"><a href="#Pro" class="headerlink" title="Pro"></a>Pro</h1><p><strong>美化Tmux</strong></p>
+<p>使用<a href="https://github.com/gpakosz/.tmux" target="_blank" rel="external">gpakosz的Tmux配置</a>进行美化</p>
+<p><strong>优点</strong></p>
+<ul>
+<li>使用<code>C-a</code>作为前缀更方便使用, 同时保存了<code>C-b</code>的触发前缀</li>
+<li>powerline状态条美化(用过vim的都应该比较熟悉)</li>
+<li>显示笔记本电池状态</li>
+</ul>
+<p>安装使用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ cd</div><div class="line">$ rm -rf .tmux</div><div class="line">$ git clone https://github.com/gpakosz/.tmux.git</div><div class="line">$ ln -s .tmux/.tmux.conf</div><div class="line">$ cp .tmux/.tmux.conf.local .</div></pre></td></tr></table></figure>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ul>
+<li><a href="https://tmux.github.io/" target="_blank" rel="external">Tmux官网</a></li>
+<li><a href="http://tangosource.com/blog/a-tmux-crash-course-tips-and-tweaks/" target="_blank" rel="external">A Tmux crash course: tips and tweaks</a></li>
+<li><a href="http://abyssly.com/2013/11/04/tmux_intro/" target="_blank" rel="external">tmux入门指南</a></li>
+<li><a href="http://cenalulu.github.io/linux/tmux/" target="_blank" rel="external">Tmux - Linux从业者必备利器</a></li>
+<li><a href="https://github.com/gpakosz/.tmux" target="_blank" rel="external">Tmux conf</a></li>
+<li><a href="http://kumu-linux.github.io/blog/2013/08/06/tmux/" target="_blank" rel="external">Linux下终端利器tmux</a></li>
+</ul>
+</div></article></div></section><footer><div class="paginator"><a href="/2015/07/19/设计模式之策略模式与观察者模式/" class="prev">PREV</a><a href="/2015/07/05/UNIX网络编程基础/" class="next">NEXT</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

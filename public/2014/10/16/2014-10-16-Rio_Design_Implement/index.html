@@ -1,0 +1,145 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Rio:A system Solution for Sharing I/O between Mobile System · Snow Memory | Andrew Liu</title><meta name="description" content="Rio:A system Solution for Sharing I/O between Mobile System - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">Rio:A system Solution for Sharing I/O between Mobile System</h1><div class="post-info">Oct 16, 2014</div><div class="post-content"><p>#1. 基础知识</p>
+<p>##1.1. 深入理解read读取/write写入设备的实现函数</p>
+<ul>
+<li>在驱动文件初始化的过程中, 最重要的一个函数是<code>result = register_chrdev(short_major, &quot;short&quot;, &amp;short_fops);</code><br>执行indmod(初始化驱动模块)命令时，这个函数可以完成三件大事：</li>
+</ul>
+<ol>
+<li>申请主设备号(short_major)，或者指定，或者动态分配</li>
+<li>内核中注册设备的名字(“short”)</li>
+<li>指定fops(<code>文件操作</code>)方法(&amp;short_fops)。其中所指定的fops方法就是我们对设备进行操作的方法（例如read,write,seek,dir,open,release等），如何实现这些方法，是编写设备驱动程序大部分工作量所在。 </li>
+</ol>
+<ul>
+<li>每一个文件都有一个file的结构，在这个结构中有一个file_operations的结构体，这个结构体指明了能够对该文件进行的操作</li>
+</ul>
+<a id="more"></a>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">struct file_operations &#123; </div><div class="line">//由许多函数指针构成,每个函数指针在实际的驱动程序中会以程序员所实现的函数名字出现，它指向程序员实现的设备内部对应类型操作函数</div><div class="line">      loff_t (*llseek) (struct file *, loff_t, int); </div><div class="line">      ssize_t (*read) (struct file *, char *, size_t, loff_t *); </div><div class="line">      ssize_t (*write) (struct file *, const char *, size_t, loff_t *); </div><div class="line">      int (*readdir) (struct file *, void *, filldir_t); </div><div class="line">      unsigned int (*poll) (struct file *, struct poll_table_struct *); </div><div class="line">      int (*ioctl) (struct inode *, struct file *, unsigned int, unsigned</div><div class="line">      long); </div><div class="line">      int (*mmap) (struct file *, struct vm_area_struct *); </div><div class="line">      int (*open) (struct inode *, struct file *); </div><div class="line">      int (*flush) (struct file *); </div><div class="line">      int (*release) (struct inode *, struct file *); </div><div class="line">      int (*fsync) (struct file *, struct dentry *); </div><div class="line">      int (*fasync) (int, struct file *, int); </div><div class="line">      int (*check_media_change) (kdev_t dev); </div><div class="line">      int (*revalidate) (kdev_t dev); </div><div class="line">      int (*lock) (struct file *, int, struct file_lock *); </div><div class="line">      &#125;;</div></pre></td></tr></table></figure>
+<ul>
+<li>当驱动程序里的文件操作函数和用户程序中的操作函数不相同时,靠操作系统核心中的函数<code>sys_write</code>,</li>
+</ul>
+<p>总结 :</p>
+<blockquote>
+<ol>
+<li>insmod驱动程序。驱动程序申请设备名和主设备号，这些可以在/proc/devieces中获得。 </li>
+<li>从/proc/devices中获得主设备号，并使用mknod命令建立设备节点文件。这是通过主设备号将设备节点文件和设备驱动程序联系在一起。设备节点文件中的file属性中指明了驱动程序中fops方法实现的函数指针。 </li>
+<li>用户程序使用open打开设备节点文件，这时操作系统内核知道该驱动程序工作了，就调用fops方法中的open函数进行相应的工作。open方法一般返回的是文件标示符，<code>实际上并不是直接对它进行操作的，而是有操作系统的系统调用在背后工作</code> </li>
+<li>当用户使用文件操作函数操作设备文件时，操作系统调用<code>sys_write</code>函数，该函数首先通过文件标示符得到设备节点文件对应的inode指针和flip指针。inode指针中有设备号信息，能够告诉操作系统应该使用哪一个设备驱动程序，flip指针中有fops信息，可以告诉操作系统相应的fops方法函数在那里可以找到。 </li>
+<li>然后这时<code>sys_write</code>才会调用驱动程序中的write方法来对设备进行写的操作。 其中1-3都是在用户空间进行的，4-5是在核心空间进行的。用户的文件操作函数和操作系统的文件操作中函数通过系统调用<code>sys_write</code>联系在了一起。 </li>
+</ol>
+<p>由于封装特性, 用户并不了解内部的实现, 实际上用户调用文件操作函数后是由系统调用设备文件中的文件操作函数的实现来完成的.(对用户而言更像直接对设备进行操作, 其实是一种错觉)</p>
+</blockquote>
+<p>##1.2. 初理解ioctl()函数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">int ioctl(int fd, ind cmd, …)；  //第一个参数为文件描述符, 第二个参数为用户程序对设备的控制命令</div></pre></td></tr></table></figure>
+<blockquote>
+<p>ioctl是设备驱动程序中对设备的I/O通道进行管理的函数。所谓对I/O通道进行管理，就是对设备的一些特性进行控制，例如串口的传输波特率、马达的转速等等。</p>
+</blockquote>
+<ol>
+<li>在驱动程序中实现的ioctl函数体内，实际上是有一个<code>switch{case}</code>结构，每一个case对应一个命令码，做出一些相应的操作。怎么实现这些操作，这是每一个程序员自己的事情</li>
+<li><code>在ioctl中命令码是唯一联系用户程序命令和驱动程序支持的途径</code>,所以问题来了: 如何组织命令码</li>
+<li>在Linux核心中是定义一个命令码(<code>一个命令就变成了一个整数形式的命令码；但是命令码非常的不直观，所以Linux Kernel中提供了一些宏</code>,这些宏方便理解的字符串生成命令码，或者是从命令码得到一些用户可以理解的字符串以标明这个命令对应的设备类型、设备序列号、数据传送方向和数据传输尺寸)</li>
+</ol>
+<table><br>        <tr><br>            <th>设备类型</th><br>            <th>序列号</th><br>            <th>方向</th><br>            <th>数据尺寸</th><br>        </tr><br>        <tr><br>            <td>8 bit</td><br>            <td>8 bit</td><br>            <td>2 bit</td><br>            <td>8~14 bit</td><br>        </tr><br>    </table>
+
+
+
+<ol>
+<li>cmd宏通过系统调用传递到内核中的驱动程序，再由驱动程序使用解码宏从这个整数中得到设备的类型、序列号、传送方向、数据尺寸等信息，然后通过switch{case}结构进行相应的操作</li>
+<li>处理ioctl系统调用的若干步骤。所有接口类型的ioctl请求都导致dev_ioctl()被调用，这个ioctl仅仅是个包装，大部分的真实的操作留给了dev_ifsioc()，这个dev_ioctl()要做的唯一一件事情就是检查调用过程是否拥有合适的许可去核发这个命令，然后dev_ifsioc()首先要做的事情之一就是得到和名字域ifr.ifr_name中所对应的设备结构，这在一个很大的switch语块的代码后实现。<br>SIOCDEVPRIVATE命令和SIOCDEVPRIVATE+15的命令参数全部交给了默认操作，这些都是switch的分支语句。这里发生的是，内核检查是否一个设备特殊的ioctl的回调已经在设备结构中被设置，这个回调是保持在设备结构中的一个函数指针。如果回调已经被设置了，内核就会调用它。</li>
+</ol>
+<p>##1.3. 内存管理mmap系统调用<br><a href="http://blog.chinaunix.net/uid-26669729-id-3077015.html" target="_blank" rel="external">Linux内存管理之mmap详解 </a></p>
+<p>#2. Rio需求来源<br>逐渐丰富的移动和PC设备, 产生了一种需求场景,运行在一个移动系统的应用要访问另一个设备的I/O, 所以出现了各种I/O分享设备,但基本存在一下三种限制:</p>
+<ol>
+<li>不能支持未经专门修改的应用</li>
+<li>仅仅涉及到一部分I/O共享功能</li>
+<li>现有多为特定的I/O类, 需要开发新的I/O设备</li>
+</ol>
+<p>为了克服以上三点, 论文作者提出并实现了Rio,一种移动系统的I/O共享解决方案.对于Rio的设计和实现需要解决以下挑战:</p>
+<ul>
+<li>进程对设备文件的操作需要驱动访问进程内存空间</li>
+<li>使用无线网络进行移动系统之间通信,具有高往返延迟</li>
+<li>移动系统之间突发断开连接问题</li>
+</ul>
+<p>#3. Rio的设计</p>
+<p>##3.1. 本地IO</p>
+<p><img src="http://byson.img42.wal8.com/img42/434369_20140909170142/141344627915.png" alt="传统IO的设计"></p>
+<p>本地使用IO设备的流程 :<br>设备文件运行在核心层管理设备,通过此文件输出I/O设备函数到用户内存空间,进程对设备文件进行文件操作以实现交互</p>
+<p>##3.2. Rio设计</p>
+<p><img src="http://byson.img42.wal8.com/img42/434369_20140909170142/141344628992.png" alt="Rio"></p>
+<p>Rio在客户端建立一个虚拟设备文件与服务器设备文件对应.使之产生一种使用本地I/O设备的错觉</p>
+<blockquote>
+<p>具体的设计运行过程 :</p>
+</blockquote>
+<p><img src="http://byson.img42.wal8.com/img42/434369_20140909170142/141344629096.png" alt="具体流程"></p>
+<p>Rio的分栈设计思想(当IO设备需要通知时间处理, 会使用poll操作)</p>
+<p>#4. Rio面临的三大难题</p>
+<p>##4.1. 难题一:跨系统内存支持</p>
+<p>对于一些文件操作(read, write, ioctl, mmap等),驱动需要操作用户内存空间,但不同系统有不同的物理内存. 其中mmap引发map_page内存映射操作,read, write和ioctl引发copy_to_user和copy_from_user操作.</p>
+<ol>
+<li>Rio支持map_page操作通过在两系统之间使用分布式共享内存(DSM)方法</li>
+<li>Rio支持copy_to_user和copy_from_user操作通过客户端和服务器端存根的合作完成</li>
+</ol>
+<p>###4.1.1. 跨系统地址映射</p>
+<p><img src="http://byson.img42.wal8.com/img42/434369_20140909170142/141344629149.png" alt="跨系统映射"><br>Rio中DSM, 进程, 内核, 驱动和设备都可以访问共享内存</p>
+<p><img src="http://byson.img42.wal8.com/img42/434369_20140909170142/141344629386.png" alt="yunxing"></p>
+<p>当多个内存页被更新时, 使用批处理来改善性能.</p>
+<ul>
+<li>管理客户端进程访问, 使用页表许可位进行控制访问(读写,只读,只写)</li>
+<li>管理服务器端驱动访问页,对内核内存使用页表许可位(驱动操作在内核中),并且不同于进程内存中的处理方式,当驱动要映射大块内核页到进程地址空间, 服务器存根动态将大块内核页打散成小页, 并赋予不同的保护码</li>
+<li>管理服务器I/O设备通过DMA访问页, 客户存根对每个页维护一个状态变量,监听到DMA要求, 改变状态变量.</li>
+</ul>
+<p>###4.1.2. 跨系统复制</p>
+<blockquote>
+<p>通过客户和服务器存根的合作来实现<code>copy_from_user</code>和<code>copy_to_user</code></p>
+</blockquote>
+<p><img src="http://byson.img42.wal8.com/img42/434369_20140909170142/141344629585.png" alt="跨系统"></p>
+<p>a. 本地IO设备中ioctl文件操作<br>b. 远程IO设备中ioctl文件操作(未优化Rio)<br>c. 优化Rio中ioctl文件操作</p>
+<ul>
+<li><p>copy_from_user:服务器存根发出请求，客户存根从进程内存复制数据发送到服务器存根，被放入内核缓冲区中被驱动使用</p>
+</li>
+<li><p>copy_to_user: 服务器存根复制并发送数据从内核缓冲区到客户存根，客户存根赋值到相应的进程内存缓冲区</p>
+</li>
+<li><p>一次文件操作导致多次内存复制，导致大量往返时间降低IO性能, 这就出现了第二个难题</p>
+</li>
+</ul>
+<p>##4.2. 难题二: 如何缩短高延迟</p>
+<ul>
+<li>通过减少复制内存操作, 文件操作和DSM的消息往返次数来解决高等待时间<br>对于复制引起的往返</li>
+</ul>
+<ol>
+<li>对于客户存根预取服务器驱动需要的数据, 并和文件操作一起传送(copy_from_user)</li>
+<li>对于服务器存根,缓存所有驱动想要复制到进程内存的数据, 并和文件操作返回值一起发送(copy_to_user)</li>
+</ol>
+<p>(<code>对于预取数据, read和write操作较为容易,因为数据的大小和内存中的地址作为函数参数,而ioctl的函数描述不够充分, 通过解析ioctl函数中的cmd参数来推断内存操作,更进一步使用静态分析工作</code>)</p>
+<ul>
+<li>由文件操作导致的往返<br>  为了优化性能, 进程应该发出一个可能进程操作的最小次数, 但有事并不能奏效</li>
+<li>由DSM连续性引起的往返<br>  当一次更新多个内存页时, 相应的连续DSM单元导致多次往返取数据, 可以将所有的数据一起进行单次传送</li>
+<li>处理poll超时<h1 id="include"><a href="#include" class="headerlink" title="include "></a>include <poll.h></poll.h></h1>  int poll ( struct pollfd * fds, unsigned int nfds, int timeout);<br>  timeout指定为负数值表示无限超时，使poll()一直挂起直到一个指定事件发生；timeout为0指示poll调用立即返回并列出准备好I/O的文件描述符，但并不等待其它的事件。这种情况下，poll()就像它的名字那样，一旦选举出来，立即返回。<br>(   <code>论文使用了心跳信息.</code>   )</li>
+</ul>
+<p>##4.3. 难题三:如何处理连接中断</p>
+<p>由于手机等移动设备特性, 任何时候都有可能发生连接中断, 这可能造成一些错误.<br>    论文使用了使用了超时机制检测连接中断问题. 固定周期, 客户存根向服务器存根发送心跳信息, 服务器收到会返回确认, 如果客户端或者服务器一方错误, 就会引发连接中断事件.</p>
+<ol>
+<li>服务器端对于连接中断事件的处理 : 服务器存根残留的客户进程,对每个内存映射的区域和打开的文件描述符分别进行close_map和release文件操作, 并有序释放已分配资源, 最后关闭文件描述符并释放bookkeeping数据结构</li>
+<li>客户端对于连接中断事件的处理 :在客户端存根中清理残留中断的远程I/O, 类似于服务器清理进程. 然后, 尽可能使连接中断对应用透明, 如果有同类IO设备就进行设备切换, 若没有,则返回错误信息</li>
+</ol>
+<p>#5. 安卓实现</p>
+<p><img src="http://byson.img42.wal8.com/img42/434369_20140909170142/141344629786.png" alt="实现"></p>
+<ul>
+<li><p>客户和服务器存根<br>  每个存根有三个模块 :　第一个模块支持应用和设备驱动的交互，第二个模块通过封装序列化的数据结构并发送到另一端实现与其他存根的通信，第三个模块实现Rio的DSM.</p>
+</li>
+<li><p>DSM模块<br>   实现了DSM协议逻辑, DSM会在两种情况下被唤醒 : 缺页(唤醒DSM)和DMA(监听设备的DMA请求, 并在DMA完成时唤醒DSM)</p>
+</li>
+<li><p>使用安卓ION支持缓冲区的分享<br>  安卓对多媒体应用使用ION内存管理框架分配和共享内存缓冲区,对于Rio提供了对全局ION缓冲区的支持(可被用于服务器和客户端), 并利用DSM模块保持两缓冲区的一致</p>
+</li>
+<li><p>特定类的开发</p>
+<ol>
+<li>解决命名冲突</li>
+<li>优化性能(使用更大缓冲区, 减少往返次数)</li>
+<li>支持热插拔(类似)和连接中断</li>
+<li>避免复制I/O初始化(系统启动时会进行设备初始化,二次初始化会破坏I/O设备(用户), HAL被破坏(服务器拒绝基于文件操作的初始化))</li>
+</ol>
+</li>
+</ul>
+<p>#6. 结论</p>
+<blockquote>
+<p>该论文展现了移动系统中I/O共享的解决方案: Rio, 并证明Rio克服了显存IO共享机制的限制, 支持未经修改的应用, 展示了所有的I / O设备的功能，并降低开发难度.</p>
+</blockquote>
+</div></article></div></section><footer><div class="paginator"><a href="/2014/10/22/2014-10-22-Tizen开发者峰会/" class="prev">PREV</a><a href="/2014/10/15/2014-10-15-Logistic回归/" class="next">NEXT</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Lua编码规范 · Snow Memory | Andrew Liu</title><meta name="description" content="Lua编码规范 - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">Lua编码规范</h1><div class="post-info">Sep 4, 2016</div><div class="post-content"><blockquote>
+<p>写代码是为了给别人读的, 所以总需要一些建议性的规范, 所以简单的翻译了一下国外的这篇<a href="http://lua-users.org/wiki/LuaStyleGuide" target="_blank" rel="external">Lua编码规范</a>, 并做了一些适合自己的改动.</p>
+</blockquote>
+<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>代码写出来是给人读的, 保持<code>一致性</code>能够增加改善代码的可读性. <code>一致性(Consistency)</code>在项目之间, 项目内部, 单个模块或单个函数中非常重要. 值得注意的是, 编码规范只是<code>一种建议</code>, 有时可能并不需要去遵守编码规范.</p>
+<a id="more"></a>
+<p>Lua包含自己的语法和常用方式, 本文的编码规范受到其他语言的编码规范的启发:</p>
+<ul>
+<li><a href="https://www.python.org/dev/peps/pep-0008/" target="_blank" rel="external">Python Style Guide</a></li>
+<li><a href="http://search.cpan.org/dist/perl/pod/perlstyle.pod" target="_blank" rel="external">Perl Style Guide</a></li>
+<li><a href="https://google.github.io/styleguide/cppguide.html" target="_blank" rel="external">Various Primarily C/C++ Style Guides</a></li>
+</ul>
+<blockquote>
+<p><strong>编码规范是一种艺术</strong>. </p>
+</blockquote>
+<p>在定义<code>Lua</code>的风格建议时, 从一些<code>Lua</code>的源码中获得灵感(这些源码来自官方文档, Lua的作者们, 其他有名的源码) :</p>
+<ul>
+<li><a href="http://www.lua.org/pil/" target="_blank" rel="external">Programming in Lua</a> by Roberto Ierusalimschy</li>
+<li><a href="http://www.lua.org/manual/5.1/" target="_blank" rel="external">Lua 5.1 Reference Manual</a> by R. Ierusalimschy, L. H. de Figueiredo, W. Celes</li>
+<li>Other <a href="http://lua-users.org/wiki/LuaBookshttp://www.keplerproject.org/" target="_blank" rel="external">LuaBooks</a> such as Beginning Lua Programming</li>
+<li>Examples Lua programs in the “test” folder of the Lua distribution.</li>
+<li>Well known modules such as in <a href="http://www.keplerproject.org/" target="_blank" rel="external">Kepler</a> or on <a href="http://lua-users.org/wiki/LuaForge" target="_blank" rel="external">LuaForge</a>.</li>
+</ul>
+<h2 id="Formatting"><a href="#Formatting" class="headerlink" title="Formatting"></a>Formatting</h2><p><strong>缩进(Indentation)</strong> 缩进常常使用<code>四个空格缩进</code>(原文建议为两个空格). 使用四个空格缩进原因在于, 公司中C/C++编码风格和Python编码风格都是遵循四个缩进的.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">t = &#123;4, 5, 6, &quot;hello&quot;&#125;</div><div class="line">for i, v in ipairs(t) do</div><div class="line">    if type(v) == &quot;string&quot; then</div><div class="line">        print(v)</div><div class="line">    else</div><div class="line">        print(&quot;index = &quot; .. i .. &quot;, num = &quot; .. v)</div><div class="line">    end</div><div class="line">end</div></pre></td></tr></table></figure>
+<h2 id="Naming"><a href="#Naming" class="headerlink" title="Naming"></a>Naming</h2><p><strong>变量命名长度(Variable name length)</strong>: 这个一个一般的规则, 范围大的变量名应该比范围小的变量有更多的描述词. 比如, 在一个大型程序中<code>i</code>作为全局变量的命名是非常糟糕的, 但作为一个小范围的计数器是最吼得.</p>
+<p><strong>值和对象命名(Value and object variable naming)</strong>: 保存值和对象的变量的命名应该一般是<code>小写</code>并且比较短.</p>
+<ul>
+<li>布尔变量(Booleans): 布尔值或者函数的前缀应该对整体的意义是有帮助的. 例如<code>is_directory</code>而不是<code>directory</code></li>
+</ul>
+<p><strong>函数命名(Function naming)</strong>: 函数的命令规则一般类似于值和对象命名. 应该使用下划线和小写单词组合(原文使用getmetatable这种多个字母写在一起的方式). 例如<code>print_table</code></p>
+<p><strong>Lua内部变量命名(Lua internal variable naming)</strong>: 使用名字以下滑线开头, 后跟大写字母作为传统, 如(<code>_VERSION</code>). 这种命名常用于<code>常量</code>, 但不是必须的.</p>
+<p><strong>常量命名(Constants naming)</strong>: 常量, 尤其是值比较简单的, 使用全大写的组合(<code>ALL_CAPS</code>).</p>
+<p><strong>模块/包命名(Mudule/Package naming)</strong>: 使用小写字母加下划线组合的形式, 如: <code>lua_module.lua</code></p>
+<blockquote>
+<p>变量名只有一个<code>_</code>的变量, 表示希望忽略这个变量, 这只是一个<code>传统(convention)</code></p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">-- 忽略数组下标</div><div class="line">for _, v in ipairs(t) do print(v) end</div></pre></td></tr></table></figure>
+<p><code>i, k, v, t</code>常用于一下场景</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">for k,v in pairs(t) ... end</div><div class="line">for i,v in ipairs(t) ... end</div><div class="line">mt.__newindex = function(t, k, v) ... end</div></pre></td></tr></table></figure>
+<p><code>M</code>常用于表示<code>当前模块的table(current module table)</code></p>
+<p><strong>类名(Class names)</strong>: 以大驼峰形式命名(<code>ClassName</code>).</p>
+<p><strong>匈牙利命名法?(Hungarian notations, 是这么翻译吗)</strong>. <del>将语义信息编码到变量中能够帮助增加代码可读性, 尤其是当编码的含义不容易被理解时, 但是过度的命名可能会显示冗余并且降低复杂度(在黑OC呢?). 在一些静态语言中(如, C), 变量类型已知, 此时将变量类型加入命名是很冗余的.</del></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">local function paint(canvas, n_times)</div><div class="line">    for i = 1, n_times do</div><div class="line">        local hello_str_asc_lc_en_const = &quot;hello world&quot;</div><div class="line">        canvas:draw(hello_str_asc_lc_en_const:to_upper())</div><div class="line">    end</div><div class="line">end</div></pre></td></tr></table></figure>
+<h2 id="Libraries-and-Features"><a href="#Libraries-and-Features" class="headerlink" title="Libraries and Features"></a>Libraries and Features</h2><ul>
+<li>如非必要, 不要使用<code>debug library</code>, 尤其是运行可信代码(使用debug library有时是一种<code>hack</code>: <a href="http://lua-users.org/wiki/StringInterpolation" target="_blank" rel="external">String Interpolation</a>)</li>
+<li>避免使用过时(deprecated)的特性. 参考 <a href="http://www.lua.org/manual/5.1/manual.html#7" target="_blank" rel="external">Lua 5.1 Reference Manual - 7 - Incompatibilities with the Previous Version</a></li>
+</ul>
+<h2 id="Scope"><a href="#Scope" class="headerlink" title="Scope"></a>Scope</h2><p>无论何时, 尽可能的使用<code>local</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">local x = 0</div><div class="line">local function count()</div><div class="line">    x = x + 1</div><div class="line">    print(x)</div><div class="line">end</div></pre></td></tr></table></figure>
+<p>全局(global) 有更大的范围和生命周期, 并且会增加<a href="https://en.wikipedia.org/wiki/Coupling_(computer_programming" target="_blank" rel="external">coupling</a>)和复杂度. <strong>不要污染环境</strong>. 在Lua中, 由于全局(global)需要运行时查找table, 所以访问<code>local</code>比<code>global</code>更快, <code>local</code>保存在寄存器中. 参考<a href="http://lua-users.org/wiki/ScopeTutorial" target="_blank" rel="external">Scope Tutorial</a></p>
+<p>检测误用global的有效方法在<a href="http://lua-users.org/wiki/DetectingUndefinedVariables" target="_blank" rel="external">DetectingUndefinedVariables</a>给出. 在Lua中, <code>globals</code>有时可能导致错误拼写和潜在的错误.</p>
+<p>有时通过<code>do-blocks</code>进一步限制<code>local变量</code>的范围非常有用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">local v</div><div class="line">do</div><div class="line">    local x = u2 * v3 - u3 * v2</div><div class="line">    local y = u3 * v1 - u1 * v3</div><div class="line">    local z = u1 * v2 - u2 * v1</div><div class="line">    v = &#123;x, y, z&#125;</div><div class="line">end</div><div class="line"></div><div class="line">local count</div><div class="line">do</div><div class="line">    local x = 0</div><div class="line">    count = function() x = x + 1; return x end</div><div class="line">end</div></pre></td></tr></table></figure>
+<h2 id="Mudules"><a href="#Mudules" class="headerlink" title="Mudules"></a>Mudules</h2><p>在Lua 5.1版本中, 模块系统常被推荐, 但也有一些需要批评的地方. 更详细的描述可以看<a href="http://lua-users.org/wiki/LuaModuleFunctionCritiqued" target="_blank" rel="external">Lua Module Function Critiqued</a>. 你可能写出一下代码:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">-- hello/mytest.lua</div><div class="line">module(..., package.seeall)</div><div class="line">local function test() print(123) end</div><div class="line">function test1() test() end</div><div class="line">function test2() test1(); test1() end</div></pre></td></tr></table></figure>
+<p>并且像下方一样使用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">require &quot;hello.mytest&quot;</div><div class="line">hello.mytest.test2()</div></pre></td></tr></table></figure>
+<p>这里需要批判的地方是: 在所有模块中创建了一个全局变量<code>hello</code>(包含副作用), 通过hello table全局环境曝光. 如: <code>hello.mytest.print = _G.print</code>.</p>
+<p>这些问题可以通过不适用<code>module</code>函数, 而是通过简单的定义模块来解决: </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">-- hello/mytest.lua</div><div class="line">local M = &#123;&#125;</div><div class="line"></div><div class="line">local function test() print(123) end</div><div class="line">function M.test1() test() end</div><div class="line">function M.test2() M.test1(); M.test1() end</div><div class="line"></div><div class="line">return M</div></pre></td></tr></table></figure>
+<p>然后通过如下方式import</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">local MT = require &quot;hello.mytest&quot;</div><div class="line">MT.test2()</div></pre></td></tr></table></figure>
+<p>一个模块包含带构造函数的类可以通过多种方法封装. 此处提供一个好方法:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">-- file: finance/BankAccount.lua</div><div class="line"></div><div class="line">local M = &#123;&#125;; M.__index = M</div><div class="line"></div><div class="line">local function construct()</div><div class="line">    local self = setmetatable(&#123;balance = 0&#125;, M)</div><div class="line">    return self</div><div class="line">end</div><div class="line">setmetatable(M, &#123;__call = construct&#125;)</div><div class="line"></div><div class="line">function M:add(value) self.balance = self.balance + 1 end</div><div class="line"></div><div class="line">return M</div></pre></td></tr></table></figure>
+<p>一个模块通过以上方式定义一般只有<code>一个类</code>, 这个类就是模块本身.</p>
+<p>使用方式如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">local BankAccount = require &quot;finance.BankAccount&quot;</div><div class="line">local account = BankAccount()</div></pre></td></tr></table></figure>
+<p>或者是</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">local new = require</div><div class="line">local account = new &quot;finance.BankAccount&quot; ()</div></pre></td></tr></table></figure>
+<h2 id="Commenting"><a href="#Commenting" class="headerlink" title="Commenting"></a>Commenting</h2><p>单行注释在<code>--</code>后加<code>一个空格</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">return nil  -- not found    (suggested)</div><div class="line">return nil  --not found     (discouraged)</div></pre></td></tr></table></figure>
+<p>文档注释有多种写法. 可以使用下方的装饰器模式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">local docstrings = setmetatable(&#123;&#125;, &#123;__mode = &quot;kv&quot;&#125;)</div><div class="line"></div><div class="line">function document(str)</div><div class="line">    return function(obj) docstrings[obj] = str; return obj end</div><div class="line">end</div><div class="line"></div><div class="line">function help(obj)</div><div class="line">    print(docstrings[obj])</div><div class="line">end</div><div class="line"></div><div class="line">document[[Print the documentation for a given object]](help)</div><div class="line">document[[Add a string as documentation for an object]](document)</div><div class="line"></div><div class="line">f = document[[Print a hello message]](</div><div class="line">    function()</div><div class="line">        print(&quot;hello&quot;)</div><div class="line">    end</div><div class="line">)</div><div class="line">f()</div><div class="line">help(f)</div></pre></td></tr></table></figure>
+<p><strong>End终止符(End Terminator)</strong></p>
+<p>在end后增加一些语句结束的注释发会帮助增加可读性</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">for i, v in ipairs(t) do</div><div class="line">    if type(v) == &quot;string&quot; then</div><div class="line">        ...lots of code here...</div><div class="line">    end -- if string</div><div class="line">end -- for each t</div></pre></td></tr></table></figure>
+<h2 id="Lua-Idioms"><a href="#Lua-Idioms" class="headerlink" title="Lua Idioms"></a>Lua Idioms</h2><ul>
+<li>测试一个变量不等于nil, 下方的写法更简洁. </li>
+</ul>
+<blockquote>
+<p>Lua中nil和false做为<code>false</code>, 其他所有值为<code>true</code></p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">local line = io.read()</div><div class="line">if line then  -- instead of line ~= nil</div><div class="line">...</div><div class="line">end</div><div class="line">...</div><div class="line">if not line then  -- instead of line == nil</div><div class="line">...</div><div class="line">end</div></pre></td></tr></table></figure>
+<p>但是当值即可能等于<code>nil</code>也可能等于<code>false</code>时, 条件需要明确.</p>
+<ul>
+<li><code>and</code>和<code>or</code>的短路求值特性也可以简化代码</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">local function test(x)</div><div class="line">    x = x or &quot;idunno&quot;</div><div class="line">    -- rather than if x == false or x == nil then x = &quot;idunno&quot; end</div><div class="line">    print(x == &quot;yes&quot; and &quot;YES!&quot; or x)</div><div class="line">    -- rather than if x == &quot;yes&quot; then print(&quot;YES!&quot;) else print(x) end</div><div class="line">end</div></pre></td></tr></table></figure>
+<ul>
+<li>克隆(clone)一个table(对表的大小有系统依赖限制)</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">u = &#123;unpack(t)&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>判断一个table是否为空</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">if next(t) == nil then ...</div></pre></td></tr></table></figure>
+<ul>
+<li>向数组中增加一个值</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">-- #t表示数组当前长度</div><div class="line">t[#t + 1] = 1  -- 代替 table.insert(t, 1)</div></pre></td></tr></table></figure>
+<h2 id="Design-Patterns"><a href="#Design-Patterns" class="headerlink" title="Design Patterns"></a>Design Patterns</h2><p>Lua是一个轻量级语言, 通过少量的模块支持可以提供大量的强大的方式. 这种自由的设计模式需要自我组织. </p>
+<blockquote>
+<p>Lua is small language with a small number of simple building blocks that can be combined in a vast number of powerful ways. With this freedom comes the need for self-discipline in the form of design patterns. Often there is an idiomatic way or design pattern to achieving a certain effect in Lua that can be reused frequently (e.g. ObjectOrientationTutorial or ReadOnlyTables). See the LuaTutorial and SampleCode for common solutions to such problems.(这部分翻译不好, 放上原文)</p>
+</blockquote>
+<h2 id="Coding-Standards"><a href="#Coding-Standards" class="headerlink" title="Coding Standards"></a>Coding Standards</h2><p>在各种Lua项目中的编码标准:</p>
+<ul>
+<li><a href="http://sputnik.freewisdom.org/en/Coding_Standard" target="_blank" rel="external">Sputnik coding standard</a></li>
+</ul>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="http://lua-users.org/wiki/LuaStyleGuide" target="_blank" rel="external">Lua编码规范</a></li>
+<li><a href="https://segmentfault.com/a/1190000004372649" target="_blank" rel="external">高性能 Lua 技巧（译）</a></li>
+<li><a href="http://www.lua.org/gems/sample.pdf" target="_blank" rel="external">Lua Performance Tips</a></li>
+</ul>
+</div></article></div></section><footer><div class="paginator"><a href="/2016/09/17/Lua热更新/" class="prev">PREV</a><a href="/2016/08/29/快学Lua/" class="next">NEXT</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Snow Memory | Andrew Liu</title><meta name="description" content="C++ Developer, Gopher, Pythoner, love open source."><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link active">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><ul class="home post-list"><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2014/12/08/Virtualenv简明教程/" class="post-title-link">Virtualenv简明教程</a></h2><div class="post-info">Dec 8, 2014</div><div class="post-content"><blockquote>
+<p>virtualenv is a tool to create isolated Python environments.</p>
+</blockquote>
+<p><code>virtualenv</code>通过创建独立Python开发环境的工具, 来解决依赖、版本以及间接权限<br>问题. 比如一个项目依赖Django1.3 而当前全局开发环境为Django1.7, 版本跨度过大, 导致不兼容使项目无法正在运行, 使用virtualenv可以解决这些问题.</p>
+<blockquote>
+<p><code>virtualenv</code>创建一个拥有自己安装目录的环境, 这个环境不与其他虚拟环境共享库, 能够方便的管理python版本和管理python库</p>
+</blockquote></div><a href="/2014/12/08/Virtualenv简明教程/" class="read-more">...more</a></article></li><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2014/12/06/IOS之控制器数据传递和代理总结/" class="post-title-link">IOS之控制器数据传递和代理总结</a></h2><div class="post-info">Dec 6, 2014</div><div class="post-content"><hr>
+<blockquote>
+<p> copy: NSString/NSMutableArray<br> weak:代理/UI控件<br> strong: 其他OC对象</p>
+</blockquote>
+<p>#1. Segue</p>
+<p>storyboard上每根界面跳转的线, 都是<code>UIStoryboardSegue</code>对象</p>
+<p>每个Segue对象都有三个属性:</p>
+<ul>
+<li>唯一标识(<code>@property (nonatomic, readonly) NSString *identifier;</code>), </li>
+<li>来源控制器(<code>@property (nonatomic, readonly) id sourceViewController;</code>)</li>
+<li>目标控制器(<code>@property (nonatomic, readonly) id destinationViewController;</code>)</li>
+</ul>
+<p>##1.1. Segue的类型</p>
+<ul>
+<li>自动型: 点击<code>某控件</code>后, 自动执行Segue,自动完成界面跳转(由控制拖出, 用于不需要做任何判断直接跳转界面的情景)</li>
+<li>手动型: 需要手写代码才能完成界面的跳转(按住control, 由来源<code>控制器(不是按钮)</code>拖线到目标控制器, 需要<code>设置标识</code>)</li>
+</ul></div><a href="/2014/12/06/IOS之控制器数据传递和代理总结/" class="read-more">...more</a></article></li><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2014/12/05/Python网络爬虫-二-豆瓣抓站小计/" class="post-title-link">Python爬虫(二)--豆瓣抓站小计</a></h2><div class="post-info">Dec 5, 2014</div><div class="post-content"><hr>
+<p>#1. 豆瓣抓站流程</p>
+<ol>
+<li>分析url特征(<code>菜鸟阶段</code>)</li>
+<li>对需要抓取的数据设计正则表达式</li>
+<li>处理HTML中一些特征字符,换行符等</li>
+</ol>
+<blockquote>
+<p>注意异常的处理和字符编码的处理</p>
+</blockquote>
+<p>#2. 实现的功能</p>
+<p><strong>简单的实现了抓取豆瓣电影Top100的电影名称</strong></p>
+<p>#3. 后期工作展望</p>
+<ul>
+<li>抓取更多的有用数据(如:准确抓取导演, 抓取一个电影评论)</li>
+<li>使用多线程爬虫</li>
+<li>学习第三方的爬虫框架(<code>Scrapy</code>)</li>
+<li>深入理解HTML编码和文本处理</li>
+</ul></div><a href="/2014/12/05/Python网络爬虫-二-豆瓣抓站小计/" class="read-more">...more</a></article></li><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2014/12/05/Python网络爬虫/" class="post-title-link">Python爬虫(一)--学习笔记</a></h2><div class="post-info">Dec 5, 2014</div><div class="post-content"><hr>
+<p>#1. 初探urllib2模块</p>
+<ul>
+<li>浏览器相当于客户端, 向服务器发出资源请求(node.js充当的是服务器)</li>
+<li><code>http</code>是基于请求和应答机制, 客户端发出请求, 服务器应答请求</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> urllib2</div><div class="line">response = urllib2.urlopen(<span class="string">"http://www.baidu.com/"</span>) <span class="comment">#使用urlopen进行url请求, 返回应答对象response</span></div><div class="line">html = response.read()  <span class="comment">#去读取应答对象的内容</span></div><div class="line"><span class="keyword">print</span> html</div><div class="line"></div><div class="line"><span class="keyword">import</span> urllib2</div><div class="line">req = urllib2.Request(<span class="string">"ftp://www.baidu.com/"</span>) <span class="comment">#使用url创建一个Request对象</span></div><div class="line">response = urllib2.urlopen(req)</div><div class="line">html = response.read()</div><div class="line"><span class="keyword">print</span> html</div></pre></td></tr></table></figure></div><a href="/2014/12/05/Python网络爬虫/" class="read-more">...more</a></article></li><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2014/12/01/IOS之View管理/" class="post-title-link">IOS之多控制器管理</a></h2><div class="post-info">Dec 1, 2014</div><div class="post-content"><hr>
+<p>#1. 创建控制器的方式</p>
+<blockquote>
+<ol>
+<li>控制器首先应该设置自身的class</li>
+<li>设置所监控的View(控制器的view是延迟加载的, 用到时加载)</li>
+<li>控制器的view加载完毕后会调用viewDidLoad方法</li>
+</ol>
+</blockquote>
+<p>##1.1. 直接创建</p>
+<p>直接通过<code>alloc 和 init</code> 创建控制器</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions &#123;</div><div class="line">    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]]; <span class="comment">//创建一个窗口</span></div><div class="line">    self.window.backgroundColor = [UIColor whiteColor]; <span class="comment">//设置窗口的背景色</span></div><div class="line">    </div><div class="line">    ViewController *one = [[ViewController alloc] init];  <span class="comment">//此处ViewController为自定义的集成UIViewControl的类, 创建控制器</span></div><div class="line">    one.view.backgroundColor = [UIColor blueColor]; <span class="comment">//设置view的背景色</span></div><div class="line">    self.window.rootViewController = one; <span class="comment">//设置窗口的根控制器</span></div><div class="line">    </div><div class="line">    [self.window makeKeyAndVisible]; <span class="comment">//窗口设置为主窗口并显示</span></div><div class="line">    <span class="keyword">return</span> YES;</div><div class="line">&#125;</div></pre></td></tr></table></figure></div><a href="/2014/12/01/IOS之View管理/" class="read-more">...more</a></article></li><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2014/11/30/分布式系统读书笔记-同步互斥/" class="post-title-link">分布式系统读书笔记-同步互斥</a></h2><div class="post-info">Nov 30, 2014</div><div class="post-content"><hr>
+<h1 id="同步"><a href="#同步" class="headerlink" title="同步"></a>同步</h1><hr>
+<blockquote>
+<p>分布式系统中, 有一个重要的问题: 如何取得时间上的一致</p>
+</blockquote>
+<ul>
+<li>单CPU系统中, 所有进程使用同一个始终, 内部保持时钟不变</li>
+<li>多CPu系统中, 每个CPU有自己的时钟,导致时钟偏移.</li>
+</ul>
+<p>##1.1. 时钟同步算法</p>
+<p>基础模型: 每台机器有一个每秒产生H次中断的计时器, 当计时器中断时, 终端处理程序将软件时钟加一, 每件时钟记录从过去某个约定时间开始的计数.</p>
+<ul>
+<li>Cristian算法</li>
+</ul>
+<blockquote>
+<p>适用于只有一台机器有时间服务器(time server), 其他所有机器都要与这台机器同步.</p>
+</blockquote>
+<p>主要问题:</p>
+<ol>
+<li>时间不可倒退(发送请求着时钟快于时间服务器, 接受时钟会导致严重错误)</li>
+<li>时间服务器英法到达发送者有不确定的延迟.</li>
+</ol></div><a href="/2014/11/30/分布式系统读书笔记-同步互斥/" class="read-more">...more</a></article></li><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2014/11/30/分布式系统读书笔记-一/" class="post-title-link">分布式系统读书笔记(一)</a></h2><div class="post-info">Nov 30, 2014</div><div class="post-content"><hr>
+<blockquote>
+<p>分布式系统:若干独立计算机的集合, 这些计算机对于用户来说就像单个系统</p>
+</blockquote>
+<p>分布式系统构造带来的挑战:</p>
+<ul>
+<li>异构性(如何处理不同操作系统, 不同硬件, 不能编程欲然带来的差异)</li>
+<li>开放性(如果形成统一的接口)</li>
+<li>安全性(如果处理隐私, 信息安全问题)</li>
+<li>可扩展性(如果在用户激增情况下, 保持系统性能)</li>
+<li>故障处理(如果大型网络中, 检测故障, 隐藏故障和处理故障)</li>
+<li>并发(如果处理数据共享的一致性问题)</li>
+<li>透明性(如果使系统的某些特性对用户不可见)</li>
+</ul>
+<p>分布式系统特性:</p>
+<ul>
+<li>计算机之间的差别和计算机之间的通信方式的差别对用户是透明的</li>
+<li>用户和应用程序能够以统一和一致的方式与分布式系统通信</li>
+</ul></div><a href="/2014/11/30/分布式系统读书笔记-一/" class="read-more">...more</a></article></li><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2014/11/28/或许你会更喜欢我眼中的Chrome插件和使用/" class="post-title-link">或许你会更喜欢我眼中的Chrome插件和使用</a></h2><div class="post-info">Nov 28, 2014</div><div class="post-content"><hr>
+<blockquote>
+<blockquote>
+<p>你站在桥上看风景，<br>看风景的人在楼上看你。     —&lt;断章&gt;</p>
+</blockquote>
+</blockquote>
+<hr>
+<blockquote>
+<blockquote>
+<p><code>或许我眼中的Chrome的使用会让你眼前一亮呢? 会让你更优雅的使用Chrome呢? 尝试一下总会有一些意外的收获?</code> 那么我们开始吧</p>
+</blockquote>
+</blockquote>
+<p>文章主要分成三个部分:</p>
+<ul>
+<li>常用的Chrome快捷键(主要针对Mac, 优雅的使用Mac不应该更多的使用键盘吗?)</li>
+<li>一些我在用的搜索技巧(强大的Chrome的搜索能力不是简单的搜索技巧能涵盖的, 学会更多的使用技巧, 或许会让你事半功倍)</li>
+<li><code>我眼中的优雅的Chrome插件</code>(他们的优雅不仅仅的在于易用性, 对我来说已经产生了一种用户粘性, 简直<code>欲罢不能</code>)</li>
+</ul></div><a href="/2014/11/28/或许你会更喜欢我眼中的Chrome插件和使用/" class="read-more">...more</a></article></li><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2014/11/28/Python编码规范/" class="post-title-link">Python编码规范</a></h2><div class="post-info">Nov 28, 2014</div><div class="post-content"><blockquote>
+<p><code>Python</code>,一门简洁,全能的胶水语言, 牺牲性能换来的<code>多面手</code>的特性, 最近写Python比较多, 通过这篇博文我试图形成自己的编码规范.为以后的代码重构和阅读埋下铺垫. 主要参考的是google编码规范, 毕竟大公司</p>
+<p>大部分.py文件不必以#!作为文件的开始. 程序的main文件以 #!/usr/bin/python2或者 #!/usr/bin/python3开始.(<code>#!先用于帮助内核找到Python解释器, 但是在导入模块时, 将会被忽略. 因此只有被直接执行的文件中才有必要加入#!.</code>)</p>
+</blockquote>
+<p>##1.1. 分号</p>
+<blockquote>
+<p>不要在行尾加分号, 也不要用分号将两条命令放在同一行</p>
+</blockquote>
+<p>可能之前用C/C++比较多, 刚开始写Python的时候, 总是会在行尾加上分号,而且不会报错, 不过最近python写的比较多,所以也改过来了</p></div><a href="/2014/11/28/Python编码规范/" class="read-more">...more</a></article></li><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2014/11/27/Python代码风格-译/" class="post-title-link">Python代码风格<译></a></h2><div class="post-info">Nov 27, 2014</div><div class="post-content"><hr>
+<blockquote>
+<p>其实翻译并没有想象中那么简单, 在豆瓣上看过很多对于翻译的吐槽, 没有真正去做一件事情就没有资格去评论其中的对与错, 简单的一次翻译体会到了翻译的个中艰辛, 这篇翻译主要起于自己想制定一个适合自己的Python编码规范, 其中内容并没有认真校对, 见谅, 能力有限. 有错误请指出, 感谢.</p>
+</blockquote>
+<p>当你询问一个程序员为什么最爱Python语言, 他们常说它可读性很高. 确实, 高度的可读性是设计Python语言的核心.</p>
+<p>一个使Python代码易读,易理解的原因是Python语言相对完善的编码风格和<code>Pythonic</code>的风格</p>
+<p>并且, 当一个经验丰富的Python开发者指着一段代码说”这段代码不是Pythonic风格”, 这常常意味着这些代码没有遵循一个普遍的代码准则, 没有通过最好的方式表达出它的意图.</p>
+<p>在一些情况下, 没有一个约定的最好方式在Python代码中表达意图, 但这样的情况是比较少的.</p></div><a href="/2014/11/27/Python代码风格-译/" class="read-more">...more</a></article></li></ul></section><footer><div class="paginator"><a href="/page/11/" class="prev">PREV</a><a href="/page/13/" class="next">NEXT</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

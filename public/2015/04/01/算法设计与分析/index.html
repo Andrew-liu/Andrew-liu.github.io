@@ -1,0 +1,59 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 算法设计与分析 · Snow Memory | Andrew Liu</title><meta name="description" content="算法设计与分析 - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">算法设计与分析</h1><div class="post-info">Apr 1, 2015</div><div class="post-content"><p>本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh" target="_blank" rel="external">署名-非商业用途-保持一致</a>的创作共用协议.</p>
+<h2 id="1-算法设计基础"><a href="#1-算法设计基础" class="headerlink" title="#1. 算法设计基础"></a>#1. 算法设计基础</h2><blockquote>
+<p>算法是有限条指令序列, 确定了解决某个问题的一系列运算或操作</p>
+</blockquote>
+<ol>
+<li>问题建模</li>
+<li>选择什么算法</li>
+<li>这个算法能否使所有实例得到最优解</li>
+<li>如果不能, 找出反例</li>
+</ol>
+<a id="more"></a>
+<blockquote>
+<p>算法时间复杂度: 针对指定基本运算, 计算算法所做运算次数</p>
+</blockquote>
+<h2 id="2-算法数学基础"><a href="#2-算法数学基础" class="headerlink" title="#2. 算法数学基础"></a>#2. 算法数学基础</h2><p>$$\sum\limits_{k=1}^na_k = \frac{n(a_1 + a_n)}{2}$$</p>
+<p>$$\sum\limits_{k=0}^naq^k = \frac{a(1 - q^{n + 1}))}{1 - q}$$</p>
+<p>$$\sum\limits_{k=1}^n\frac{1}{k} = lnn + O(1)$$</p>
+<p><strong>估计序列和:</strong></p>
+<ol>
+<li><p>和式放大法 $ \sum\limits_{k=1}^na<em>k &lt;= na</em>{max} $ , 等比数列方法法</p>
+</li>
+<li><p>积分法</p>
+</li>
+</ol>
+<p><strong>求解递推方程:</strong></p>
+<ol>
+<li>迭代法(代入前一项的值)</li>
+<li>差消法(利用两个方程相减, 尽可能的销项)</li>
+</ol>
+<blockquote>
+<p>递归树是一个迭代计算模型, 生成过程与迭代过程一致</p>
+</blockquote>
+<p>$$T(n) = aT(n/b) + f(n)$$</p>
+<p>a: 规约后的子问题个数<br>n/b: 规约后子问题的规模<br>f(n): 规约过程及组合子问题的解的工作量</p>
+<p>##主定理</p>
+<blockquote>
+<p>用于计算算法的时间复杂度</p>
+</blockquote>
+<p>定理: 设$a\geq1, b&gt;1$为常数,$f(n)$为函数, $T(n)$为非负整数, 且$T(n) = aT(a/b) + f(n)$, 则</p>
+<ol>
+<li>若$f(n) = O(n^{log_ba - \epsilon}), \epsilon&gt;0$, 那么$$T(n) = \Theta(n^{log_ba})$$</li>
+<li>若$f(n) = \Theta(n^{log_ba})$, 那么$$T(n) = \Theta(n^{log_ba}logn)$$</li>
+<li>若$f(n) = \Omega(n^{log_ba + \epsilon}), \epsilon&gt;0$, 且对于某个常数$c&lt;1$和充分大的$n$有$af(b/b) \leq cf(n)$, 那么$$T(n) = \Theta(f(n))$$</li>
+</ol>
+<h2 id="3-分治算法"><a href="#3-分治算法" class="headerlink" title="#3. 分治算法"></a>#3. 分治算法</h2><p><strong>分支策略</strong> :将原问题划分成规模较小的子问题, 递归或迭代求解子问题(独立), 将子问题的解综合得到原问题的解</p>
+<ul>
+<li>快速排序</li>
+<li>幂乘运算(奇数次和偶数次, 划分成规模减半子问题)</li>
+<li>矩阵乘法(矩阵分块策略)</li>
+<li>平面距离最小点对问题(平面进行划分)</li>
+</ul>
+<p><strong>分支算法时间复杂度方程:</strong></p>
+<p>$$ W(n) = aW(n/b) + d(n)$$</p>
+<p>a为子问题数, n/b为子问题规模, d(n)为划分和综合的工作量<br>当a较大, b较小, d(n)不大时, 方程的解:<br>$$W(n) = \Omega(n^{log_ba}) $$</p>
+<blockquote>
+<p>减少a是降低函数$W(n)的阶的途径$</p>
+</blockquote>
+<p>未完待续…</p>
+</div></article></div></section><footer><div class="paginator"><a href="/2015/04/05/MatLab入门手册/" class="prev">PREV</a><a href="/2015/03/29/MapReduce之WordCount/" class="next">NEXT</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

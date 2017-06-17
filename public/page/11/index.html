@@ -1,0 +1,71 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Snow Memory | Andrew Liu</title><meta name="description" content="C++ Developer, Gopher, Pythoner, love open source."><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link active">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><ul class="home post-list"><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2014/12/22/Django搭建简易博客教程-二-开发环境和Django安装/" class="post-title-link">Django搭建简易博客教程(二)-开发环境和Django安装</a></h2><div class="post-info">Dec 22, 2014</div><div class="post-content"><h2 id="开发环境"><a href="#开发环境" class="headerlink" title="#开发环境"></a>#开发环境</h2><p><code>下面仅仅是我的项目开发环境, 没有必要追求完全一致...</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Mac OS X 10.10.1</div><div class="line">Python3.4.1</div><div class="line">Django1.7.1 </div><div class="line">Bootstrap3.3.0  #非必要</div><div class="line">Sublime Text 3  #非必要</div><div class="line">virtualenv  1.11.6</div></pre></td></tr></table></figure></div><a href="/2014/12/22/Django搭建简易博客教程-二-开发环境和Django安装/" class="read-more">...more</a></article></li><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2014/12/22/Django搭建简易博客教程-一-Django简介/" class="post-title-link">Django搭建简易博客教程(一)-Django简介</a></h2><div class="post-info">Dec 22, 2014</div><div class="post-content"><p><img src="http://picturebag.qiniudn.com/56.png" alt="Django"></p>
+<h2 id="写作目的"><a href="#写作目的" class="headerlink" title="#写作目的"></a>#写作目的</h2><p>喜欢一个学习观点<code>以教促学</code>, 一直以来, 学习的时候经常会发现, 某个方法某个问题自己已经明白了, 但是在教给别人的时候确说不清楚, 所以慢慢的学会了<code>以教促学</code>这种方法, 在教给别人知识的同时也能够提升自己对语言, 对框架的理解.</p></div><a href="/2014/12/22/Django搭建简易博客教程-一-Django简介/" class="read-more">...more</a></article></li><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2014/12/19/Python爬虫-八-Scrapy模拟登录/" class="post-title-link">Python爬虫(八)--Scrapy模拟登录</a></h2><div class="post-info">Dec 19, 2014</div><div class="post-content"><h2 id="1-Cookie原理"><a href="#1-Cookie原理" class="headerlink" title="#1. Cookie原理"></a>#1. Cookie原理</h2><blockquote>
+<p>HTTP是无状态的面向连接的协议, 为了保持连接状态, 引入了Cookie机制</p>
+</blockquote>
+<p>Cookie是http消息头中的一种属性，包括：</p>
+<ul>
+<li>Cookie名字（Name）Cookie的值（Value）</li>
+<li>Cookie的过期时间（Expires/Max-Age）</li>
+<li>Cookie作用路径（Path）</li>
+<li>Cookie所在域名（Domain），使用Cookie进行安全连接（Secure）。<br>前两个参数是Cookie应用的必要条件，另外，还包括Cookie大小（Size，不同浏览器对Cookie个数及大小限制是有差异的）。</li>
+</ul>
+<p><a href="http://en.wikipedia.org/wiki/HTTP_cookie">更详细的cookie</a></p></div><a href="/2014/12/19/Python爬虫-八-Scrapy模拟登录/" class="read-more">...more</a></article></li><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2014/12/19/IOS之UITabBarController/" class="post-title-link">IOS之UITabBarController</a></h2><div class="post-info">Dec 19, 2014</div><div class="post-content"><h2 id="1-UITabBarController简单使用"><a href="#1-UITabBarController简单使用" class="headerlink" title="#1. UITabBarController简单使用"></a>#1. UITabBarController简单使用</h2><ol>
+<li>初始化<code>UITabBarController</code></li>
+<li>设置UIWindow的<code>rootViewController</code>为UITabBarController</li>
+<li>根据具体情况, 通过addChildViewController方法添加对应个数的子控制器</li>
+</ol>
+<p><code>UITabBarController添加控制器的方式有2种</code> :<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//添加单个子控制器</span></div><div class="line">- (<span class="keyword">void</span>)addChildViewController:(UIViewController *)childController;</div><div class="line"></div><div class="line"><span class="comment">//设置子控制器数组</span></div><div class="line">@property(nonatomic,copy) NSArray *viewControllers;</div></pre></td></tr></table></figure></p></div><a href="/2014/12/19/IOS之UITabBarController/" class="read-more">...more</a></article></li><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2014/12/17/Python爬虫-四-Scrapy框架学习/" class="post-title-link">Python爬虫(七)--Scrapy框架学习</a></h2><div class="post-info">Dec 17, 2014</div><div class="post-content"><p>本文希望达到以下目标:</p>
+<ol>
+<li>简要介绍Scarpy</li>
+<li>阅读官网入门文档并实现文档中的范例</li>
+<li>使用Scarpy优化豆瓣爬虫的抓取</li>
+<li>制定下一步学习目标</li>
+</ol>
+<p>#1. Scrapy简介</p>
+<blockquote>
+<p>Scrapy是一个为了爬取网站数据，提取结构性数据而编写的应用框架。 可以应用在包括数据挖掘，信息处理或存储历史数据等一系列的程序中。<br>其最初是为了页面抓取 (更确切来说, 网络抓取 )所设计的， 也可以应用在获取API所返回的数据(例如 Amazon Associates Web Services ) 或者通用的网络爬虫。Scrapy用途广泛，可以用于数据挖掘、监测和自动化测试</p>
+</blockquote>
+<p><code>Scrapy</code> 使用了 <code>Twisted</code>异步网络库来处理网络通讯。整体架构大致如下</p>
+<p><img src="http://newtonblogimg.qiniudn.com/Scrapy%20Architecture.png" alt="Scrapy"></p></div><a href="/2014/12/17/Python爬虫-四-Scrapy框架学习/" class="read-more">...more</a></article></li><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2014/12/15/Python-多线程续-Queue/" class="post-title-link">Python爬虫(六)--多线程续(Queue)</a></h2><div class="post-info">Dec 15, 2014</div><div class="post-content"><hr>
+<p>本文希望达到的目标:</p>
+<ol>
+<li>学习Queue模块</li>
+<li>将Queue模块与多线程编程相结合</li>
+<li>通过Queue和threading模块, 重构爬虫, 实现多线程爬虫, </li>
+<li>通过以上学习希望总结出一个通用的多线程爬虫小模版</li>
+</ol>
+<h2 id="1-Queue模块"><a href="#1-Queue模块" class="headerlink" title="#1. Queue模块"></a>#1. Queue模块</h2><p><code>Queue</code>模块实现了多生产者多消费者队列, 尤其适合多线程编程.<code>Queue</code>类中<code>实现了所有需要的锁原语</code>(这句话非常重要), Queue模块实现了三种类型队列:</p>
+<ul>
+<li>FIFO(先进先出)队列, 第一加入队列的任务, 被第一个取出</li>
+<li>LIFO(后进先出)队列,最后加入队列的任务, 被第一个取出(操作类似与栈, 总是从栈顶取出, 这个队列还不清楚内部的实现)</li>
+<li>PriorityQueue(优先级)队列, 保持队列数据有序, 最小值被先取出(在C++中我记得优先级队列是可以自己重写排序规则的, Python不知道可以吗)</li>
+</ul></div><a href="/2014/12/15/Python-多线程续-Queue/" class="read-more">...more</a></article></li><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2014/12/14/Python爬虫-三-Coursera抓站小结/" class="post-title-link">Python爬虫(三)--Coursera抓站小结</a></h2><div class="post-info">Dec 14, 2014</div><div class="post-content"><hr>
+<hr>
+<blockquote>
+<p>系统:Mac OS X 10.10.1<br>编辑器: <a href="">Sublime Text2</a><br>Python版本: 2.7.8<br>模块依赖: import sys, string, re, random, urllib, urllib2, cookielib, getpass(<code>均为系统内的模块</code>)</p>
+</blockquote>
+<hr>
+<p>#0. 抓站小结</p>
+<p>##0.1. cookie处理<br>需要进行登陆的时候, 要进行cookie的处理,使用以下方法</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">cookie = cookielib.CookieJar()</div><div class="line">opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookie))</div><div class="line">urllib2.install_opener(opener)</div><div class="line">req = urllib2.Request(url)</div><div class="line">content = urllib2.urlopen(req)</div></pre></td></tr></table></figure></div><a href="/2014/12/14/Python爬虫-三-Coursera抓站小结/" class="read-more">...more</a></article></li><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2014/12/14/Python-多线程/" class="post-title-link">Python爬虫(五)--多线程</a></h2><div class="post-info">Dec 14, 2014</div><div class="post-content"><hr>
+<h2 id="1-thread模块"><a href="#1-thread模块" class="headerlink" title="#1. thread模块"></a>#1. thread模块</h2><ul>
+<li>python是支持多线程的, 主要是通过thread和threading这两个模块来实现的。</li>
+<li>python的thread模块是比较底层的模块(或者说轻量级)，python的threading模块是对thread做了一些包装的，可以更加方便的被使用。</li>
+</ul>
+<p>简要的看一下thread模块中含函数和常量</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> thread</div><div class="line"></div><div class="line">thread.LockType  <span class="comment">#锁对象的一种, 用于线程的同步</span></div><div class="line">thread.error  <span class="comment">#线程的异常</span></div><div class="line"></div><div class="line">thread.start_new_thread(function, args[, kwargs])  <span class="comment">#创建一个新的线程</span></div><div class="line">function : 线程执行函数</div><div class="line">args : 线程执行函数的参数, 类似为tuple,</div><div class="line">kwargs : 是一个字典</div><div class="line">返回值: 返回线程的标识符</div><div class="line"></div><div class="line">thread.exit()  <span class="comment">#线程退出函数</span></div><div class="line">thread.allocate_lock()  <span class="comment">#生成一个未锁状态的锁对象</span></div><div class="line">返回值: 返回一个锁对象</div></pre></td></tr></table></figure>
+<p><code>锁对象</code>的方法</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">lock.acquire([waitflag]) <span class="comment">#获取锁</span></div><div class="line">无参数时, 无条件获取锁, 无法获取时, 会被阻塞, 知道可以锁被释放</div><div class="line">有参数时, waitflag = <span class="number">0</span> 时,表示只有在不需要等待的情况下才获取锁, 非零情况与上面相同</div><div class="line">返回值 :　获得锁成功返回<span class="keyword">True</span>, 获得锁失败返回<span class="keyword">False</span></div><div class="line"></div><div class="line">lock.release() <span class="comment">#释放锁</span></div><div class="line"></div><div class="line">lock.locked() <span class="comment">#获取当前锁的状态</span></div><div class="line">返回值 : 如果锁已经被某个线程获取,返回<span class="keyword">True</span>, 否则为<span class="keyword">False</span></div></pre></td></tr></table></figure></div><a href="/2014/12/14/Python-多线程/" class="read-more">...more</a></article></li><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2014/12/11/手把手教你写Sublime中的Snippet/" class="post-title-link">手把手教你写Sublime中的Snippet</a></h2><div class="post-info">Dec 11, 2014</div><div class="post-content"><hr>
+<blockquote>
+<p><a href="https://www.sublimetext.com/">Sublime Text</a>号称最性感的编辑器, 并且越来越多人使用, 美观, 高效</p>
+</blockquote>
+<p>关于如何使用<a href="https://www.sublimetext.com/">Sublime text</a>可以参考我的另一篇文章, 相信你会喜欢上的..<br><a href="http://www.jianshu.com/p/25cdc7d608bb">Sublime Text 2使用心得</a></p>
+<blockquote>
+<p>现在介绍一下Snippet, <code>Snippets are smart templates that will insert text for you and adapt it to their context</code>. Snippet 是插入到文本中的智能模板并使这段文本适当当前代码环境. 程序员总是会不断的重写一些简单的代码片段, 这种工作乏味/无聊, 而Snippet的出现会让Code更加高效.</p>
+</blockquote></div><a href="/2014/12/11/手把手教你写Sublime中的Snippet/" class="read-more">...more</a></article></li><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2014/12/10/Python-Socket网络编程/" class="post-title-link">Python爬虫(四)--Socket网络编程</a></h2><div class="post-info">Dec 10, 2014</div><div class="post-content"><hr>
+<p>python的网络变成比c语言简单许多, 封装许多底层的实现细节, 方便程序员使用的同时, 也使程序员比较难了解一些底层的东西, 我觉得学<code>网络编程</code>还是用c语言更好一点.</p>
+<blockquote>
+<p>写这篇博文, 也希望回顾并整理一下以前学过的c语言和linux下一些东西, 会将一些Linux网络编程的函数和Python网络变成函数做一个简单的对照, 方便记忆</p>
+</blockquote>
+<h2 id="1-Socket套接字的概念"><a href="#1-Socket套接字的概念" class="headerlink" title="#1. Socket套接字的概念"></a>#1. Socket套接字的概念</h2><p><code>Socket(翻译为套接字, 我觉得很挫)</code>,是操作系统内核中的一个数据结构，它是<code>网络中的节点进行相互通信的门户</code>。它是网络进程的ID。网络通信，归根到底还是进程间的通信（不同计算机上的进程间通信, 又称进程间通信, IP协议进行的主要是端到端通信）。在网络中，每一个节点（计算机或路由）都有一个网络地址，也就是IP地址。两个进程通信时，首先要确定各自所在的网络节点的网络地址。但是，网络地址只能确定进程所在的计算机，而一台计算机上很可能同时运行着多个进程，所以仅凭网络地址还不能确定到底是和网络中的哪一个进程进行通信，因此套接口中还需要包括其他的信息，也就是端口号（PORT）。在一台计算机中，一个端口号一次只能分配给一个进程，也就是说，在一台计算机中，端口号和进程之间是一一对应关系。<br>所以，使用端口号和网络地址的组合可以唯一的确定整个网络中的一个网络进程. </p></div><a href="/2014/12/10/Python-Socket网络编程/" class="read-more">...more</a></article></li></ul></section><footer><div class="paginator"><a href="/page/10/" class="prev">PREV</a><a href="/page/12/" class="next">NEXT</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

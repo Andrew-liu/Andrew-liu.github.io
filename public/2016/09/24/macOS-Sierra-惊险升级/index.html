@@ -1,0 +1,37 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> macOS Sierra 惊险升级 · Snow Memory | Andrew Liu</title><meta name="description" content="macOS Sierra 惊险升级 - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">macOS Sierra 惊险升级</h1><div class="post-info">Sep 24, 2016</div><div class="post-content"><h2 id="惊现问题"><a href="#惊现问题" class="headerlink" title="惊现问题"></a>惊现问题</h2><p><code>2016年9月21</code> Apple开始推送 <code>macOS Sierra(10.12)</code>.</p>
+<p><strong>此处升级的亮点:</strong></p>
+<ul>
+<li><strong>亮点就是没有亮点!!!</strong></li>
+<li>最大的升级是<code>Mac OS X</code> 改名为 <code>macOS&#39;</code>, 很大的改变有木有</li>
+<li>Mac增加了Siri支持, 我知道我Mac多了个天气预报小助手</li>
+<li>可以使用Apple Watch自动近距离解锁Mac, 听说<a href="">Near Lock</a>已哭晕在厕所? 然而首先你要买一部 <code>Apple Watch</code></li>
+<li>跨设备复制粘贴, 可以使用云端剪切板, iPhone上复制的东西可以在Mac上直接黏贴. 然而首先你要买一部 <code>iPhone</code></li>
+<li>Safari我就不喷了, 反正用了Chrome的我实在受不了龟速的Safari. 听说Safari很省电, 这个卖点不错!</li>
+<li>还有啥? 这次升级只有很少的App闪退阵亡.(呵呵</li>
+</ul>
+<blockquote>
+<p>然后开始作死升级之路… 怎么升级就不说了, 正常人都知道….</p>
+</blockquote>
+<a id="more"></a>
+<p><img src="http://ww3.sinaimg.cn/large/ab508d3dgw1f81hwo4xcwj20qo0zk0t7.jpg" alt=""></p>
+<p>告诉我macOS未能安装在电脑上, 磁盘没有足够的空间来安装..</p>
+<p>我当时就哔了狗了, 你安装前不先检查磁盘剩余空间就敢给我安装?<br>重启后, 自动又开始安装, 然后再一次错误, 我就知道出事了…</p>
+<p>都是我最近下片无数, 看完不删还想有空再回味一下, 这下子出事了… 磁盘不够了…</p>
+<h2 id="尝试解决"><a href="#尝试解决" class="headerlink" title="尝试解决"></a>尝试解决</h2><p>方法一. <code>Failed</code>. 安全模式方法, 重启后, 按住<code>Shift</code>等待出现苹果标志, 进入Mac模式, 听说此模式可以进入电脑, 这样我就能够删除我的大片了, 然后就有足够空间了, 然而我天真了, 真的再也进不去系统了, 一到80%或者100%就卡住不动了,太坑爹了…</p>
+<p><img src="http://ww3.sinaimg.cn/large/ab508d3dgw1f81i4hw4xaj20qo0zk3yx.jpg" alt=""></p>
+<p>方法二. <code>Failed</code>. 恢复模式方法, 重启后, 按住<code>Command + R</code>进入恢复模式, 在菜单栏的工具中, 打开Terminal, 满心以为可以通过Terminal中删除home文件下的文件. 结果我发现里面全是一些系统文件, 没有任何个人文件的影响, 此方法猝..</p>
+<p>方法三. <code>Failed</code>. Ubuntu大法. 插入制作了Ubuntu的U盘, 按住<code>Option</code>开机, 开机后选址<code>Efi</code>(大概是这个名字)模式, 然后选择<code>Try Ubuntu but not installing</code>方式试用Ubuntu. 通过Ubuntu挂载Mac的硬盘, 然后对Mac硬盘的文件进行删除. 结果我又天真了, 由于硬盘未能安装成功更新, 导致挂载失败, 只能挂载恢复盘的文件, 我要这玩意有何用…</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"># 安装hfsprogs用于支持hfsplus</div><div class="line">$ sudo apt-get install hfsprogs</div><div class="line"></div><div class="line"># 测试要挂载盘的状态, sdXX表示要挂载的磁盘, 如sda1, sda2</div><div class="line">$ sudo fsck.hfsplus -f /dev/sdXX</div><div class="line"># 输出结果为 The volume #### appears to be OK表示可以挂载</div><div class="line"></div><div class="line"># 挂载磁盘到本地的路径下, 此处我挂载sda2到本地/home/ubuntu路径下</div><div class="line">sudo mount -t hfsplus -o fore,rw /dev/sda2 /home/ubuntu</div><div class="line"># 若挂载成功可进行读写操作</div></pre></td></tr></table></figure>
+<p><img src="http://ww3.sinaimg.cn/large/ab508d3dgw1f81ihpzf4cj20qo0zkta2.jpg" alt=""></p>
+<ol>
+<li><code>Success</code>. 最后实在没办法了, 我又让他重启自动安装了, 结果发现这次成功了, 我还能说什么????</li>
+</ol>
+<p><img src="http://ww4.sinaimg.cn/large/ab508d3dgw1f81ij42nrpj20js08adgg.jpg" alt=""></p>
+<h2 id="自我反省"><a href="#自我反省" class="headerlink" title="自我反省"></a>自我反省</h2><ol>
+<li>以后再升级, 千万不能硬上了, 记得备份呀. 说的我好像买的起<code>Time Machine</code>一样</li>
+<li>升级前一定要看看剩余的磁盘空间呀, 千万别装备呀, 千万别信Apple粑粑的升级包呀</li>
+</ol>
+<blockquote>
+<p>最后我只想大声说一句: 重启大法好!!!!</p>
+</blockquote>
+</div></article></div></section><footer><div class="paginator"><a href="/2016/09/30/深入探索C-对象模式读书笔记/" class="prev">PREV</a><a href="/2016/09/17/Lua热更新/" class="next">NEXT</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 浅谈Raft · Snow Memory | Andrew Liu</title><meta name="description" content="浅谈Raft - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">浅谈Raft</h1><div class="post-info">Aug 6, 2016</div><div class="post-content"><p>本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh" target="_blank" rel="external">署名-非商业用途-保持一致</a>的创作共用协议.</p>
+<blockquote>
+<p>工作忙了，总是骗自己说的没时间写博客，其实都是自己懒癌发作而已。题目写了浅谈，肯定文章是不够深入透彻的，刚刚爬进分布式门槛的婴儿，需要慢慢的学会走路。希望后面能通过自己总结再来一篇<code>深入理解Raft</code>(显然又在挖坑</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="一致性算法特性"><a href="#一致性算法特性" class="headerlink" title="一致性算法特性"></a>一致性算法特性</h2><ol>
+<li><code>安全性保</code>证：在非拜占庭错误情况下，包括网络延迟、分区、丢包、冗余和乱序等错误都可以保证正确。</li>
+<li><code>可用性</code>：集群中只要有大多数的机器可运行并且能够相互通信、和客户端通信，就可以保证可用。因此，一个典型的包含 5 个节点的集群可以容忍两个节点的失败。服务器被停止就认为是失败。他们当有稳定的存储的时候可以从状态中恢复回来并重新加入集群。<code>paxos在有2f + 1个节点时可以容忍f个节点失败</code>.</li>
+<li><code>不依赖时序来保证一致性</code>：物理时钟错误或者极端的消息延迟在可能只有在最坏情况下才会导致可用性问题。</li>
+<li>通常情况下，一条指令可以尽可能快的在集群中大多数节点响应一轮远程过程调用时完成。小部分比较慢的节点不会影响系统整体的性能。</li>
+</ol>
+<h2 id="Paxos算法"><a href="#Paxos算法" class="headerlink" title="Paxos算法"></a>Paxos算法</h2><p>提到Raft算法的同时, 总是无法避免的要说起Paxos, 在Raft论文中也提到, Raft算法初衷是为了解决Paxos难以理解而提出, 所以总要看看Paxos算法到底是个什么东西</p>
+<p>Paxos算法的缺陷:</p>
+<ol>
+<li>Paxos 算法<code>难以理解</code></li>
+<li>Paxos算法没有提供一个足够好用来构建一个现实系统的基础</li>
+</ol>
+<h2 id="Raft算法"><a href="#Raft算法" class="headerlink" title="Raft算法"></a>Raft算法</h2><blockquote>
+<p>Raft是一种为了<code>管理复制日志</code>的<code>一致性算法</code></p>
+</blockquote>
+<ul>
+<li>Raft 将一致性算法分解成了<code>领导人(leader)选举、日志复制和安全性</code>三个模块.</li>
+</ul>
+<p>Raft算法的特性:</p>
+<ul>
+<li><code>强领导者</code>：Raft 使用一种更强的领导能力形式。比如，日志条目只从领导者发送给其他的服务器。这种方式简化了对复制日志的管理并且使得 Raft 算法更加易于理解。</li>
+<li><code>领导选举</code>：Raft 算法使用一个随机计时器来选举领导者。这种方式只是在任何一致性算法都必须实现的心跳机制上增加了一点机制。</li>
+<li><code>关系调整</code>：Raft 使用一种共同一致的方法来处理集群成员变换的问题，在这种方法中，两种不同的配置都要求的大多数机器会重叠。这就使得集群在成员变换的时候依然可以继续工作。</li>
+</ul>
+<h3 id="领导人选举"><a href="#领导人选举" class="headerlink" title="领导人选举"></a>领导人选举</h3><p><img src="http://ww1.sinaimg.cn/mw690/ab508d3djw1f65cdl86xsj20r40yan8y.jpg" alt=""></p>
+<ol>
+<li>在任何时刻，每一个服务器节点都处于这三个状态之一：领导人(leader)、跟随者(follower)或者候选人(candidate). 跟随者都是被动的：他们不会发送任何请求，只是简单的响应来自领导者或者候选人的请求。领导人处理所有的客户端请求</li>
+<li>Raft 把时间分割成任意长度的<code>任期(terms)</code>, 如上面图中的Figure 5, 任期用连续的整数标记。每一段任期从一次选举开始，一个或者多个候选人尝试成为领导者。如果一个候选人赢得选举，然后他就在接下来的任期内充当领导人的职责。在某些情况下，一次选举过程会造成选票的瓜分。在这种情况下，这一任期会以没有领导人结束(<code>t3</code>)；一个新的任期（和一次新的选举）会很快重新开始。Raft 保证了在一个给定的任期内，<code>最多只有一个</code>领导者</li>
+<li>领导者<code>周期性的向所有跟随者发送心跳包</code>。如果一个跟随者在一段时间里没有接收到任何消息，也就是选举超时, 然后他就会认为系统中没有可用的领导者然后开始进行选举以选出新的领导者。</li>
+<li>此跟随者先要增加自己的<code>当前任期号</code>并且<code>转换到候选人状态</code>, 开始进入<strong>领导人选举</strong>. 他会并行的向集群中的其他服务器节点发送RPC请求给自己投票。候选人会继续保持着当前状态直到以下三件事情之一发生：(a) 他自己赢得了这次的选举, 则向其他服务器发送心跳检测，(b) 其他的服务器成为领导者, 候选者选为跟随者，(c) 一段时间之后没有任何一个获胜的人, 每一个候选人都会超时，然后通过增加当前任期号来开始一轮新的选举。</li>
+</ol>
+<h3 id="日志复制"><a href="#日志复制" class="headerlink" title="日志复制"></a>日志复制</h3><p>日志复制具有以下特性: </p>
+<ul>
+<li>如果在不同的日志中的两个条目拥有相同的索引和任期号，那么他们存储了相同的指令。</li>
+<li>如果在不同的日志中的两个条目拥有相同的索引和任期号，那么他们之前的所有日志条目也全部相同</li>
+</ul>
+<p>可能因为领导者在日志提交前挂掉, 导致所有的服务器中的日志不一定的情况. 领导人处理不一致是通过强制跟随者直接复制自己的日志来解决了.</p>
+<p>领导人针对每一个跟随者维护了一个 <code>nextIndex</code>，这表示下一个需要发送给跟随者的日志条目的索引地址。当一个领导人刚获得权力的时候，他初始化所有的 nextIndex 值为自己日志中的最后一条。如果一个跟随者的日志和领导人不一致，那么在下一次的附加日志 RPC 时的一致性检查就会失败。在被跟随者拒绝之后，领导人就会减小 nextIndex 值并进行重试。最终 nextIndex 会在某个位置使得领导人和跟随者的日志达成一致。当这种情况发生，附加日志 RPC 就会成功，这时就会把跟随者冲突的日志条目全部删除并且加上领导人的日志。一旦附加日志 RPC 成功，那么跟随者的日志就会和领导人保持一致，并且在接下来的任期里一直继续保持。</p>
+<h3 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h3><ol>
+<li>选举限制,  候选人发起RPC 中包含了候选人的日志信息，投票人会拒绝掉那些日志没有自己新的投票请求</li>
+<li>如果已经服务器已经在某个给定的索引值应用了日志条目到自己的状态机里，那么其他的服务器不会应用一个不一样的日志到同一个索引值上</li>
+</ol>
+<h2 id="日志压缩"><a href="#日志压缩" class="headerlink" title="日志压缩"></a>日志压缩</h2><p>目的是减少不断增长的日志所占用服务器空间大小</p>
+<p>采用的方法如下图:<br><img src="http://ww3.sinaimg.cn/mw690/ab508d3djw1f65et9wva3j20p40legry.jpg" alt=""></p>
+<h2 id="客户端交互"><a href="#客户端交互" class="headerlink" title="客户端交互"></a>客户端交互</h2><ol>
+<li>客户端发送command给领导人, 若领导人未知，挑选任意节点，若该节点不是领导人，则重定向至领导人</li>
+<li>领导人追加日志项，等待<code>提交</code>，更新本地状态机，最终响应客户端</li>
+<li>若客户端超时，则不断重试，直至收到响应为止</li>
+</ol>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="https://raft.github.io/" target="_blank" rel="external">Raft官网</a></li>
+<li><a href="http://thesecretlivesofdata.com/raft/" target="_blank" rel="external">illustrated Raft guide</a></li>
+<li>Paper: <code>In Search of an Understandable Consensus Algorithm</code></li>
+<li><a href="http://blog.csdn.net/cszhouwei/article/details/38374603" target="_blank" rel="external">Raft一致性算法</a></li>
+</ul>
+</div></article></div></section><footer><div class="paginator"><a href="/2016/08/14/Kqueue学习笔记/" class="prev">PREV</a><a href="/2016/07/24/shadowsocks源码剖析/" class="next">NEXT</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Tizen移动应用开发 · Snow Memory | Andrew Liu</title><meta name="description" content="Tizen移动应用开发 - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">Tizen移动应用开发</h1><div class="post-info">Oct 22, 2014</div><div class="post-content"><p>#1. 移动应用开发框架分析</p>
+<p>##1.1. 移动性能分析</p>
+<ol>
+<li>创建窗口</li>
+<li>连接DB服务</li>
+<li>创建list 视图</li>
+<li>显示list视图</li>
+<li>更新list</li>
+</ol>
+<blockquote>
+<p>在3,4进行的同时从DB中获取所有的记录(<code>使用并行处理</code>) </p>
+</blockquote>
+<ul>
+<li>进一步优化,<code>在创建和显示视图的同时只加载需要的数据</code></li>
+<li>在更新list结束后, 获取剩余的DB数据, 然后再次更新数据库(<code>分步加载使应用程序启动更快</code>)</li>
+</ul>
+<a id="more"></a>
+<p>###1.1.1. 加载list条目<br>创建list item 使用<code>elm_genlist_homogeneous_set()</code>,<br>一般的创建list列表项时计算每一个列表项的大小, genlist控件中只进行对需要的列表项进行计算大小</p>
+<p>##1.2. 内存使用</p>
+<blockquote>
+<p>Tizen中一些内存工具</p>
+</blockquote>
+<ol>
+<li>Vargrind<ul>
+<li>进行内存管理和检测内存内存泄露</li>
+</ul>
+<ol>
+<li>Widget Object Release(<code>控件的创建和销毁</code>)</li>
+<li>User Data Realease<ul>
+<li>提供事件销毁(<code>回调函数对事件对象进行销毁</code>)</li>
+</ul>
+</li>
+</ol>
+</li>
+</ol>
+<p>##1.3. Tizen中的数据库引擎</p>
+<pre><code>- SQLite3(`嵌入式数据库引擎`)
+- SQLite3的实践
+    - 应用中API使用(`sqlite3_exec(), sqlite3_prepare_v2()`)
+        - 同步控制(`线程锁`,对后台实现了一个排队处理)
+        - Tizen平台提供了多媒体数据框架
+            - 管理图像/视频/音频文件
+</code></pre><p>#2. 卓越的用户体验<br><code>HTML5 + CSS3 + JavaScript</code></p>
+<p>Tizen真正的混合移动平台</p>
+<p>##2.1. 移动性能</p>
+<ol>
+<li>影响用户转化率</li>
+<li>影响SEO</li>
+<li>影响整个应用的UX</li>
+</ol>
+<p><code>&lt;High Performance Web Site&gt;</code></p>
+<p>##2.2. HTML5 for Tizen</p>
+<ul>
+<li>Page Visibility API</li>
+<li>Battery Status API</li>
+</ul>
+<p>##2.3. 用户的真实的感知</p>
+<ol>
+<li>通过增加传感器, 提升用户的感知能力</li>
+<li>使用touch事件替换active事件, 减少300ms事件</li>
+<li>不要忘记加载<code>Loading Indicator</code>(加载指示器)</li>
+</ol>
+<p>#3.Tizen穿戴设备实用UI指南</p>
+<blockquote>
+<p>有调查一半的用户在使用他们的可穿戴设备六个月后不再使用设备</p>
+</blockquote>
+<p>可穿戴设备优势 : </p>
+<ol>
+<li>更多的传感器</li>
+<li>一致性的设备(<code>更加方便携带</code>)</li>
+<li>社交功能</li>
+</ol>
+<p>可穿戴设备劣势 :</p>
+<ol>
+<li>电池小</li>
+<li>屏幕小</li>
+<li>内存较小</li>
+</ol>
+<p>##3.1. Fashion/Social功能的设计</p>
+<ul>
+<li>智能手表是一个时尚配件</li>
+<li>设计可穿戴设备应该有意义的, 可以表达的, 优雅的</li>
+</ul>
+<p>##3.2. 感知能力(Sensor)的设计</p>
+<blockquote>
+<p>使用多个传感器改善输入能力</p>
+</blockquote>
+<ul>
+<li>使用加速手势</li>
+<li>使用新的传感器(<code>压力,光亮, GPS传感器来估计用户状态</code>)</li>
+<li>声音和TTS(<code>文本转换</code>)</li>
+<li>做一个振动反馈,使用振动与用户进行通信</li>
+<li>使用更多的手势(<code>点击,双击, 捏隆, 向上下左右, 并且应该教会使用者使用</code>)</li>
+</ul>
+<p>##3.3. 形式/函数的设计</p>
+<ul>
+<li>字体大小30px- 35px</li>
+<li>一个屏幕应该最多使用两个按钮</li>
+<li>优化内存</li>
+</ul>
+<p>##3.4. 常见的错误和建议</p>
+<ol>
+<li>实际设备和仿真器是由区别的(<code>使用三星远程测试实验室或使用真机调试</code>)</li>
+<li>使用Chrome浏览器进行测试(Open Chrome-&gt;F12 开发者选项-&gt;改变设备分辨率)</li>
+<li>考虑应用的相对位置(<code>在不同的设备上设计不同的位置, 应该使用相对位置, 使用百分比或者自动, 而不是固定像素值</code>)</li>
+</ol>
+<blockquote>
+<p>本地化你的应用!</p>
+</blockquote>
+<p><code>使用穿戴设备IDE进行本地化</code></p>
+<ol>
+<li>应用的功能</li>
+<li>在可穿戴设备上使用是否体验更好, 相比于移动手机</li>
+<li>可穿戴设备是否经常使用</li>
+</ol>
+<p>#4. Tizen可穿戴设备</p>
+<blockquote>
+<p>Gear2 , GearS</p>
+</blockquote>
+<p>可穿戴设备管理, 可穿戴管理服务,三星配件协议</p>
+<blockquote>
+<p>开发步骤</p>
+</blockquote>
+<ol>
+<li>下载SDK</li>
+<li>gear应用开发(通过样例等)</li>
+<li>获取Gear认证</li>
+<li>测试</li>
+<li>上传成功被用户下载</li>
+</ol>
+<p>#5. 开源模式发展操作系统和基础软件</p>
+<blockquote>
+<p>www.copu.org.cn</p>
+</blockquote>
+<ol>
+<li>国际交流合作</li>
+<li>标准和规范</li>
+<li>开源技术教材</li>
+<li>项目托管和研发</li>
+<li>社区建设和推广</li>
+<li>没提推广, 企业合作与服务</li>
+</ol>
+<blockquote>
+<p>中国桌面操作系统的发展模式</p>
+</blockquote>
+<ul>
+<li>举国模式(两弹一星模式, <code>国家产业投入发展操作系统和基础软件</code>)</li>
+<li>第三方组织 + 社区模式(基金会模式, <code>产业促进机构 + 科研机构 + 企业组成联合实验室</code>)</li>
+<li>民营企业 + 社区模式(企业模式, <code>Deepin Linux</code>)</li>
+</ul>
+</div></article></div></section><footer><div class="paginator"><a href="/2014/10/23/2014-10-23-Assistance/" class="prev">PREV</a><a href="/2014/10/22/2014-10-22-Tizen简介及架构概述/" class="next">NEXT</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

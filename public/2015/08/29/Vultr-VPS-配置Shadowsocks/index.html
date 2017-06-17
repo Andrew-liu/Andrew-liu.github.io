@@ -1,0 +1,74 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Vultr VPS 配置Shadowsocks · Snow Memory | Andrew Liu</title><meta name="description" content="Vultr VPS 配置Shadowsocks - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">Vultr VPS 配置Shadowsocks</h1><div class="post-info">Aug 29, 2015</div><div class="post-content"><p>本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh" target="_blank" rel="external">署名-非商业用途-保持一致</a>的创作共用协议.</p>
+<p><img src="http://ww4.sinaimg.cn/large/ab508d3dgw1euxk2uxlogj20uk0fywfy.jpg" alt="google"></p>
+<blockquote>
+<p>曲径悲剧, <a href="http://honx.in/i/VAJbS-z5NHn0VT_3" target="_blank" rel="external">红杏</a>感觉好日子也快到头了, 最近明显感觉访问Google速度下降了不少(延迟也高了), 于是终于决定自己折腾另谋出路.. 连电信都要推出氮气瓶业务了, 我们也该自己学着搭VPS了, 然后我学会的时候, Shadowsocks被干掉了, 真是一个搞笑的故事, 不过现在依然能用, 只是不维护了…</p>
+</blockquote>
+<a id="more"></a>
+<h1 id="云服务选择"><a href="#云服务选择" class="headerlink" title="云服务选择"></a>云服务选择</h1><p>测试了几个云服务提供商, 包括<a href="https://www.digitalocean.com/" target="_blank" rel="external">Digital Ocean</a>, <a href="https://bandwagonhost.com/" target="_blank" rel="external">搬瓦工</a>, <a href="https://www.vultr.com/" target="_blank" rel="external">Vultr</a>, 前两个大概都在200ms左右, Digital Ocean丢包较少, 搬瓦工价格便宜配置低, Vultr的优势在于有日本机房(<code>大概40-100ms左右, 偶有丢包</code>), 配置比Digital Ocean稍微好一点, 像比较牛的Linode, 我等屌丝玩不起, 就不研(zhuang)究(bi)了…</p>
+<blockquote>
+<p>最后, 我觉得先试用下<strong>Vultr</strong></p>
+</blockquote>
+<p>通过<a href="http://www.vultr.com/freetrial?ref=6835439" target="_blank" rel="external">两月免费使用, 赠送50刀</a>, 填写信用卡后, 会扣费$2.5(测试账户用), 之后会返还给你.</p>
+<p>言归正传, 记录自己搭VPS的过程…</p>
+<h1 id="账号注册"><a href="#账号注册" class="headerlink" title="账号注册"></a>账号注册</h1><ul>
+<li>使用试用通道, 填写信用卡信息, 邮箱密码信息</li>
+<li>邮箱验证</li>
+</ul>
+<p>注册成功后, 你可以在Billing(账单)标签界面看到赠送的50$, 以及当前信用卡信息.</p>
+<p><img src="http://ww2.sinaimg.cn/large/ab508d3dgw1euxk2cmav9j210g0syq8f.jpg" alt="credit"></p>
+<p>既然有钱了, 我们可以开始折腾了…</p>
+<h1 id="服务选择"><a href="#服务选择" class="headerlink" title="服务选择"></a>服务选择</h1><p>在Deploy(部署)页面自行选择希望使用的服务器配置, 操作系统, 配置需要的价格等等情况.</p>
+<ul>
+<li>硬盘最好选SSD(没有原因, 就是快)</li>
+<li>Operating System(操作系统)选择Centos 6 x64(64位系统)</li>
+<li>Location(服务器位置)选择Tokyo(就是为了东京机房(离国内近, 速度快), 我们才选择Vultr的服务呀)</li>
+<li>Server Size(服务器配置)我选择了768内存的最便宜的服务, 一个月5$</li>
+<li>选中Enable Private Network</li>
+<li>Server Label(服务器别名)随便起个好(zhuang)听(bi)的就行</li>
+<li>Place Order(然后会自动部署服务器)</li>
+</ul>
+<p><img src="http://ww1.sinaimg.cn/large/ab508d3dgw1euxk3ckse7j21f40v2gug.jpg" alt="配置1"><br><img src="http://ww3.sinaimg.cn/large/ab508d3dgw1euxk3spw5qj21fe0zon80.jpg" alt="配置2"></p>
+<blockquote>
+<p>此时, 部署成功后, 会收到一封有你服务器ip地址的, 现在可以ssh连接服务器, 开始瞎折腾了..</p>
+</blockquote>
+<h1 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h1><ul>
+<li>在My Servers标签中可以查看自己当前部署服务器的状态, 看到Running表示服务器正在运行, 等待你朝他开刀…</li>
+<li>点击Manage查看root账户初始密码, 然后使用ip, user和password就可以愉快的登陆VPS了</li>
+</ul>
+<p><img src="http://ww2.sinaimg.cn/large/ab508d3dgw1euxk4y2ocpj213g0yojy0.jpg" alt="密码"></p>
+<p><strong>使用自己电脑打开Terminal</strong>, 输入下面命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"># ip address为当前Server的ip地址</div><div class="line">$ ssh root@ip address</div><div class="line"># 输入初始密码</div></pre></td></tr></table></figure>
+<p>登陆成功显示如下:</p>
+<p><img src="http://ww3.sinaimg.cn/large/ab508d3dgw1euxk45pnj9j20ro026q3i.jpg" alt="登陆"></p>
+<ul>
+<li>马上更改密码</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ passwd</div><div class="line"># 输入新密码两次</div></pre></td></tr></table></figure>
+<ul>
+<li>安装各种配置工具</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"># 一些安装包需要的编译工具</div><div class="line">$ yum install gcc</div><div class="line">$ yum install libevent</div><div class="line">$ yum install python-devel</div><div class="line"></div><div class="line"># 安装python的pip包管理</div><div class="line">$ yum install python-setuptools &amp;&amp; easy_install pip</div><div class="line">$ pip install gevent</div><div class="line"></div><div class="line"># 安装加密工具</div><div class="line">$ yum install openssl-devel</div><div class="line">$ yum install swig</div><div class="line">$ pip install M2Crypto</div><div class="line"></div><div class="line"># 安装shadowsocks服务器端</div><div class="line">$ pip install shadowsocks</div></pre></td></tr></table></figure>
+<h1 id="服务器配置"><a href="#服务器配置" class="headerlink" title="服务器配置"></a>服务器配置</h1><ol>
+<li>自定义配置文件</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># 使用vi新建shadowsocks.json配置文件</div><div class="line">$ vi  /etc/shadowsocks.json</div></pre></td></tr></table></figure>
+<p>直接输入<code>:set paste</code>, 然后输入<code>i</code>进入Paste insert状态</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"># 粘贴下列数据到配置文件中</div><div class="line">&#123;</div><div class="line">    &quot;server&quot;:&quot;ip_address&quot;,</div><div class="line">    &quot;server_port&quot;:9999,</div><div class="line">    &quot;local_port&quot;:1080,</div><div class="line">    &quot;password&quot;:&quot;password&quot;,</div><div class="line">    &quot;timeout&quot;:300,</div><div class="line">    &quot;method&quot;:&quot;aes-256-cfb&quot;,</div><div class="line">    &quot;fast_open&quot;: false,</div><div class="line">    &quot;workers&quot;: 1</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>此处<code>ip_address</code>为在Vultr上部署VPS的ip号, <code>server_port</code>可以可以任意选择大于1023的端口号(尽量取的大一些). <code>password</code>为连接服务器的密码, 其他的无序更改.</p>
+</blockquote>
+<p>完成后, 按<code>esc</code>退出编辑模式. 输入<code>:wq（有冒号）</code>以保存并退出</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># 命令行后台启动服务</div><div class="line">$ nohup ssserver -c /etc/shadowsocks.json &amp;</div></pre></td></tr></table></figure>
+<p>到此为止, 服务器端配置完成…</p>
+<h1 id="客户端配置"><a href="#客户端配置" class="headerlink" title="客户端配置"></a>客户端配置</h1><p>到<a href="http://shadowsocks.org/en/download/clients.html" target="_blank" rel="external">Shadowsocks官方网站</a>下载客户端(PC/Android/iOS都有).</p>
+<p>不同的操作系统下载不同的客户端软件.</p>
+<p>如图选择服务器-&gt;打开服务器设置-&gt;左下角选择+(加号)</p>
+<p><img src="http://ww4.sinaimg.cn/large/ab508d3dgw1euxk65h41mj20lg0hodjq.jpg" alt="加号"></p>
+<p>填写新的服务器配置.</p>
+<p><img src="http://ww4.sinaimg.cn/large/ab508d3dgw1euxk5m9rs3j20sa0he767.jpg" alt="服务"></p>
+<p>添加在Vultr上配置的服务器的ip, 自己在shadowsocks中设置的端口号和密码.</p>
+<blockquote>
+<p>打开Shadowsocks, PC/Android/iOS可以翻墙google了…</p>
+</blockquote>
+<p>完成…</p>
+</div></article></div></section><footer><div class="paginator"><a href="/2015/09/04/流逝的暗时间/" class="prev">PREV</a><a href="/2015/08/23/重读经典《C-Primer》/" class="next">NEXT</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

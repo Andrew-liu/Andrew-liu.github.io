@@ -1,0 +1,53 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Django搭建简易博客教程(六)-Views和URL · Snow Memory | Andrew Liu</title><meta name="description" content="Django搭建简易博客教程(六)-Views和URL - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">Django搭建简易博客教程(六)-Views和URL</h1><div class="post-info">Dec 27, 2014</div><div class="post-content"><h2 id="网页程序的逻辑"><a href="#网页程序的逻辑" class="headerlink" title="#网页程序的逻辑"></a>#网页程序的逻辑</h2><blockquote>
+<p>request进来-&gt;从服务器获取数据-&gt;处理数据-&gt;把网页呈现出来</p>
+</blockquote>
+<ul>
+<li><code>url</code>设置相当于客户端向服务器发出request请求的<code>入口</code>, 并用来指明要调用的程序逻辑</li>
+<li><code>views</code>用来处理程序逻辑, 然后呈现到template(一般为<code>GET</code>方法, <code>POST</code>方法略有不同)</li>
+<li><code>template</code>一般为html+CSS的形式, 主要是呈现给用户的表现形式</li>
+</ul>
+<a id="more"></a>
+<h2 id="简单Django-Views和URL"><a href="#简单Django-Views和URL" class="headerlink" title="#简单Django Views和URL"></a>#简单Django Views和URL</h2><p>Django中views里面的代码就是一个一个函数逻辑, 处理客户端(浏览器)发送的HTTPRequest, 然后返回HTTPResponse, </p>
+<p>那么那么开始在my_blog/article/views.py中编写简单的逻辑</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">#现在你的views.py应该是这样</div><div class="line">from django.shortcuts import render</div><div class="line">from django.http import HttpResponse</div><div class="line"></div><div class="line"># Create your views here.</div><div class="line">def home(request):</div><div class="line">    return HttpResponse(&quot;Hello World, Django&quot;)</div></pre></td></tr></table></figure>
+<p>那么如何使这个逻辑在http请求进入时, 被调用呢, 这里需要在<code>my_blog/my_blog/urls.py</code>中进行url设置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">from django.conf.urls import patterns, include, url</div><div class="line">from django.contrib import admin</div><div class="line"></div><div class="line">urlpatterns = patterns(&apos;&apos;,</div><div class="line">    # Examples:</div><div class="line">    # url(r&apos;^$&apos;, &apos;my_blog.views.home&apos;, name=&apos;home&apos;),</div><div class="line">    # url(r&apos;^blog/&apos;, include(&apos;blog.urls&apos;)),</div><div class="line"></div><div class="line">    url(r&apos;^admin/&apos;, include(admin.site.urls)),</div><div class="line">    url(r&apos;^$&apos;, &apos;article.views.home&apos;),  #由于目前只有一个app, 方便起见, 就不设置include了</div><div class="line">)</div></pre></td></tr></table></figure>
+<p><code>url()</code>函数有四个参数, 两个是必须的:regex和view, 两个可选的:kwargs和name</p>
+<ul>
+<li><code>regex</code>是regular expression的简写,这是字符串中的模式匹配的一种语法, Django 将请求的URL<code>从上至下依次匹配</code>列表中的正则表达式，直到匹配到一个为止。</li>
+</ul>
+<p>更多正则表达式的使用可以查看<a href="http://andrewliu.tk/2014/10/26/2014-10-26-Python%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" target="_blank" rel="external">Python正则表达式</a></p>
+<ul>
+<li><code>view</code>当 Django匹配了一个正则表达式就会调用指定的view逻辑, 上面代码中会调用article/views.py中的home函数</li>
+<li><code>kwargs</code>任意关键字参数可传一个字典至目标view</li>
+<li><code>name</code>命名你的 URL, 使url在 Django 的其他地方使用, 特别是在模板中</li>
+</ul>
+<p>现在在浏览器中输入<a href="http://127.0.0.1:8000" target="_blank" rel="external">127.0.0.1:8000</a>应该可以看到下面的界面</p>
+<p><img src="http://picturebag.qiniudn.com/Snip20141226_2.png" alt="成功"></p>
+<h2 id="Django-Views和URL更近一步"><a href="#Django-Views和URL更近一步" class="headerlink" title="#Django Views和URL更近一步"></a>#Django Views和URL更近一步</h2><p>很多时候我们希望给view中的函数逻辑传入参数, 从而呈现我们想要的结果</p>
+<p>现在我们这样做, 在my_blog/article/views.py加入如下代码:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">def detail(request, my_args):</div><div class="line">    return HttpResponse(&quot;You&apos;re looking at my_args %s.&quot; % my_args)</div></pre></td></tr></table></figure>
+<p>在my_blog/my_blog/urls.py中设置对应的url,</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">urlpatterns = patterns(&apos;&apos;,</div><div class="line">    # Examples:</div><div class="line">    # url(r&apos;^$&apos;, &apos;my_blog.views.home&apos;, name=&apos;home&apos;),</div><div class="line">    # url(r&apos;^blog/&apos;, include(&apos;blog.urls&apos;)),</div><div class="line"></div><div class="line">    url(r&apos;^admin/&apos;, include(admin.site.urls)),</div><div class="line">    url(r&apos;^$&apos;, &apos;article.views.home&apos;),</div><div class="line">    url(r&apos;^(?P&lt;my_args&gt;\d+)/$&apos;, &apos;article.views.detail&apos;, name=&apos;detail&apos;),</div><div class="line">)</div></pre></td></tr></table></figure>
+<p><code>^(?P&lt;my_args&gt;\d+)/$</code>这个正则表达式的意思是将传入的一位或者多位数字作为参数传递到views中的detail作为参数, 其中<code>?P&lt;my_args&gt;</code>定义名称用于标识匹配的内容</p>
+<p>一下url都能成功匹配这个正则表达数</p>
+<ul>
+<li><a href="http://127.0.0.1:8000/1000/" target="_blank" rel="external">http://127.0.0.1:8000/1000/</a></li>
+<li><a href="http://127.0.0.1:8000/9/" target="_blank" rel="external">http://127.0.0.1:8000/9/</a></li>
+</ul>
+<p><strong>尝试传参访问数据库</strong></p>
+<p>修改在my_blog/article/views.py代码:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">from django.shortcuts import render</div><div class="line">from django.http import HttpResponse</div><div class="line">from article.models import Article</div><div class="line"></div><div class="line"># Create your views here.</div><div class="line">def home(request):</div><div class="line">    return HttpResponse(&quot;Hello World, Django&quot;)</div><div class="line"></div><div class="line">def detail(request, my_args):</div><div class="line">    post = Article.objects.all()[int(my_args)]</div><div class="line">    str = (&quot;title = %s, category = %s, date_time = %s, content = %s&quot; </div><div class="line">        % (post.title, post.category, post.date_time, post.content))</div><div class="line">    return HttpResponse(str)</div></pre></td></tr></table></figure>
+<blockquote>
+<p>这里最好在admin后台管理界面增加几个Article对象, 防止查询对象为空, 出现异常</p>
+</blockquote>
+<p>现在可以访问<a href="http://127.0.0.1:8000/1/" target="_blank" rel="external">http://127.0.0.1:8000/1/</a></p>
+<p>显示如下数据表示数据库访问正确(这些数据都是自己添加的), 并且注意Article.objects.all()返回的是一个列表</p>
+<p><img src="http://picturebag.qiniudn.com/Snip20141227_1.png" alt="数据"></p>
+<p>小结:</p>
+<ul>
+<li>如何编写views和设置url</li>
+<li>如何通过url向views传参</li>
+<li>如何通过参数来访问数据库资源</li>
+</ul>
+</div></article></div></section><footer><div class="paginator"><a href="/2014/12/27/Django搭建简易博客教程-七-Template/" class="prev">PREV</a><a href="/2014/12/27/Django搭建简易博客教程-五-Admin/" class="next">NEXT</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

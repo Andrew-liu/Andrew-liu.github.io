@@ -1,0 +1,120 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Python中logging模块 · Snow Memory | Andrew Liu</title><meta name="description" content="Python中logging模块 - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">Python中logging模块</h1><div class="post-info">Jan 20, 2015</div><div class="post-content"><blockquote>
+<p>logging模块为应用程序提供了灵活的手段来记录事件, 错误, 警告, 调试信息. 对这些信息可以收集, 筛选, 写入文件, 发给系统日志等操作.</p>
+</blockquote>
+<p>##1.1. 日志记录级别</p>
+<p>每条记录都关联一个级别, 每个级别都有用于发出日志消息的方法, 日志分为五级,</p>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>When it’s used</th>
+<th>Method</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DEBUG</td>
+<td>详细信息, 通常出现在诊断问题</td>
+<td>logging.debug()</td>
+</tr>
+<tr>
+<td>INFO</td>
+<td>确认一切按预期运行</td>
+<td>logging.info()</td>
+</tr>
+<tr>
+<td>WARNING(默认等级)</td>
+<td>意外发生, 或者说明将来可能发生的问题, 软件可以照常运行</td>
+<td>logging.warning()</td>
+</tr>
+<tr>
+<td>ERROR</td>
+<td>更严重的问题, 软件一些功能不能照常运行</td>
+<td>logging.error()</td>
+</tr>
+<tr>
+<td>CRIRICAL</td>
+<td>严重错误, 程序本身无法执行</td>
+<td>logging.critical()</td>
+</tr>
+</tbody>
+</table>
+<a id="more"></a>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># -*- coding: utf-8 -*-</span></div><div class="line"><span class="comment">#!/usr/bin/env python</span></div><div class="line"></div><div class="line"><span class="keyword">import</span> logging</div><div class="line"></div><div class="line">logging.critical(<span class="string">"软件已废"</span>)</div><div class="line">logging.error(<span class="string">"某些功能不能运行"</span>)</div><div class="line">logging.warning(<span class="string">"有警告"</span>)</div><div class="line">logging.info(<span class="string">"正常"</span>)</div><div class="line">logging.debug(<span class="string">"调试"</span>)</div><div class="line"></div><div class="line"><span class="comment">###output###</span></div><div class="line">CRITICAL:root:软件已废</div><div class="line">ERROR:root:某些功能不能运行</div><div class="line">WARNING:root:有警告</div></pre></td></tr></table></figure>
+<p>因为默认等级为WARNING, 所以低于WARNING等级不会输出.</p>
+<p>##1.2. 记录日志到文件</p>
+<p>对根记录器对象作基本配置的函数为<code>basicConfig</code>, 关键字参数:</p>
+<ul>
+<li>filename : 日志消息附加到指定文件中</li>
+<li>filemode : 文件打开模式, 默认为a(追加)</li>
+<li>format : 用于生成日志消息的格式字符串</li>
+<li>datemat : 输出日期和时间的格式字符串</li>
+<li>level : 设置根目录器的级别, 大于等于默认级别的会被处理</li>
+<li>stream : 设置特定的流用于初始化StreamHandler</li>
+</ul>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># -*- coding: utf-8 -*-</span></div><div class="line"><span class="comment">#!/usr/bin/env python</span></div><div class="line"></div><div class="line"><span class="keyword">import</span> logging, os</div><div class="line"></div><div class="line"></div><div class="line">logging.basicConfig(filename=os.path.join(os.getcwd(), <span class="string">'log.txt'</span>), \</div><div class="line">    level=logging.INFO, filemode=<span class="string">'a'</span>, format=<span class="string">'%(asctime)s - %(levelname)s: %(message)s'</span>)</div><div class="line">logging.critical(<span class="string">"软件已废"</span>)</div><div class="line">logging.error(<span class="string">"某些功能不能运行"</span>)</div><div class="line">logging.warning(<span class="string">"有警告"</span>)</div><div class="line">logging.info(<span class="string">"正常"</span>)</div><div class="line">logging.debug(<span class="string">"调试"</span>)</div><div class="line"></div><div class="line"><span class="comment">###output###</span></div><div class="line"><span class="number">2015</span><span class="number">-01</span><span class="number">-19</span> <span class="number">15</span>:<span class="number">56</span>:<span class="number">32</span>,<span class="number">205</span> - CRITICAL: 软件已废</div><div class="line"><span class="number">2015</span><span class="number">-01</span><span class="number">-19</span> <span class="number">15</span>:<span class="number">56</span>:<span class="number">32</span>,<span class="number">205</span> - ERROR: 某些功能不能运行</div><div class="line"><span class="number">2015</span><span class="number">-01</span><span class="number">-19</span> <span class="number">15</span>:<span class="number">56</span>:<span class="number">32</span>,<span class="number">205</span> - WARNING: 有警告</div><div class="line"><span class="number">2015</span><span class="number">-01</span><span class="number">-19</span> <span class="number">15</span>:<span class="number">56</span>:<span class="number">32</span>,<span class="number">205</span> - INFO: 正常</div></pre></td></tr></table></figure>
+<p>##1.3. 创建Logger对象</p>
+<p>getLogger([logname])创建Logger对象<br>日志记录工作由Logger对象完成, 调用getLogger方法时需要提供Logger名(多次使用相同名称调用getLogger返回同一个对象的引用), Logger之间有阶级层次关系(比如root和root.a, root.a是root的子Logger)</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># -*- coding: utf-8 -*-</span></div><div class="line"><span class="comment">#!/usr/bin/env python</span></div><div class="line"></div><div class="line"><span class="keyword">import</span> logging, os</div><div class="line">log1 = logging.getLogger(<span class="string">"Liu"</span>)</div><div class="line">log2 = logging.getLogger(<span class="string">"Liu"</span>)</div><div class="line"><span class="keyword">print</span> log1, log2</div><div class="line"><span class="keyword">print</span> logging.getLogger(__name__)</div><div class="line"><span class="keyword">print</span> __name__</div><div class="line">l</div><div class="line"></div><div class="line"><span class="comment">###output###</span></div><div class="line">&lt;logging.Logger object at <span class="number">0x10606b990</span>&gt; &lt;logging.Logger object at <span class="number">0x10606b990</span>&gt;  <span class="comment">#两个内存地址是相同的</span></div><div class="line">&lt;logging.Logger object at <span class="number">0x10606b9d0</span>&gt;</div><div class="line">__main__</div></pre></td></tr></table></figure>
+<p>##1.4. Logger属性和方法</p>
+<p>Logger.propagate  用于指示消息是否传播给父记录器, 默认为True</p>
+<blockquote>
+<ul>
+<li>Logger.setLevel(lvl) 设置日志级别, 低于该级别的被忽略</li>
+<li>Logger.isEnabledFor(lvl)  如果将处理的级别为level的日志消息, 返回True</li>
+<li>Logger.getEffectiveLevel()  返回Logger的有效级别</li>
+<li>Logger.getChild(suffix) 返回Logger的后代Logger</li>
+<li>Logger.addFilter(filt)  给Logger增加筛选器对象</li>
+<li>Logger.removeFilter(filt) 移除Logger中的筛选器</li>
+<li>Logger.addHandler(hdlr) 给Logger添加Handler对象</li>
+<li>Logger.removeHandler(hdlr) 移除Logger中Handler对象</li>
+<li>Logger.filter(record)</li>
+<li>Logger.findCaller()</li>
+<li>Logger.handle(record)</li>
+<li>Logger.makeRecord(name, lvl, fn, lno, msg, args, exc_info, func=None, extra=None)</li>
+</ul>
+</blockquote>
+<p><strong>发出消息日志:</strong><br>其中msg是信息格式, args和kwargs分别为格式参数</p>
+<ul>
+<li>Logger.debug(msg, <em>args, *</em>kwargs)</li>
+<li>Logger.info(msg, <em>args, *</em>kwargs)</li>
+<li>Logger.warning(msg, <em>args, *</em>kwargs)</li>
+<li>Logger.error(msg, <em>args, *</em>kwargs)</li>
+<li>Logger.critical(msg, <em>args, *</em>kwargs)</li>
+<li>Logger.exception(msg, <em>args, *</em>kwargs) 以ERROR级别记录日志消息</li>
+<li>Logger.log(lvl, msg, <em>args, *</em>kwargs) lvl参数用户设置日志信息级别</li>
+</ul>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># -*- coding: utf-8 -*-</span></div><div class="line"><span class="comment">#!/usr/bin/env python</span></div><div class="line"></div><div class="line"><span class="keyword">import</span> logging, os</div><div class="line"></div><div class="line"><span class="comment">#基础的跟记录器设置</span></div><div class="line">logging.basicConfig(filename=os.path.join(os.getcwd(), <span class="string">'log.txt'</span>), \</div><div class="line">    level=logging.INFO, filemode=<span class="string">'a'</span>, format=<span class="string">'%(asctime)s - %(levelname)s: %(message)s'</span>)</div><div class="line">log = logging.getLogger(<span class="string">"Liu"</span>)  <span class="comment">#创建Logger对象</span></div><div class="line"><span class="keyword">print</span> log.propagate</div><div class="line">log.setLevel(logging.INFO)  <span class="comment">#设置日志记录级别</span></div><div class="line">log.critical(<span class="string">"软件已废"</span>)</div><div class="line">log.error(<span class="string">"某些功能不能运行"</span>)</div><div class="line">log.warning(<span class="string">"有警告"</span>)</div><div class="line">log.info(<span class="string">"正常"</span>)</div><div class="line">log.debug(<span class="string">"调试"</span>) <span class="comment">#忽略</span></div><div class="line">log.log(logging.CRITICAL, <span class="string">"用户在函数中设置了级别"</span>)</div><div class="line">log.exception(<span class="string">"我是个error"</span>)</div><div class="line"></div><div class="line"><span class="comment">###File Text###</span></div><div class="line"><span class="number">2015</span><span class="number">-01</span><span class="number">-19</span> <span class="number">16</span>:<span class="number">49</span>:<span class="number">04</span>,<span class="number">492</span> - CRITICAL: 软件已废</div><div class="line"><span class="number">2015</span><span class="number">-01</span><span class="number">-19</span> <span class="number">16</span>:<span class="number">49</span>:<span class="number">04</span>,<span class="number">493</span> - ERROR: 某些功能不能运行</div><div class="line"><span class="number">2015</span><span class="number">-01</span><span class="number">-19</span> <span class="number">16</span>:<span class="number">49</span>:<span class="number">04</span>,<span class="number">493</span> - WARNING: 有警告</div><div class="line"><span class="number">2015</span><span class="number">-01</span><span class="number">-19</span> <span class="number">16</span>:<span class="number">49</span>:<span class="number">04</span>,<span class="number">493</span> - INFO: 正常</div><div class="line"><span class="number">2015</span><span class="number">-01</span><span class="number">-19</span> <span class="number">16</span>:<span class="number">49</span>:<span class="number">04</span>,<span class="number">493</span> - CRITICAL: 用户在函数中设置了级别</div><div class="line"><span class="number">2015</span><span class="number">-01</span><span class="number">-19</span> <span class="number">16</span>:<span class="number">49</span>:<span class="number">04</span>,<span class="number">493</span> - ERROR: 我是个error</div></pre></td></tr></table></figure>
+<p>##1.5. Handler对象<br>通过Handler可日志记录(log record)发送到合适的目的的(文件, 控制台, 邮箱等). 通过addHandler方法, Logger对象可以增加0个或者多个Handler对象, <a href="https://docs.python.org/2/howto/logging.html#useful-handlers" target="_blank" rel="external">useful-handlers</a></p>
+<p>Handler常用的方法:</p>
+<ul>
+<li>setLevel()  设置日志级别, 低于该级别的被忽略</li>
+<li>setFormatter() Handler选择一个Formatter对象使用</li>
+<li>setFilter() 给Handler设置Filter对象</li>
+<li>removeFilter() 给Handler移除Filter对象</li>
+</ul>
+<blockquote>
+<p>Handler类主要作为基类被集成,</p>
+</blockquote>
+<p>##1.6. Formatter对象</p>
+<p>Formatter对象用来设置最终日志就的顺序结构和内容</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#一个参数为信息格式, 第二个参数为日期字符串格式</span></div><div class="line">logging.Formatter.__init__(fmt=<span class="keyword">None</span>, datefmt=<span class="keyword">None</span>)</div></pre></td></tr></table></figure>
+<blockquote>
+<p>编写一个同时向控制台和文件中输出日志的日志系统</p>
+</blockquote>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># -*- coding: utf-8 -*-</span></div><div class="line"><span class="comment">#!/usr/bin/env python</span></div><div class="line"></div><div class="line"><span class="keyword">import</span> logging</div><div class="line"></div><div class="line">logger = logging.getLogger(<span class="string">'Andrew_Liu'</span>)  <span class="comment">#创建一个Logger对象</span></div><div class="line">logger.setLevel(logging.ERROR)  <span class="comment">#设置日志记录级别</span></div><div class="line"></div><div class="line">fh = logging.FileHandler(<span class="string">'log.txt'</span>)  <span class="comment">#创建一个文件</span></div><div class="line">fh.setLevel(logging.INFO)  <span class="comment">#设置日志记录级别</span></div><div class="line"></div><div class="line">sh = logging.StreamHandler()</div><div class="line">sh.setLevel(logging.WARNING)</div><div class="line"></div><div class="line">fmt = logging.Formatter(<span class="string">'%(asctime)s - %(name)s - %(levelname)s - %(message)s'</span>)</div><div class="line">fh.setFormatter(fmt)</div><div class="line">sh.setFormatter(fmt)</div><div class="line"></div><div class="line">logger.addHandler(fh)</div><div class="line">logger.addHandler(sh)</div><div class="line"></div><div class="line"></div><div class="line">logger.critical(<span class="string">"软件已废"</span>)</div><div class="line">logger.error(<span class="string">"某些功能不能运行"</span>)</div><div class="line">logger.warning(<span class="string">"有警告"</span>)</div><div class="line">logger.info(<span class="string">"正常"</span>)</div><div class="line">logger.debug(<span class="string">"调试"</span>) <span class="comment">#忽略</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">#控制台输出</span></div><div class="line"><span class="number">2015</span><span class="number">-01</span><span class="number">-20</span> <span class="number">21</span>:<span class="number">43</span>:<span class="number">02</span>,<span class="number">037</span> - Andrew_Liu - CRITICAL - 软件已废</div><div class="line"><span class="number">2015</span><span class="number">-01</span><span class="number">-20</span> <span class="number">21</span>:<span class="number">43</span>:<span class="number">02</span>,<span class="number">037</span> - Andrew_Liu - ERROR - 某些功能不能运行</div><div class="line"></div><div class="line"><span class="comment">#文件输出</span></div><div class="line"><span class="number">2015</span><span class="number">-01</span><span class="number">-20</span> <span class="number">21</span>:<span class="number">43</span>:<span class="number">46</span>,<span class="number">098</span> - Andrew_Liu - CRITICAL - 软件已废</div><div class="line"><span class="number">2015</span><span class="number">-01</span><span class="number">-20</span> <span class="number">21</span>:<span class="number">43</span>:<span class="number">46</span>,<span class="number">098</span> - Andrew_Liu - ERROR - 某些功能不能运行</div></pre></td></tr></table></figure>
+<p>从这个例子中可以明显看到, 在Logger对象和在Handler对象中setLevel的不同之处, 首先日志信息先通过Logger对象的中Level验证, 低于Level忽略, 然后在分别进入不同的Handler对象中的级别进行二次验证.</p>
+<p>##1.7.日志记录的配置</p>
+<p>基本步骤: </p>
+<ol>
+<li>使用<code>getLogger()</code>函数创建各种Logger对象, 正确设置级别等参数</li>
+<li>通过实例化各类Handler(FileHandler, StreamHandler, SocketHandler等)创建Handler, 并设置正确的级别</li>
+<li>创建消息Formatter对象, 并使用setFormatter方法吧他们附加给Handler对象</li>
+<li>使用addHandler()方法将Handler附加给Logger对象</li>
+</ol>
+<p>##1.8. 参考链接</p>
+<ul>
+<li><a href="https://docs.python.org/2/howto/logging.html#handlers" target="_blank" rel="external">Logging HOWTO</a></li>
+<li><a href="https://docs.python.org/2/library/logging.html" target="_blank" rel="external">logging官方文档</a></li>
+</ul>
+</div></article></div></section><footer><div class="paginator"><a href="/2015/01/24/计算机网络自顶向下方法读书笔记/" class="prev">PREV</a><a href="/2015/01/16/Python源码剖析读书笔记-二/" class="next">NEXT</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

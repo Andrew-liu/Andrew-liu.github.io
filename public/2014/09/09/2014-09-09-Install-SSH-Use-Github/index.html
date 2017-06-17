@@ -1,0 +1,88 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Install-SSH-Use-Github · Snow Memory | Andrew Liu</title><meta name="description" content="Install-SSH-Use-Github - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">Install-SSH-Use-Github</h1><div class="post-info">Sep 9, 2014</div><div class="post-content"><p>#1. github上的操作</p>
+<p>##1.1. 初始化操作<br>在<a href="http://github.com" target="_blank" rel="external">http://github.com</a> 上注册自己的github账户后，要执行语句<br>git config –global user.name “yourname”<br>git config –global user.email “XXX@XXX.com”<br>这样等于是在本地标记了自己的账户，以后就可以直接使用了。</p>
+<p>##1.2. 在最后有获取密钥的方法</p>
+<ol>
+<li>要上传文件到GitHub的Git系统上，需要一个SSH密匙来认证，在文章最后有方法。</li>
+<li>将SSH Key提交到GitHub <code>在设置中添加</code></li>
+</ol>
+<a id="more"></a>
+<p>##1.3. 基本git操作<br>上传代码到git的步骤：</p>
+<ol>
+<li><p>git init<br>建立一个仓库。</p>
+</li>
+<li><p>git add XXX<br>添加文件XXX。add后面加“.”，添加当前目录所有文件。</p>
+</li>
+<li><p>git commit -m ‘message’ (<code>最后一个附加信息相当于标签</code>)<br>上传时附加说明信息message。</p>
+</li>
+<li><p>git remote add origin XXX@github.com:XXX/XXX.git   (<code>给git仓库的地址取一个别名</code>)<br>这一句将origin用作XXX@github.com:XXX/XXX.git的别名，以后就可以方便的用origin代表XXX@github.com:XXX/XXX.git了。</p>
+<blockquote>
+<p>git remote rm origin用于删除别名</p>
+</blockquote>
+</li>
+<li><p>git push -u origin master   上传带<code>master</code>标签的文件到github<br>上传当前目录到github的master分支</p>
+</li>
+</ol>
+<blockquote>
+<p>如果原来仓库中有另外一个文件, 首先应该进行github仓库代码下载, 合并后总体上传,因为github并不能识别代码是不是一个项目</p>
+</blockquote>
+<p>#1.4. git常用命令</p>
+<ol>
+<li><p>git clone<br>eg： git clone git://github.com/XXX/XXX.git some_project  (最后为仓库的地址)<br>将’git://github.com/XXX/XXX.git’这个URL地址的远程版本库完全克隆到本地XXX目录下面</p>
+</li>
+<li><p>git init<br>初始化当前目录，初始化后，在当前目录下会出现一个名为 .git 的目录，所有 Git 需要的数据和资源都存放在这个目录中</p>
+</li>
+<li><p>git status<br>查看当前目录相应文件在git下的状态</p>
+</li>
+<li><p>git commit<br>提交当前工作空间的修改内容<br>eg：git commit -m “update code”‘，<code>提交的时候必须用-m来输入一条提交信息</code></p>
+</li>
+<li><p>git add<br>将当前更改或者新增的文件加入到git的索引中<br>eg：git add test.c 就会增加test.c文件到git的索引中<br>git add .  ——  将当前所有的更改加入到git索引中</p>
+</li>
+<li><p>git pull</p>
+<blockquote>
+<p>意思就是将远程的代码给拉到本地<br>从其他的版本库(既可以是远程的也可以是本地的)将代码更新到本地<br>eg：’git pull origin master 就是将origin这个版本库的代码更新到本地的master主枝</p>
+</blockquote>
+</li>
+<li><p>git rm<br>从当前的工作空间中和索引中删除文件<br>eg：git rm test.c</p>
+</li>
+<li><p>git push<br>将本地commit的代码更新到远程版本库中(推送的远程的代码仓库中)<br>eg：git push origin 就会将本地的代码更新到名为orgin的远程版本库中</p>
+</li>
+<li><p>git log , git diff , git reset –hard HEAD^</p>
+</li>
+</ol>
+<blockquote>
+<p>git log //用于查看提交的每个版本</p>
+<p>git diff //用于查看提交的本版本的改变</p>
+</blockquote>
+<pre><code>在Git中，用HEAD表示当前版本也就是最新的提交,上一个版本就是HEAD^，上上一个版本就是HEAD^^，当然往上100个版本写100个^比较容易数不过来，所以写成HEAD~100。Git在内部有个指向当前版本的HEAD指针，当你回退版本的时候，Git仅仅是把HEAD从指向另一个提交版本的标签.
+</code></pre><blockquote>
+<p>$ git reset –hard HEAD^</p>
+</blockquote>
+<hr>
+<p>#2. 修改主机名方法</p>
+<p>修改命令行主机名：sudo gedit /etc/hosts</p>
+<p> #修改主机名为路径名<br>修改一下使命令行只显示当前目录的最后一级目录名，这样看起来也好，用pwd可以看到完整的路径名。<br>   找到配置文件先进行备份： sudo  cp  ~/.bashrc  ~/.bashrc-bak<br>   找到配置文件修改： sudo  gedit  ~/.bashrc<br>   下面是我的bashrc，真正修改到就一行代码：</p>
+<hr>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"># If this is an xterm set the title to user@host:dir</div><div class="line"># 配置标题</div><div class="line">case &quot;$TERM&quot; in</div><div class="line">xterm*|rxvt*)</div><div class="line">#    PS1=&quot;/[/e]0;$&#123;debian_chroot:+($debian_chroot)&#125;/u@/h: /w/a/]$PS1&quot;</div><div class="line">PS1=&quot;[/u@/h:/W]//$ &quot;   //起头写。只需要修改这一行</div><div class="line">    ;;</div><div class="line">*)</div><div class="line">    ;;</div><div class="line">esac</div></pre></td></tr></table></figure>
+<p>保存，重启终端就行了</p>
+<hr>
+<p>#3. SSH的安装以后获取SSH公钥</p>
+<p>1 前提：已安装ssh</p>
+<blockquote>
+<p>安装方法 sudo apt-get install openssh-server</p>
+</blockquote>
+<p>2 检查SSH公钥<br>cd ~/.ssh<br>看看存不存在.ssh，如果存在的话，掠过下一步；不存在的请看下一步</p>
+<p>3 生成SSH公钥</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ ssh-keygen -t rsa -C &quot;your_email@youremail.com&quot; </div><div class="line"># Creates a new ssh key using the provided email Generating public/private rsa key pair. </div><div class="line">Enter file in which to save the key (/home/you/.ssh/id_rsa):</div></pre></td></tr></table></figure>
+<p>按回车，现在你可以看到，在自己的目录下，有一个.ssh目录，说明成功了</p>
+<p>3.1 输入github密码<br>Enter passphrase (empty for no passphrase): [Type a passphrase]<br>Enter same passphrase again: [Type passphrase again]<br>这个时候输入你在github上设置的密码。</p>
+<p>3.2 然后在.ssh中可以看到</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Your identification has been saved in /home/you/.ssh/id_rsa. </div><div class="line"># Your public key has been saved in /home/you/.ssh/id_rsa.pub.</div><div class="line"># The key fingerprint is: </div><div class="line"># 01:0f:f4:3b:ca:85:d6:17:a1:7d:f0:68:9d:f0:a2:db your_email@youremail.com</div></pre></td></tr></table></figure>
+<p>4 添加SSH公钥到github<br>打开github，找到账户里面添加SSH，把id_rsa.pub内容复制到key里面。</p>
+<p>5 测试是否生效<br>使用下面的命令测试</p>
+<p>ssh -T git@github.com<br>当你看到这些内容放入时候，直接yes</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">The authenticity of host &apos;github.com (207.97.227.239)&apos; can&apos;t be established. </div><div class="line">RSA key fingerprint is 16:27:ac:a5:76:28:2d:36:63:1b:56:4d:eb:df:a6:48. </div><div class="line">Are you sure you want to continue connecting (yes/no)?</div><div class="line">//看到这个内容放入时候，说明就成功了。</div><div class="line"></div><div class="line">Hi username! </div><div class="line">You&apos;ve successfully authenticated, but GitHub does not provide shell access.</div></pre></td></tr></table></figure>
+<p>在开源项目中点击fork那个按钮，稍等一会，项目便会拷贝一份到自己的respositories中。那么如何把代码检到本地呢？</p>
+<p>查看右方下载地址</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$git clone git@github:liveNo/webFile.git</div></pre></td></tr></table></figure>
+<p>然后输入密码执行完成得到项目。这时，你在本地的检出路径会看到项目。</p>
+</div></article></div></section><footer><div class="paginator"><a href="/2014/09/09/2014-09-09-在ubuntu14.04上安装Jekyll/" class="prev">PREV</a><a href="/2014/09/08/Hello-World/" class="next">NEXT</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

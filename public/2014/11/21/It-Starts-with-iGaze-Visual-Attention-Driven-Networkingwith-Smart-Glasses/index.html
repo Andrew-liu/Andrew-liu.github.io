@@ -1,0 +1,90 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> It Starts with iGaze: Visual Attention Driven Networkingwith Smart Glasses · Snow Memory | Andrew Liu</title><meta name="description" content="It Starts with iGaze: Visual Attention Driven Networkingwith Smart Glasses - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">It Starts with iGaze: Visual Attention Driven Networkingwith Smart Glasses</h1><div class="post-info">Nov 21, 2014</div><div class="post-content"><p>#1. 简  介</p>
+<ul>
+<li>可穿戴计算设备的出现引起的世界的关注, 其中智能眼镜集成了许多传感器,  许多研究致力于改善只能眼镜的界面和体验, </li>
+<li>本论文主要探究使用智能眼镜开发一种新型网络模式,  使用者可以直接发送信息而不需要交换一些信息, 并能够通过视线收集感兴趣物体的信息</li>
+</ul>
+<p>为了达到使用智能眼镜建立新型网络连接, 通过视线与目标建立网络连接, 需要解决一下挑战：</p>
+<ul>
+<li>如何精确捕获用户的视线方向</li>
+<li>如何通过用户视线进行目标设备目标匹配</li>
+</ul>
+<a id="more"></a>
+<p>论文成就 :</p>
+<ol>
+<li>实现通过用户视线建立网络连接的新模式, 引入用户通过视线与周围交流或者交换信息的系统.</li>
+<li>提出新颖的捕获视线和目标的方案</li>
+<li>设计实现了iGaze平台, 用来精准捕获视线方向和建立物体设备连接</li>
+<li>对系统进行各种情形的测试.</li>
+</ol>
+<p>#2. iGaze系统概述</p>
+<ul>
+<li>iGaze模块化硬件和软件, 可以运行与现存的高层协议</li>
+<li>iGaze用于网络连接不需要事先交换信息的网络场景.</li>
+<li>iGaze假设拥有用于捕获视线的相机, 处理计算, 网络功能和一些传感器.</li>
+<li>iGaze要求建立连接的目标静止. </li>
+</ul>
+<p>双向模式与单向模式 :</p>
+<blockquote>
+<p>两个穿戴智能设备的用户, 通过眼部交流建立网络连接, 这种模式称为双向模式.</p>
+<p>用户想要听过视线获取目标物体的信息(物体需要有设备进行相应), 这种模式称为单向模式</p>
+</blockquote>
+<p>系统架构之软件</p>
+<ul>
+<li>视线向量获取部分(实时眼部追踪模块,眼部追踪模块, 视线向量决策模块)</li>
+<li>设备向量估计部分(信号追踪和设备方向决策模块)</li>
+<li>视线驱动网络(定义信息形式和通信处理)</li>
+</ul>
+<p><img src="http://byson.img42.wal8.com/img42/434369_20140909170142/14164911962.png" alt="向量"></p>
+<ol>
+<li>双向模式中,给定视线交互的用户, 他们的视线向量方向相反</li>
+<li>单向模式中, 所有观察者设备到所有设备向量, 只有设备向量到实现目标的设备与视线向量一致.</li>
+</ol>
+<p>双向模式中,给定视线交互的用户, 他们的视线向量方向相反</p>
+<pre><code>单向模式中, 所有观察者设备到所有设备向量, 只有设备向量到实现目标的设备与视线向量一致.
+</code></pre><p><img src="http://byson.img42.wal8.com/img42/434369_20140909170142/14164911969.png" alt="设备">    </p>
+<p>网络协议:</p>
+<ul>
+<li>初始化iGaze眼镜, 广播视线给周围相邻设备</li>
+<li>相邻iGaze眼镜捕获请求, 若在指定时间内没有事件发生,则丢弃请求, 否则进行向量对比,  成功后开始使用麦克风捕获声音信号.</li>
+<li>初始化的iGaze等待相应, 相应同时双方眼镜发出立体信号</li>
+<li>基于相应初始iGaze映射视线向量目标的网络ID</li>
+</ul>
+<p><img src="http://byson.img42.wal8.com/img42/434369_20140909170142/141649119746.png" alt="网络"></p>
+<p>#3. 视线方向获取</p>
+<p>视线方向获取:<br>iGaze追踪虹膜并检测实现方式，论文中使用了在 眼部相机中安装螺旋仪(检测头部状态)</p>
+<p><img src="http://byson.img42.wal8.com/img42/434369_20140909170142/141649119806.png" alt="视线"></p>
+<p>通过眼部相机， 获取虹膜图像层面投影。通过相机坐标系获取实现向量， 然后传送到HU坐标系与设备坐标比对</p>
+<p><img src="http://byson.img42.wal8.com/img42/434369_20140909170142/141649119857.png" alt="坐标"></p>
+<p>视线检测:</p>
+<ul>
+<li>通过设置一个头部姿势, 如点头, 减少不相关视线的检测, 也能用于检测设备的方向</li>
+<li>将眼部状态分为两种: 凝视和扫视</li>
+<li>对眼球移动速率设置阈值, 低于一定阈值的为凝视状态, 高于阈值的则为扫视状态.</li>
+</ul>
+<p>#4. 设备方向获取</p>
+<p>针对存现方法难以利用到智能眼睛上, 论文中基于锁相环路( <code>Phase Locked Loop</code>)技术, 提出了追踪两个头戴式扬声器微妙的相对位移.<br>当一个出事设备发出高频信号被接手后, 信号通过多普勒效应频移. 通过PPL, 接收器可以追踪信号准确的相位, 相位相对位移的一部分.</p>
+<p>#5. 系统实现</p>
+<blockquote>
+<p>硬件</p>
+</blockquote>
+<ul>
+<li>眼部相机追踪眼球运动</li>
+<li>螺旋仪确定设备位置和坐标转换</li>
+<li>麦克风和两个分开的扬声器</li>
+<li><p>Raspberry Pi平台用于数据计算处理</p>
+<blockquote>
+<p>软件设计</p>
+</blockquote>
+</li>
+<li><p>实现双向模式, 连接两个设备用户,</p>
+</li>
+<li>实现单向模式, 连接无相机设备和安卓设备</li>
+</ul>
+<ol>
+<li>实验与评估<br>基本指标<br>|衡量指标|正确率|错误率|<br>|—|—|—|<br>|视线方向准确度| 91% | 8%|<br>| 设备方向准确度| 90%  |10%|<br>| 能量消耗|||</li>
+</ol>
+<p><img src="http://byson.img42.wal8.com/img42/434369_20140909170142/14164911996.png" alt="测试1"><br><img src="http://byson.img42.wal8.com/img42/434369_20140909170142/141649120061.png" alt="测试2"></p>
+<p>#6. 结  论</p>
+<p>论文展现了iGaze(第一种低功耗智能眼镜)支持通过追踪视线建立网络, 并能够在视线交互时进行正确配对.<br>通过评估结果显示 : iGaze支持通过视线进行实时精确网络连接.</p>
+<p>#7. 参考链接<br><a href="http://www.cs.iit.edu/~xli/paper/Conf/iGaze-mobi14.pdf" target="_blank" rel="external">原文</a></p>
+</div></article></div></section><footer><div class="paginator"><a href="/2014/11/21/通过Hexo在Github上搭建博客教程/" class="prev">PREV</a><a href="/2014/11/21/2014-09-10-免费申请顶级域名并绑定github-pages教程/" class="next">NEXT</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 6.824 Lab 1: MapReduce(2016) · Snow Memory | Andrew Liu</title><meta name="description" content="6.824 Lab 1: MapReduce(2016) - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">6.824 Lab 1: MapReduce(2016)</h1><div class="post-info">Apr 16, 2016</div><div class="post-content"><p>本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh" target="_blank" rel="external">署名-非商业用途-保持一致</a>的创作共用协议.</p>
+<h2 id="MapReduce框架简介"><a href="#MapReduce框架简介" class="headerlink" title="MapReduce框架简介"></a>MapReduce框架简介</h2><ol>
+<li>应用提供大量输入文件, 一个Map函数, 一个Reduce函数, nReduce个<code>reduce tasks</code>.</li>
+<li>RPC服务器启动, 等该worker注册(Register)RPC中. 任务状态为可执行时, 调度器(Schedule)决定如何把task分配给worker和如何容错.</li>
+<li>Master把每个输入文件作为一个Map任务, 每个任务至少调用一次doMap. 这些任务或者直接执行或者由DoTask RPC发射, 每个对<code>doMap()</code>的调用读取合适的文件, 对每个文件调用map, 对每个map文件最后产生nReduce个文件. </li>
+<li>Master对每个reduce人物至少调用一次<code>doReduce()</code>. doReduce()收集由<code>map</code>产生的nReduce文件(f-*-), 然后对这些文件运行reduce函数. 最终产生nReduce个结果文件.</li>
+<li>Master调用<code>mr.merge()</code>, 合并所有的结果文件为一个输出文件.</li>
+<li>Master发送<code>Shutdown RPC</code>关闭workers, 然后关闭RPC服务器.</li>
+</ol>
+<a id="more"></a>
+<blockquote>
+<p><strong>Lab1总共分为五部分</strong></p>
+</blockquote>
+<h2 id="Part-I-Map-Reduce-input-and-output"><a href="#Part-I-Map-Reduce-input-and-output" class="headerlink" title="Part I: Map/Reduce input and output"></a>Part I: Map/Reduce input and output</h2><p>作业: 实现DoMap()(<code>mapreduce/common_map.go</code>)和DoReduce()(<code>mapreduce/common_reduce.go</code>)两个函数</p>
+<p>DoMap功能简述:</p>
+<ol>
+<li>通过<code>inFile</code>文件名读取文件中的内容, 将内容传入Map函数中, 返回得到<code>Key-value对数组</code></li>
+<li>将Key-value对数组通过Split函数(此处Split函数为<code>ihash</code>), 平均分配到<code>nReduce</code>个中间文件中, nReduce名字可以通过<code>reduceName</code>构造出来. 其中, Key-Value写入文件使用了Json进行序列化(将Key-value数据结构序列化为字符串).</li>
+</ol>
+<p>DoReduce功能简述:</p>
+<ol>
+<li>Map生成<code>nReduce</code>个中间文件后, DoReduce遍历读取这些中间文件, 通过序列化器拿出所有的Key-Value对, 然后将Key-value放入新的数据结构(该数据结构使key相同的value值合并, 自然想到使用Map数据结构)</li>
+<li>对所有的key进行排序, 生成有序的key数组. 然后对<code>key-values</code>(注意此处key对应的值为一个数组)进行Reduce操作, 并将结果写入新的文件(文件名由<code>mergeName</code>获得).</li>
+</ol>
+<blockquote>
+<p>运行<code>mapreduce/test_test.go</code>时需要注意, 只运行<code>TestSequentialMany, TestSequentialSingle</code>两个测试用例, 将其他三个测试用例注释掉.</p>
+</blockquote>
+<h2 id="Part-II-Single-worker-word-count"><a href="#Part-II-Single-worker-word-count" class="headerlink" title="Part II: Single-worker word count"></a>Part II: Single-worker word count</h2><p><code>Part I</code> 完成后, <code>Part II</code> 没什么难度了, 一个简单的Map-Reduce词频统计的任务, 对输入文件内容进行分词, 然后将词发射出去(词频默认为1), Reduce将values进行加和就完成了.</p>
+<h2 id="Part-III-Distributing-MapReduce-tasks"><a href="#Part-III-Distributing-MapReduce-tasks" class="headerlink" title="Part III: Distributing MapReduce tasks"></a>Part III: Distributing MapReduce tasks</h2><ul>
+<li>实现分布式MapReduce的调度模块.</li>
+</ul>
+<p>整体流程: 启动一个Master RPC服务器, 服务器调用<code>schedule</code>来调用Map/Reduce任务; 启动多个Worker RPC服务器, 并将Worker的端口信息注册到Master服务器的数据结构(<code>channel</code>)中</p>
+<ul>
+<li><code>schedule</code>: 负责整个MapReduce任务的调度, 查找当前可用Worker, 然后通过worker来执行Map/Reduce任务</li>
+</ul>
+<p>注意事项: 应该保证<code>schedule</code>中所有的goroutine全部完成后才能返回. 所以应该使函数阻塞直到所有的goroutine完成. </p>
+<p><strong>Go中有两种方法可以保证进行同步程序</strong>:<br>参考文章: <a href="http://andrewliu.in/2016/04/08/Go-goroutine%E5%90%8C%E6%AD%A5/">Go goroutine同步</a></p>
+<h2 id="Part-IV-Handling-worker-failures"><a href="#Part-IV-Handling-worker-failures" class="headerlink" title="Part IV: Handling worker failures"></a>Part IV: Handling worker failures</h2><p>Master来处理失败的<code>workers</code>, 当某worker上的Map/Reduce任务失败后, 需要将这个任务转移给其他worker来执行.</p>
+<p>在设计调度任务函数<code>schedule()</code>的时候考虑<code>容错性</code>, 判断在Worker上调用RPC是否成功, 若失败则重新分配一个新的worker服务器来处理task. 整个容错逻辑可以放到一个for循环中, 只有当任务成功调用才<code>break</code>跳出循环.</p>
+<h2 id="Part-V-Inverted-index-generation"><a href="#Part-V-Inverted-index-generation" class="headerlink" title="Part V: Inverted index generation"></a>Part V: Inverted index generation</h2><p><strong>构建一个倒排索引Map/Reduce任务</strong></p>
+<ul>
+<li><strong>Map任务</strong>:</li>
+</ul>
+<p>拿到一个网页url和url对应网页文本, 对网页文本进行分词, 将每个词作为key, 网页url作为value发射出去</p>
+<ul>
+<li><strong>Reduce任务</strong></li>
+</ul>
+<p>拿到一个关键词key, 和关键词对应的url集合, 首先对url进行去重(可能一个url中出现多次关键词), 然后对url进行排序(可以不排序), 最后根据需要的结构对整个url集合作拼接(<code>url集合的长度即为url中出现关键词的url个数</code>), 最后将关键词和拼接字符串发射出去</p>
+<h2 id="Lab1源码"><a href="#Lab1源码" class="headerlink" title="Lab1源码"></a>Lab1源码</h2><p>个人完成Lab1的代码托管在Github上, 仅供参考, 第一次使用Go语言, 有些不太熟悉的地方, 若有更好的方法欢迎指导.</p>
+<p><a href="https://github.com/Andrew-liu/distributed-system" target="_blank" rel="external">MIT 6.824 2016 Lab1 using go language</a></p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="https://pdos.csail.mit.edu/6.824/labs/lab-1.html" target="_blank" rel="external">6.824 Lab 1: MapReduce</a></li>
+</ul>
+</div></article></div></section><footer><div class="paginator"><a href="/2016/04/29/Golang-字符串操作小结/" class="prev">PREV</a><a href="/2016/04/08/Go-goroutine同步/" class="next">NEXT</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

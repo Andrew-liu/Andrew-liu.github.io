@@ -1,0 +1,75 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> A Wearable System That Knows Who Wears It · Snow Memory | Andrew Liu</title><meta name="description" content="A Wearable System That Knows Who Wears It - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">A Wearable System That Knows Who Wears It</h1><div class="post-info">Nov 2, 2014</div><div class="post-content"><p>#1. 研究背景及动机</p>
+<p>局域网中可穿戴设备逐渐增多的功能(健康监督, 个人辅助, 环境和家庭自动化等), 更多的时候设备需要识别使用者, 构建一个安全的使用方式. 可穿戴设备的周期的跟踪使用者的健康条件功能, 需要对使用者进行标记;  调整室内温控功能需要记录使用者的爱好; 传感器数据通过社交网络自动分享的功能都需要确定使用者的身份, 这些功能都要求对使用设备者进行识别, 从而建立可靠和安全的通信.</p>
+<a id="more"></a>
+<p>##1.1. 论文主题</p>
+<p>本论文, 研究目标主要集中在可穿戴设备的识别能力, 提出使用生物阻抗特性.设备使用无害的微电流获得生物阻抗,通过生物阻抗样本与训练模型匹配, 设备可以确定被人使用, 然后验证特殊对象, 并证明识别能力在几个月后依然可用.</p>
+<p>论文基于两个假设 :</p>
+<ol>
+<li>假设可穿戴设备只被少量对象使用(例如一个家庭).</li>
+<li>假设不是所有的设备都需要识别用户.</li>
+</ol>
+<p>##1.2. 论文贡献</p>
+<ul>
+<li>发明感知生物阻抗的腕式可穿戴传感器系统</li>
+<li>通过不同的特征, 大量增加识别性能</li>
+<li>8人在实验室外使用系统, 进行测试</li>
+<li>证明设备长期使用依然具有可识别验证使用者的可行性.</li>
+</ul>
+<p>#2. 可穿戴传感器系统</p>
+<blockquote>
+<p>设计一个包含电极(用于检测生物阻抗)的可穿戴手环.</p>
+</blockquote>
+<p><img src="http://byson.img42.wal8.com/img42/434369_20140909170142/141493407349.png" alt="系统概览"></p>
+<ul>
+<li>生物阻抗<br>生物阻抗是一种身体特性, 生物组织对电流的抗性并能够存储电荷, 这种属性在不同的组织上各有不同.  这种独一无二的机制有识别不同人的可能性.</li>
+<li>硬件<br>为捕获生物阻抗样本, 设计了一个可穿戴的传感器, 这个可穿戴传感器建立在<code>Shimmer Platform</code>, 这个平台提供处理, 无线通信, 存储和检测运动功能. 传感器使用平台的外部扩展连接器. 传感器包含一组电极.</li>
+<li>软件<br>Shimmer运行<code>TinyOS</code>, 编写了一个软件与生物阻抗分析器和多路复用器通信, 软件分三部分 : 底层驱动,高层驱动和logging应用</li>
+</ul>
+<ol>
+<li>低层驱动和高层驱动允许应用与传感器模块通信.</li>
+<li>logging应用用于高层驱动与传感器模块交互. 应用使用多路复用器选取两个电极, 使用生物阻抗分析器进行分析,一个完整样本被采集后,生物阻抗分析器进行休眠, 等待下次被定时器唤醒.</li>
+<li>用microSD存储样本 或者通过蓝牙发送到手机上.</li>
+</ol>
+<ul>
+<li>检测存在<br>设备需要检测合适被穿戴, 皮肤接触可以很容易的通过生物阻抗分析检测出来, 并设置了简单的门限值.</li>
+</ul>
+<p><img src="http://byson.img42.wal8.com/img42/434369_20140909170142/141493408531.png" alt="门限"></p>
+<p>#3. 识别功能设计</p>
+<blockquote>
+<p>收集主体生物阻抗数据样本, 建立一个样本模型, 使用同样方法, 将模型与新样本进行匹配. 所有设计两个阶段 : 注册和识别.</p>
+</blockquote>
+<p>##3.1. 生物阻抗样本</p>
+<p>由于所有8个电极的样本是不可行的, 所以选择特殊的电极对, 进行样本测试(例如 : 相距最远的电极), <code>不测量相邻电极对</code></p>
+<p><img src="http://byson.img42.wal8.com/img42/434369_20140909170142/14149340869.png" alt="解剖"></p>
+<p>##3.2. 特征提取</p>
+<p>从每一个生物抗性样本提取四个特征值(两个来自生物阻抗幅度, 两个来自生物阻抗阶段), 丢弃没有皮肤接触获得的样本, 丢弃测试不完整的样本, 丢弃误差和大于门限值的样本</p>
+<p><img src="http://byson.img42.wal8.com/img42/434369_20140909170142/141493408837.png" alt="阻抗"></p>
+<p>##3.3. 注册</p>
+<p>系统载入收集样本, 通过注册算法建立模型, 模型会在进入系统的时候加载.算法具有两个模式 :<code>鉴别(Identification)</code>和<code>验证(Verification)</code></p>
+<ul>
+<li>鉴别是多对一的匹配, 用于确定哪一个正在穿戴这个设备.</li>
+<li>验证是一对一的匹配, 用于设备所有者人依然在穿戴这个设备</li>
+</ul>
+<p>鉴别(Identification)<br>:   使用判别算法进行学习每一个生物阻抗样本, 学习一个分类器, 其中主体的阻抗特征向量是正样本, 其他所有的样本是负样本, 也就是多重分类中的one vs all 策略.<br>    其中验证算法使用Navie Bayes 和SVM算法.</p>
+<p>验证(Verification)<br>:   使用生成算法对样本进行学习. 验证算法使用Gaussian Mixture Model算法(结合高斯密度). 通过使用K-Means进行特征向量聚类来初始化高斯密度(k是想要得到的高斯密度集).</p>
+<p>##3.4. 识别</p>
+<p>一旦主体注册结束, 系统就进入识别模式,在这个模式中系统周期检测是否带在手上,然后收集生物阻抗样本. 识别算法同样为两个模式: 鉴别和验证(与注册阶段基本一致)</p>
+<p>##3.5. 度量</p>
+<p>使用三个度量来展现结果: </p>
+<ul>
+<li><code>FAR(The false accept rate)</code> : 负的特征向量被分到正特征向量中</li>
+<li><code>FRR(The false reject rate)</code> : 正的特征向量被分到负的特征向量中</li>
+<li><code>BAC(The balanced accuracy)</code> : 正确接受率/2 +  正确拒绝率/2</li>
+</ul>
+<p>#4. 实验测试</p>
+<ol>
+<li>数据集 : 精确测试用户手腕周长, 测试主体来自5男3女.</li>
+<li>鉴别 : 通过计算每个方法的FAR, FRR, BAC</li>
+<li>验证 : 当前验证能力和140+天后的验证能力</li>
+</ol>
+<p><img src="http://byson.img42.wal8.com/img42/434369_20140909170142/141493408896.png" alt="测试1"></p>
+<p><img src="http://byson.img42.wal8.com/img42/434369_20140909170142/141493408958.png" alt="测试2"></p>
+<p>#5. 总结</p>
+<p>论文作者展现了一个可持续识别穿戴人物的可穿戴系统, 系统用于验证穿戴者或者区分家庭成员. 人物识别使用了生物阻抗传感器, 腕带连接Shimmer平台上的阻抗计算模块.<br>设备在98%的时候可以正确识别, 证明可穿戴生物阻抗传感器一次充电可以使用一天甚至更久.</p>
+<p><a href="http://www.cs.dartmouth.edu/~dfk/papers/cornelius-wearable.pdf" target="_blank" rel="external">A Wearable System That Knows Who Wears It论文</a></p>
+</div></article></div></section><footer><div class="paginator"><a href="/2014/11/02/2014-11-02-Node.js学习笔记/" class="prev">PREV</a><a href="/2014/11/02/2014-11-02-IOS基础一/" class="next">NEXT</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

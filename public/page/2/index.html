@@ -1,0 +1,96 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Snow Memory | Andrew Liu</title><meta name="description" content="C++ Developer, Gopher, Pythoner, love open source."><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link active">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><ul class="home post-list"><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2016/09/04/Lua编码规范/" class="post-title-link">Lua编码规范</a></h2><div class="post-info">Sep 4, 2016</div><div class="post-content"><blockquote>
+<p>写代码是为了给别人读的, 所以总需要一些建议性的规范, 所以简单的翻译了一下国外的这篇<a href="http://lua-users.org/wiki/LuaStyleGuide">Lua编码规范</a>, 并做了一些适合自己的改动.</p>
+</blockquote>
+<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>代码写出来是给人读的, 保持<code>一致性</code>能够增加改善代码的可读性. <code>一致性(Consistency)</code>在项目之间, 项目内部, 单个模块或单个函数中非常重要. 值得注意的是, 编码规范只是<code>一种建议</code>, 有时可能并不需要去遵守编码规范.</p></div><a href="/2016/09/04/Lua编码规范/" class="read-more">...more</a></article></li><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2016/08/29/快学Lua/" class="post-title-link">快学Lua</a></h2><div class="post-info">Aug 29, 2016</div><div class="post-content"><p>本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh">署名-非商业用途-保持一致</a>的创作共用协议.</p>
+<blockquote>
+<p>工作需要用到Lua做一些脚本, 所以学习一下这个在游戏开发应用广泛的语言, 当然, 我更喜欢称之为撸啊撸语言…</p>
+</blockquote>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><ul>
+<li><code>Lua</code>是一种轻量语言，它的官方版本只包括一个精简的核心和最基本的库, </li>
+<li>性能方面, Lua比Python快(这也是脚本语言选型中不用python的原因)</li>
+<li>Lua与C/C++交互方便, 易于扩展</li>
+<li><code>Lua</code>是一个动态弱类型语言, 支持增量式垃圾收集策略, 支持<code>协程</code></li>
+<li>支持REPL(Read-Eval-Print Loop, 交互式解释器)</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">-- 命令行中输入lua, 使用REPL</div><div class="line">andrew_liu:Lua/ $ lua  </div><div class="line">Lua <span class="number">5.2</span><span class="number">.4</span>  Copyright (C) <span class="number">1994</span><span class="number">-2015</span> Lua.org, PUC-Rio</div><div class="line">&gt; <span class="keyword">print</span> <span class="string">"hello world"</span>  -- 国际编程学习惯例</div><div class="line">hello world</div><div class="line">&gt; print(<span class="string">"hello world"</span>)</div><div class="line">hello world</div><div class="line">&gt;</div></pre></td></tr></table></figure></div><a href="/2016/08/29/快学Lua/" class="read-more">...more</a></article></li><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2016/08/14/Kqueue学习笔记/" class="post-title-link">Kqueue学习笔记</a></h2><div class="post-info">Aug 14, 2016</div><div class="post-content"><p>本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh">署名-非商业用途-保持一致</a>的创作共用协议.</p>
+<blockquote>
+<p>想在Mac上造点小轮子, 然而epoll是在Linux平台独有的, 所以想到了用kqueue来替代. 记录一下自己的学习过程.</p>
+</blockquote>
+<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><ul>
+<li><code>kqueue</code>是在UNIX上高效的IO复用技术, 类比于linux平台中的<code>epoll</code>.</li>
+<li>IO复用原理大概为: 网卡设备对应一个中断号, 当网卡收到网络端的消息的时候会向CPU发起中断请求, 然后CPU处理该请求. 通过驱动程序 进而操作系统得到通知, 系统然后通知epoll/kqueue, epoll/kqueue通知用户代码. </li>
+</ul></div><a href="/2016/08/14/Kqueue学习笔记/" class="read-more">...more</a></article></li><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2016/08/06/浅谈Raft/" class="post-title-link">浅谈Raft</a></h2><div class="post-info">Aug 6, 2016</div><div class="post-content"><p>本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh">署名-非商业用途-保持一致</a>的创作共用协议.</p>
+<blockquote>
+<p>工作忙了，总是骗自己说的没时间写博客，其实都是自己懒癌发作而已。题目写了浅谈，肯定文章是不够深入透彻的，刚刚爬进分布式门槛的婴儿，需要慢慢的学会走路。希望后面能通过自己总结再来一篇<code>深入理解Raft</code>(显然又在挖坑</p>
+</blockquote></div><a href="/2016/08/06/浅谈Raft/" class="read-more">...more</a></article></li><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2016/07/24/shadowsocks源码剖析/" class="post-title-link">shadowsocks源码剖析</a></h2><div class="post-info">Jul 24, 2016</div><div class="post-content"><blockquote>
+<p>VPS上嗨皮的跑了那么久shadowsock的server了, 但一直比较想搞明白具体是怎么实现的. 前段时间比较忙, 最近总算有点私人时间了, 速度的强读一发shadowsocks源码</p>
+</blockquote>
+<h2 id="什么是shadowsocks"><a href="#什么是shadowsocks" class="headerlink" title="什么是shadowsocks?"></a>什么是shadowsocks?</h2><ul>
+<li>不想再强行安利一发了, 毕竟开发者都被请去喝茶了</li>
+<li>只需要知道和<code>G * F * W</code>有关就好了</li>
+<li>如果上面你都不知道, 说明这篇文章与你无缘, 叉掉吧</li>
+</ul>
+<p>所读源码基于<a href="https://github.com/shadowsocks/shadowsocks-go">shadowsocks-go 1.1.5</a>, 为什么选择golang实现版本? 我难道会告诉你, Golang的吉祥物太萌了, 我已经决定好好安利golang了. 正经点的回复, golang的语法灵活不失简洁, 棒棒哒.</p></div><a href="/2016/07/24/shadowsocks源码剖析/" class="read-more">...more</a></article></li><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2016/07/02/Golang-RPC/" class="post-title-link">Golang RPC</a></h2><div class="post-info">Jul 2, 2016</div><div class="post-content"><p>本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh">署名-非商业用途-保持一致</a>的创作共用协议.</p>
+<blockquote>
+<p>RPC(Remote Procedure Call)是<code>分布式系统</code>中的一个关键机制.</p>
+</blockquote>
+<h2 id="Go-HTTP-RPC"><a href="#Go-HTTP-RPC" class="headerlink" title="Go HTTP RPC"></a>Go HTTP RPC</h2></div><a href="/2016/07/02/Golang-RPC/" class="read-more">...more</a></article></li><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2016/06/19/Tornado源码剖析/" class="post-title-link">Tornado源码剖析</a></h2><div class="post-info">Jun 19, 2016</div><div class="post-content"><h2 id="pdb调试"><a href="#pdb调试" class="headerlink" title="pdb调试"></a>pdb调试</h2><blockquote>
+<p>简单的介绍一下pdb的调试, 更详细的命令查看<a href="https://docs.python.org/2/library/pdb.html">python pdbf官方文档</a></p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">import pdb</div><div class="line">// 使用以下语句希望debug的地方打断点</div><div class="line">pdb.set_trace()</div></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">命令</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">n</td>
+<td style="text-align:center">运行下一行代码</td>
+</tr>
+<tr>
+<td style="text-align:center">p</td>
+<td style="text-align:center">计算p后面的表达式(当前上下文中), 并打印表达式的值</td>
+</tr>
+<tr>
+<td style="text-align:center">s</td>
+<td style="text-align:center">进入函数</td>
+</tr>
+<tr>
+<td style="text-align:center">r</td>
+<td style="text-align:center">从函数中返回</td>
+</tr>
+<tr>
+<td style="text-align:center">b</td>
+<td style="text-align:center">动态设置断点</td>
+</tr>
+<tr>
+<td style="text-align:center">w</td>
+<td style="text-align:center">打印当前栈信息</td>
+</tr>
+<tr>
+<td style="text-align:center">q</td>
+<td style="text-align:center">退出pdb</td>
+</tr>
+</tbody>
+</table></div><a href="/2016/06/19/Tornado源码剖析/" class="read-more">...more</a></article></li><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2016/06/05/Google-protobuf-C-学习笔记/" class="post-title-link">Google protobuf(C++) 学习笔记</a></h2><div class="post-info">Jun 5, 2016</div><div class="post-content"><p>本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh">署名-非商业用途-保持一致</a>的创作共用协议.</p>
+<blockquote>
+<p> <code>Google Protocol Buffers</code>简称 Protobuf, 是<code>Google</code>公司内部的混合语言数据标准. 它提供一种轻量, 高效的结构化数据存储结构. </p>
+</blockquote>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p><strong>为什么学习protobuf?</strong></p>
+<p>想通过protobuf的序列化来做一个C++的微型RPC框架.<br>本文主要是学习protobuf的使用, 大量参考官方文档.</p></div><a href="/2016/06/05/Google-protobuf-C-学习笔记/" class="read-more">...more</a></article></li><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2016/05/15/The-Google-File-System/" class="post-title-link">The Google File System</a></h2><div class="post-info">May 15, 2016</div><div class="post-content"><p>本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh">署名-非商业用途-保持一致</a>的创作共用协议.</p>
+<p><img src="http://ww1.sinaimg.cn/large/ab508d3djw1f2sj4b9nasj20q80begnu.jpg" alt=""></p>
+<blockquote>
+<p>GFS是一个共享的分布式文件系统</p>
+</blockquote>
+<ul>
+<li>GFS提供了一个与位置无关的名字空间(namespace), 这使得数据可以为了负载均衡或灾难冗余等目的在不同位置间透明迁移</li>
+<li>GFS并没有在文件系统层面提供任何Cache机制, 但借助了Linux底层cache机制.</li>
+<li>GFS文件以分层目录的形式组织, 用路径名来表示, 文件的写入主要依赖追加(append)操作完成</li>
+</ul></div><a href="/2016/05/15/The-Google-File-System/" class="read-more">...more</a></article></li><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2016/05/08/How-to-Write-Go-Code/" class="post-title-link">How to Write Go Code</a></h2><div class="post-info">May 8, 2016</div><div class="post-content"><blockquote>
+<p>官方How to Write Go Code的阉割版 :-D</p>
+</blockquote>
+<h2 id="GOPATH"><a href="#GOPATH" class="headerlink" title="GOPATH"></a>GOPATH</h2><p><code>GOPATH环境变量</code>指明当前工作区的位置, 这可能在你编写Go程序时<code>唯一一个</code>需要设置的环境变量</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"># 设置GOPATH</div><div class="line">$ mkdir example</div><div class="line">$ cd example</div><div class="line"># 类Unix设置环境变量, 只对当前session有效, 如需长期生效需要设置如.zshrc的配置文件</div><div class="line">$ export &quot;GOPATH=$PWD&quot;</div><div class="line"># 验证是否设置成功</div><div class="line">$ echo $GOPATH</div></pre></td></tr></table></figure></div><a href="/2016/05/08/How-to-Write-Go-Code/" class="read-more">...more</a></article></li></ul></section><footer><div class="paginator"><a href="/" class="prev">PREV</a><a href="/page/3/" class="next">NEXT</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

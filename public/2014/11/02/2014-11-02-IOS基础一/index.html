@@ -1,0 +1,164 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> IOS基础一 · Snow Memory | Andrew Liu</title><meta name="description" content="IOS基础一 - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">IOS基础一</h1><div class="post-info">Nov 2, 2014</div><div class="post-content"><p>#1. 开发概览<br>SDK(Software Develop Kit)<br>IBAction(相当于void) IBOutlet  用于联系</p>
+<p>安装非8.0 sdk 将文件夹拖入<code>/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs</code>下</p>
+<p>添加离线文档文档. 将解压后的文件拖入<code>/Applications/Xcode.app/Contents/Developer/Documentation/DocSets</code>中,(在完全退出Xcode下)<br>查看User EXperience</p>
+<a id="more"></a>
+<p>##1.1. 初识UI</p>
+<ul>
+<li>UI是app的基础, 然后在UI的基础上增加实用功能, 开发中绝大多数时间在处理UI</li>
+<li><code>万物皆对象</code>, UI界面由对象组成, 将对象显示到屏幕上</li>
+<li>主要在UIKit框架提供了很多可视化组件元素</li>
+</ul>
+<p>##1.2. 常用框架</p>
+<ul>
+<li>UIKit(创建和管理应用程序的用户界面)</li>
+<li>QuartzCore(提供动画特效以及通过硬件进行渲染的能力)</li>
+<li>CoreGraphics(提供2D绘制的基于C的API)</li>
+<li>CoreLocation(使用GPS和WIFI获取位置信息)</li>
+<li>MapKit(为应用程序提供内嵌地图的接口)</li>
+<li>AVFoundation(音频处理)</li>
+</ul>
+<p>##1.3. UIView</p>
+<ul>
+<li>屏幕上看得见摸得到的东西就是UIView, 一般翻译为<code>视图/控件/组件</code></li>
+<li>按钮,文字,图片的UI都是继承自UIView</li>
+<li>UIView是一个容器, 容纳其他UIView</li>
+<li>理解父控件/子空间</li>
+</ul>
+<blockquote>
+<p>每一个UI控件都有自己的独特属性，但是有些属性是每个UI控件都具备的，比如每一个UI控件都有自己的位置和尺寸、都有自己的父控件、子控件。于是，所有的UI控件最终都继承自UIView，UI控件的公共属性都定义在UIView中</p>
+</blockquote>
+<ul>
+<li>UIView的常见属性</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">@property(nonatomic,readonly) UIView *superview;</div><div class="line">获得自己的父控件对象</div><div class="line"></div><div class="line">@property(nonatomic,readonly,copy) NSArray *subviews;</div><div class="line">获得自己的所有子控件对象</div><div class="line"></div><div class="line">@property(nonatomic) NSInteger tag;</div><div class="line">控件的ID\标识，父控件可以通过tag来找到对应的子控件</div><div class="line"></div><div class="line">@property(nonatomic) CGAffineTransform transform;</div><div class="line">控件的形变属性（可以设置旋转角度、比例缩放、平移等属性）</div><div class="line"></div><div class="line">@property(nonatomic) CGRect frame;</div><div class="line">控件所在矩形框在**父控件**中的位置和尺寸（以父控件的左上角为坐标原点）</div><div class="line"></div><div class="line">@property(nonatomic) CGRect bounds;</div><div class="line">控件所在矩形框的位置和尺寸（以自己左上角为坐标原点，所以bounds的x\y一般为0）</div><div class="line"></div><div class="line">@property(nonatomic) CGPoint center;</div><div class="line">控件中点的位置（以父控件的左上角为坐标原点）</div></pre></td></tr></table></figure>
+<p>##1.4. UIViewControler</p>
+<blockquote>
+<ol>
+<li>界面的切换涉及到UIView的创建和销毁</li>
+<li>涉及UIView跟用户交互</li>
+<li>显示一个新界面之前, 先创建了一个<code>UIViewControler</code>对象,然后创建一个UIView界面, UIViewControler管理UIView, 负责UIView创建, 销毁, 显示, 监听, 与用户的交互</li>
+</ol>
+</blockquote>
+<p><code>@property(nonatomic,retain) UIView *view;</code></p>
+<p>##1.5. 运行流程</p>
+<ol>
+<li>读取Main.storyboard文件</li>
+<li>创建箭头所指的MJViewController对象</li>
+<li>根据storyboard文件中描述创建ViewController的UIView对象</li>
+<li>将UIView对象显示到用户眼前</li>
+</ol>
+<p>#2. 按钮的基本使用</p>
+<ol>
+<li>按钮可以显示文字, 可以显示图片,可以随时调整内部图片和文字</li>
+<li>UIButton的状态</li>
+</ol>
+<ul>
+<li>normal : 普通状态</li>
+<li>highlighted : 长按按钮的状态(type修改为custom) </li>
+<li>disabled</li>
+</ul>
+<ol>
+<li>autolayout(自动布局): 修改button要取消自动布局</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">frame : 能修改尺寸和位置</div><div class="line">center : 能修改位置</div><div class="line">bounds : 能修改尺寸(x, y一般都是0)</div><div class="line">transform : 可以修改尺寸/旋转角度/位置</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">- (IBAction)uptransform</div><div class="line">&#123;</div><div class="line">    //1. 取得头像按钮(用tag的方法) 将父类self.view强制转换成子类类型</div><div class="line">    UIButton *head = (UIButton *)[self.view viewWithTag:10];</div><div class="line">    //会递归查找tag为10的按钮,view-&gt;子控件-&gt;孙子控件</div><div class="line">    </div><div class="line">    </div><div class="line">    //2.用transform平移, tx ty是告诉系统要偏移多少</div><div class="line">    //transform是在初始位置的基础上平移,所以需要每次都对ty -50</div><div class="line">    </div><div class="line">    //head.transform = CGAffineTransformMakeTranslation(0, 50);</div><div class="line">    //在传入的tranform是在传入的基础transform上平移</div><div class="line">    head.transform = CGAffineTransformTranslate(head.transform, 0, 50);</div><div class="line">    </div><div class="line">    //3. transform左旋转</div><div class="line">    //角度为正数,是顺时针, 传入角度制 PI/4</div><div class="line">    head.transform =  CGAffineTransformRotate(head.transform, M_PI_4);</div><div class="line">    </div><div class="line">    //4. 缩放 ,放大1.2倍, 缩小0.8倍</div><div class="line">    head.transform = CGAffineTransformScale(head.transform, 1.2, 1.2);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>##2.1. 自动生成按钮<br>凡是storyboard有的功能都能用代码解决</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">//控制器的view加载完毕的时候调用</div><div class="line">//一般在这里进行界面的加载</div><div class="line">- (void)viewDidLoad &#123;</div><div class="line">    [super viewDidLoad];</div><div class="line">    // Do any additional setup after loading the view, typically from a nib.</div><div class="line">    //创建控件</div><div class="line">    UIButton *button = [[UIButton alloc] init];</div><div class="line">    //添加按钮</div><div class="line">    [self.view addSubview:button];</div><div class="line">    //设置尺寸</div><div class="line">    button.frame = CGRectMake(100, 100, 100, 100);</div><div class="line">    //设置颜色</div><div class="line">    button.backgroundColor = [UIColor redColor];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>##2.2. Xcode的快捷键</p>
+<ul>
+<li>Option + cmd + 回车 打开辅助视图(分栏)</li>
+<li>cmd + 0 打开或者取消左边的导航栏</li>
+<li>option + cmd 0 打开或者取消右边的属性视图</li>
+<li>cmd + r 运行</li>
+<li>cmd + . 停止运行</li>
+<li>Shift + cmd + h 模拟测试回到首页(相当于home)</li>
+<li>两次Shift + cmd + h 打开模拟测试的任务管理器</li>
+</ul>
+<p>##2.3. 退出键盘</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">//退出键盘</div><div class="line">[self.view endEditing:YES];</div></pre></td></tr></table></figure>
+<p>##2.4. 从资源文件中获取数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">//File是全路径, 应该是手机上的全路径</div><div class="line">//一个NSbundle代表一个文件夹</div><div class="line">//利用mainBundle可以访问手机里的任何资源</div><div class="line">NSBundle *bundle = [NSBundle mainBundle];</div><div class="line"></div><div class="line">//第一个参数名为文件名 第二个参数为后缀, 这个函数用于获取全路径</div><div class="line"></div><div class="line">NSString *path = [bundle pathForResource:@&quot;imageData&quot; ofType:@&quot;plist&quot;];</div><div class="line"> _imageData = [NSArray arrayWithContentsOfFile:path];</div></pre></td></tr></table></figure>
+<p>##2.5. 序列帧动画</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line">//重构, 相同的代码放到函数中, 不同的东西变为代码</div><div class="line">- (void)runAnimationCount : (int)count name : (NSString *)name</div><div class="line">&#123;</div><div class="line">    //如果有其他动画在播放则不给出反应</div><div class="line">    if (self.tom.isAnimating) &#123;</div><div class="line">        return;</div><div class="line">    &#125;</div><div class="line">    //1. 加载所有图片的动态数组</div><div class="line">    NSMutableArray *images = [NSMutableArray array];</div><div class="line">    </div><div class="line">    for (int i = 0; i &lt; count + 1; ++i) &#123;</div><div class="line">        //计算文件名</div><div class="line">        NSString *filename = [NSString stringWithFormat:@&quot;%@_%02d.jpg&quot;, name, i];</div><div class="line">        //加载图片,</div><div class="line">        </div><div class="line">        // imageNamed方法使用缓存机制, 不会释放加载的图片, 大量图片不能使用这个方法</div><div class="line">        //UIImage *image = [UIImage imageNamed:filename];</div><div class="line">        </div><div class="line">        </div><div class="line">        </div><div class="line">        //传入全路径, 且没有缓存</div><div class="line">        NSBundle *bundle = [NSBundle mainBundle];</div><div class="line">        NSString *path = [bundle pathForResource:filename ofType:nil];</div><div class="line">        UIImage *image = [UIImage imageWithContentsOfFile:path];</div><div class="line">        </div><div class="line">        </div><div class="line">        //将UIImage对象放到动态数组中</div><div class="line">        [images addObject:image];</div><div class="line">    &#125;</div><div class="line">    //将动态数组赋值给动画数组</div><div class="line">    self.tom.animationImages = images;</div><div class="line">    </div><div class="line">    //2. 设置播放次数</div><div class="line">    self.tom.animationRepeatCount = 1;</div><div class="line">    </div><div class="line">    //3. 设置播放次数</div><div class="line">    </div><div class="line">    self.tom.animationDuration = images.count * 0.1;</div><div class="line">    </div><div class="line">    [self.tom startAnimating];</div><div class="line">    </div><div class="line">    </div><div class="line">    //定时器</div><div class="line">    CGFloat delay = self.tom.animationDuration + 1.0;</div><div class="line">    [self.tom performSelector:@selector(setAnimationImages:) withObject:nil afterDelay:delay];</div><div class="line">    </div><div class="line">    //[self performSelector:@selector(clearCache) withObject:nil afterDelay:delay];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>##2.6. 文档注释</p>
+<p><code>/** 这个一个文档注释 */</code></p>
+<p>##2.7. UIImageView和UIButton</p>
+<ol>
+<li>如果仅仅是显示图片不需要监听, 则使用BUImageView</li>
+<li>既要显示图片又要监听图片点击, 用UIButton</li>
+</ol>
+<p>相同点<br>:   都能显示图片</p>
+<p>不同点<br>:   1. UIButton能处理点击事件, UIImageView不能处理点击事件; UIButton能显示图片又能显示文; UIButton能同时显示两张图</p>
+<blockquote>
+<p>UIButton继承自UIControl, 因此默认就能处理事件<br>UIImageView继承自UIView, 因此默认就不能处理事件</p>
+</blockquote>
+<p>#3. 数据类型<br>字典<br>:   设置数据和取出数据使用<code>字符串类型的key</code>, 编写这些key时, 编译器不会有警告, 容易敲错</p>
+<p>模型<br>:   数据模型,专门用来存放数据的对象, 设置数据和取出数据都是通过它的属性, 编译器会报错, 保证了数据的正确性,<code>推荐使用</code></p>
+<pre><code>copy : NSString
+strong : 一般对象
+weak : UI控件
+assign : 基本数据类型
+</code></pre><p> <img src="http://byson.img42.wal8.com/img42/434369_20140909170142/141268902795.png" alt="模型"></p>
+<p>##3.1. instancetype</p>
+<ol>
+<li>在类型表示上, 和<code>id</code>一样, 可以表示任何对象类型</li>
+<li>只能用在返回值类型上</li>
+<li>比<code>id</code>多一个好处 : 编译器会检测instancetype的真实类型</li>
+</ol>
+<p>##3.2. Xib使用</p>
+<ul>
+<li><code>storyboard</code>文件软件界面, 整个软件所有界面(重量级)</li>
+<li><code>Xib</code>描述软件界面(轻量级)</li>
+<li>两者都使用Interface Builder工具来编辑(就是Xcode的界面)</li>
+<li>加载Xib有两种:</li>
+</ul>
+<blockquote>
+<p> NSArray *objs = [bundle loadNibNamed:@”AppView” owner:nil options:nil];</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div></pre></td><td class="code"><pre><div class="line">- (void)viewDidLoad &#123;</div><div class="line">    [super viewDidLoad];</div><div class="line">    //添加应用信息,</div><div class="line">    </div><div class="line">    //应用尺寸, 宽度高度</div><div class="line">    int totalColumns = 3;</div><div class="line">    CGFloat appW = 85;</div><div class="line">    CGFloat appH = 90;</div><div class="line">    //计算view之间的间隙 = (屏幕宽度self.view - 3 * 应用的宽度view) / 4</div><div class="line">    CGFloat marginX = (self.view.frame.size.width - 3 * 85) / 4;</div><div class="line">    CGFloat marginY = 35;</div><div class="line">    </div><div class="line">    for (int index = 0; index &lt; self.apps.count; index++) &#123;</div><div class="line">        </div><div class="line">        </div><div class="line">        </div><div class="line">        //1. 创建view</div><div class="line">        NSBundle *bundle = [NSBundle mainBundle];</div><div class="line">        //读取Xid文件, 会创建Xid中的所有对象, 并且按顺序放到数组中返回</div><div class="line">        NSArray *objs = [bundle loadNibNamed:@&quot;AppView&quot; owner:nil options:nil];</div><div class="line">        UIView *appView = [objs lastObject];</div><div class="line">        </div><div class="line">        //2. 添加view</div><div class="line">        [self.view addSubview:appView];</div><div class="line">        </div><div class="line">        </div><div class="line">        //3. 设置frame,  计算x y</div><div class="line">        int row = index / totalColumns;</div><div class="line">        int col = index % totalColumns;</div><div class="line">        CGFloat appX = marginX + (appW + marginX) * col;</div><div class="line">        CGFloat appY = marginY + (appH + marginY) * row;</div><div class="line">        appView.frame = CGRectMake(appX, appY, appW, appH);</div><div class="line">        </div><div class="line">        //4. 设置数据  图片 名称   appView上三个子控件</div><div class="line">        AppModel *app = self.apps[index];</div><div class="line">        //UIImageView *iconView = appView.subviews[0];</div><div class="line">        UIImageView *iconView = (UIImageView *)[appView viewWithTag:10];</div><div class="line">        iconView.image = [UIImage imageNamed:app.icon];</div><div class="line">        </div><div class="line">        //UILabel *nameLbale = appView.subviews[1];</div><div class="line">        UILabel *nameLabel = (UILabel *)[appView viewWithTag:20];</div><div class="line">        nameLabel.text = app.name;</div><div class="line">        </div><div class="line">        </div><div class="line">        /*</div><div class="line">        //1. 创建子view</div><div class="line">        UIView *appView = [[UIView alloc] init];</div><div class="line">        //设置背景色</div><div class="line">        //appView.backgroundColor = [UIColor redColor];</div><div class="line">        </div><div class="line">        //2. 计算应用相对于父控件的坐标, 应该知道行号和列号, 列号应该是index mod(3) ,行号为序号 / 3</div><div class="line">        </div><div class="line">        //总列数</div><div class="line">        int totalColumns = 3;</div><div class="line">        </div><div class="line">        </div><div class="line">        int row = index / totalColumns;</div><div class="line">        int col = index % totalColumns;</div><div class="line">        CGFloat appX = marginX + (appW + marginX) * col;</div><div class="line">        CGFloat appY = marginY + (appH + marginY) * row;</div><div class="line">        </div><div class="line">        //3. 添加子view到父控件上</div><div class="line">        appView.frame = CGRectMake(appX, appY, appH, appW);</div><div class="line">        [self.view addSubview:appView];</div><div class="line">        </div><div class="line">        </div><div class="line">        </div><div class="line">        AppModel *appInfo = self.apps[index];</div><div class="line">        //4. 添加内部小控件 图片 名字 和下载按钮</div><div class="line">        UIImageView *iconView = [[UIImageView alloc] init];</div><div class="line">        CGFloat iconW = 45;</div><div class="line">        CGFloat iconH = 45;</div><div class="line">        CGFloat iconX = (appW - iconW) * 0.5;</div><div class="line">        CGFloat iconY = 0;</div><div class="line">        iconView.frame = CGRectMake(iconX, iconY, iconW, iconH);</div><div class="line">        //iconView.backgroundColor = [UIColor blueColor];</div><div class="line">        iconView.image = [UIImage imageNamed:appInfo.icon];</div><div class="line">        [appView addSubview:iconView];</div><div class="line">        </div><div class="line">        UILabel *nameLabel = [[UILabel alloc] init];</div><div class="line">        CGFloat nameW = appW;</div><div class="line">        CGFloat nameH = 20;</div><div class="line">        CGFloat nameX = 0;</div><div class="line">        CGFloat nameY = iconY + iconH;</div><div class="line">        nameLabel.frame = CGRectMake(nameX, nameY, nameW, nameH);</div><div class="line">        //nameLabel.backgroundColor = [UIColor blueColor];</div><div class="line">        nameLabel.text = appInfo.name;</div><div class="line">        //设置字体大小</div><div class="line">        nameLabel.font = [UIFont systemFontOfSize:13];</div><div class="line">        nameLabel.textAlignment = NSTextAlignmentCenter;</div><div class="line">        [appView addSubview:nameLabel];</div><div class="line"></div><div class="line"></div><div class="line">        UIButton *downBtn= [[UIButton alloc] init];</div><div class="line">        CGFloat btnX = 10;</div><div class="line">        CGFloat btnY = nameY + nameH;</div><div class="line">        CGFloat btnW = appW - 2 * btnX;</div><div class="line">        CGFloat btnH = 20;</div><div class="line">        downBtn.frame = CGRectMake(btnX, btnY, btnW, btnH);</div><div class="line">        //downBtn.backgroundColor = [UIColor blueColor];</div><div class="line">        [downBtn setBackgroundImage:[UIImage imageNamed:@&quot;buttongreen&quot;] forState:UIControlStateNormal];</div><div class="line">        [downBtn setBackgroundImage:[UIImage imageNamed:@&quot;buttongreen_highlighted&quot;] forState:UIControlStateHighlighted];</div><div class="line">        [downBtn setTitle:@&quot;点击下载&quot; forState:UIControlStateNormal];</div><div class="line">        </div><div class="line">        //按钮设置字体属性</div><div class="line">        downBtn.titleLabel.font = [UIFont systemFontOfSize:13]; //按钮内部有label和image</div><div class="line">        </div><div class="line">        [appView addSubview:downBtn];</div><div class="line">         </div><div class="line">         */</div><div class="line"></div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>##3.3. Xib的封装步骤</p>
+<blockquote>
+<p>如果View内部的子控件太多, 一般考虑自定义View, 把内部子控件的创建屏蔽起来</p>
+</blockquote>
+<ol>
+<li>新建一个继承UIView的自定义View, 假设类名为AppView</li>
+<li>新建一个AppView.Xib(建议Xid的名称和新建类相同),用来描述AppView的内部结构(AppView *appView = [[AppView alloc] init]; appView.frame = CGRectMake(x, x, x, x); …; [appView addSubview:imageView]; return @[appView, ..); 最终返回控件数组)</li>
+<li>修改UIView的类型为AppView真实类型</li>
+<li>将内部子空间与AppView进行属性连线</li>
+<li>AppView提供一个模型属性, 重写模型的set方法, 因为在set方法中可以拿到外界传递的模型数据</li>
+<li>把模型数据拆开, 分别设置数据到对应的子控件中.</li>
+<li>补充: 提供一个创建AppView的雷芳, 将读取Xib的代码屏蔽起来</li>
+</ol>
+<p>##3.4. MVC<br>Model(数据模型) View(视图) Control(控制器)</p>
+<p>#4. UIScrollView</p>
+<blockquote>
+<p>内容超出屏幕的显示范围, 需要使用<code>UIScrollView</code>   </p>
+</blockquote>
+<ol>
+<li>将需要演示的内容加入<code>UIScrollView</code></li>
+<li>设置UIScrollView的contentSize属性, 告诉UIScrollView所有内容尺寸</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">UIScrollView无法滚动的原因</div><div class="line">1. 没有设置contentSize</div><div class="line">2. scrollEnabled = NO</div><div class="line">3. 没有接收到触摸事件 : userInteractionEnabled = NO</div><div class="line">4. 没有取消autolayout功能 </div><div class="line">等</div></pre></td></tr></table></figure>
+<p>##4.1. UIScrollView重要属性</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">@property(nonatomic) CGPoint contentOffset; </div><div class="line">这个属性用来表示UIScrollView滚动的位置(滚动时, 图片的左上角和屏幕左上角之间的相对位置坐标)</div><div class="line"></div><div class="line">@property(nonatomic) CGSize contentSize; </div><div class="line">这个属性用来表示UIScrollView内容的尺寸，滚动范围（能滚多远）</div><div class="line">frame.size表示可视范围(在屏幕上显示的范围), contentSize整个滚动的区域范围</div><div class="line"></div><div class="line"></div><div class="line">@property(nonatomic) UIEdgeInsets contentInset; </div><div class="line">这个属性能够在UIScrollView的4周增加额外的滚动区域</div><div class="line"></div><div class="line">//其他常用属性</div><div class="line">@property(nonatomic) BOOL bounces;</div><div class="line">设置UIScrollView是否需要弹簧效果</div><div class="line"></div><div class="line">@property(nonatomic,getter=isScrollEnabled) BOOL scrollEnabled; </div><div class="line">设置UIScrollView是否能滚动</div><div class="line"></div><div class="line">@property(nonatomic) BOOL showsHorizontalScrollIndicator;</div><div class="line">是否显示水平滚动条</div><div class="line"></div><div class="line">@property(nonatomic) BOOL showsVerticalScrollIndicator;</div><div class="line">是否显示垂直滚动条</div></pre></td></tr></table></figure>
+<p><img src="http://byson.img42.wal8.com/img42/434369_20140909170142/141430458953.png" alt="size"></p>
+<p>##4.2. UIScrollView的代理（delegate）</p>
+<blockquote>
+<p>代理相当于监听器</p>
+<p>按钮点击时间使用addTarget</p>
+</blockquote>
+<ul>
+<li>很多时候，我们想在UIScrollView正在滚动 或 滚动到某个位置 或者 停止滚动 时做一些特定的操作</li>
+<li>要想完成上述功能，前提条件就是能够监听到UIScrollView的整个滚动过程</li>
+<li>当UIScrollView发生一系列的滚动操作时， 会<code>自动通知它的代理（delegate）对象</code>，给它的代理发送相应的消息，让代理得知它的滚动情况</li>
+</ul>
+<p><img src="http://byson.img42.wal8.com/img42/434369_20140909170142/141430458997.png" alt="delegation"><br><img src="http://byson.img42.wal8.com/img42/434369_20140909170142/141430459234.png" alt="vie"></p>
+<p>代理设计的用途 :</p>
+<ol>
+<li>监听思想(一个对象听见另一个对象的状态)</li>
+<li>通知思想(一个对象状态改变, 想通知另一个对象)</li>
+</ol>
+<blockquote>
+<p>当用户在UIScrollView身上使用捏合手势时，UIScrollView会调用代理的viewForZoomingInScrollView:方法，这个方法返回的控件就是需要进行缩放的控件</p>
+</blockquote>
+</div></article></div></section><footer><div class="paginator"><a href="/2014/11/02/2014-11-02-A_Wearable_System/" class="prev">PREV</a><a href="/2014/10/28/2014-10-28-Python常用用法总结_自用/" class="next">NEXT</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

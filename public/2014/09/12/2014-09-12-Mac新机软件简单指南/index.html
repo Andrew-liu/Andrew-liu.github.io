@@ -1,0 +1,67 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Mac新机软件简单指南 · Snow Memory | Andrew Liu</title><meta name="description" content="Mac新机软件简单指南 - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">Mac新机软件简单指南</h1><div class="post-info">Sep 12, 2014</div><div class="post-content"><p>Mac桌面生存指南请看我好朋友的一个博文<br><a href="https://www.zybuluo.com/rulerstorm/note/29343" target="_blank" rel="external">Mac攻略</a></p>
+<p>#1. 安装homebrew</p>
+<p>主要用于安装命令行导向型工具</p>
+<p><a href="http://brew.sh/index_zh-cn.html" target="_blank" rel="external">homebrew</a></p>
+<blockquote>
+<p>更换淘宝ruby</p>
+</blockquote>
+<p><code>如果使用官方安装教程一直显示失败, 则请使用翻墙工具</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">//安装成功后, 请使用brew命令来安装软件</div><div class="line">brew install wget</div><div class="line">brew install curl</div><div class="line">brew install openssl</div></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>##1.1. 安装homebrew-cask<br>主要用于安装窗口导向型的软件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">brew tap phinze/homebrew-cask</div><div class="line">brew install brew-cask</div><div class="line">brew cask install google-chrome</div></pre></td></tr></table></figure>
+<p>#2. 安装wget，curl</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">brew install curl</div><div class="line">brew install wget</div></pre></td></tr></table></figure>
+<p>各种编程语言的API查询工具</p>
+<p><a href="http://kapeli.com/dash" target="_blank" rel="external">dash</a></p>
+<p>#3. 安装zsh 和 oh my zsh</p>
+<blockquote>
+<p>brew install zsh</p>
+</blockquote>
+<p>运行命令<code>wget --no-check-certificate http://install.ohmyz.sh -O - | sh</code></p>
+<p>#4. 安装日常软件</p>
+<ul>
+<li>日常工具可以直接谷歌搜索一下,  直接下载官网版本安装</li>
+</ul>
+<p>qq 迅雷 Evernote chrome（红杏,翻墙使用） 百度云<br>afread(神器)<br>popclip(安装插件,收费请自行搜索破解版或购买)</p>
+<p>#5. 安装Xcode</p>
+<p><a href="https://developer.apple.com/xcode/downloads/" target="_blank" rel="external">Xcode的官网</a></p>
+<p>#6. 生成ssh密钥使用github</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">mkdir .ssh  //根目录下</div><div class="line">cd .ssh</div><div class="line">ssh-keygen -t rsa -C &quot;your_email@youremail.com&quot; </div><div class="line">//直接进行回车,不需要输入路径</div><div class="line">//加入ssh密钥到github</div><div class="line">//测试</div><div class="line">ssh -T git@github.comhub中</div></pre></td></tr></table></figure>
+<p>#7. 安装pip包管理</p>
+<p>pip是一个安装python库很方便的东西，类似yum，pip search pip install，如果没wget的话，就用curl -O 另外也可以考虑用easy_install代替pip</p>
+<ul>
+<li>安装 easy_install</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ wget http://python-distribute.org/distribute_setup.py</div><div class="line">$ sudo python distribute_setup.py</div></pre></td></tr></table></figure>
+<ul>
+<li>安装 pip</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo easy_install pip</div></pre></td></tr></table></figure>
+<p>#8. 安装mysql</p>
+<p>安装mysql</p>
+<blockquote>
+<p>brew install mysql</p>
+</blockquote>
+<p>启动mysql</p>
+<blockquote>
+<p>mysql.server start</p>
+</blockquote>
+<p>将mysql设置为自动运行</p>
+<blockquote>
+<p>ln -sfv /usr/local/opt/mysql/*.plist ~/Library/LaunchAgents</p>
+</blockquote>
+<p>加载mysql</p>
+<blockquote>
+<p>launchctl load ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist</p>
+</blockquote>
+<p>进入mysql</p>
+<blockquote>
+<p>mysql -uroot</p>
+</blockquote>
+<p>#配置ruby和jekyll</p>
+<p>参见我的博文<a href="http://andrewliu.tk/blog/%E5%9C%A8ubuntu14.04%E4%B8%8A%E5%AE%89%E8%A3%85Jekyll.html" target="_blank" rel="external">在ubuntu上安装jekyll</a></p>
+<p>#下载.dotfiles</p>
+<p>dotfiles是很多程序员，将自己的配置环境放在网上。使得未来避免很多重复工作。一般建议找一个与自己类似的。笔者参考zan5hin的修改</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">cd ~/. #进入根目录</div><div class="line">git clone https://github.com/zanshin/dotfiles.git ~/.dotfiles</div><div class="line">cd ~/.dotfiles</div><div class="line">git submodule init </div><div class="line">git submodule update</div></pre></td></tr></table></figure>
+</div></article></div></section><footer><div class="paginator"><a href="/2014/09/14/2014-09-14-HTML5学习笔记（一）/" class="prev">PREV</a><a href="/2014/09/09/2014-09-09-在ubuntu14.04上安装Jekyll/" class="next">NEXT</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

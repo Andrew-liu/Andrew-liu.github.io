@@ -1,0 +1,46 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Virtualenv简明教程 · Snow Memory | Andrew Liu</title><meta name="description" content="Virtualenv简明教程 - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">Virtualenv简明教程</h1><div class="post-info">Dec 8, 2014</div><div class="post-content"><blockquote>
+<p>virtualenv is a tool to create isolated Python environments.</p>
+</blockquote>
+<p><code>virtualenv</code>通过创建独立Python开发环境的工具, 来解决依赖、版本以及间接权限<br>问题. 比如一个项目依赖Django1.3 而当前全局开发环境为Django1.7, 版本跨度过大, 导致不兼容使项目无法正在运行, 使用virtualenv可以解决这些问题.</p>
+<blockquote>
+<p><code>virtualenv</code>创建一个拥有自己安装目录的环境, 这个环境不与其他虚拟环境共享库, 能够方便的管理python版本和管理python库</p>
+</blockquote>
+<a id="more"></a>
+<p>#1. 安装Virtualenv</p>
+<p>使用<code>pip</code>安装Virtualenv, 使用过python的都应该知道<code>pip</code>包管理神器吧, 即使不知道, 网站也有大把的教程, 不过推荐查看<a href="https://pip.pypa.io/en/latest/installing.html" target="_blank" rel="external">官方安装指南</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ pip install virtualenv</div><div class="line">//或者由于权限问题使用sudo临时提升权限</div><div class="line">$ sudo pip install virtualenv</div></pre></td></tr></table></figure>
+<p>#2. virtualenv基本使用</p>
+<p>现在开始使用virtualenv管理python环境</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">➜  Test git:(master) ✗ virtualenv ENV  #创建一个名为ENV的目录, 并且安装了ENV/bin/python, 创建了lib,include,bin目录,安装了pip</div><div class="line">New python executable in </div><div class="line">Installing setuptools, pip...done.</div><div class="line">➜  Test git:(master) ✗ cd ENV</div><div class="line">➜  ENV git:(master) ✗ ll</div><div class="line">drwxr-xr-x  14 andrew_liu  staff  476 12  8 08:49 bin</div><div class="line">drwxr-xr-x   3 andrew_liu  staff  102 12  8 08:49 include</div><div class="line">drwxr-xr-x   3 andrew_liu  staff  102 12  8 08:49 lib</div></pre></td></tr></table></figure>
+<ul>
+<li><code>lib</code>,所有安装的python库都会放在这个目录中的<code>lib/pythonx.x/site-packages/</code>下</li>
+<li><code>bin</code>,<code>bin/python</code>是在当前环境是使用的python解释器</li>
+</ul>
+<blockquote>
+<p>如果在命令行中运行<code>virtualenv --system-site-packages ENV</code>, 会继承<code>/usr/lib/python2.7/site-packages</code>下的所有库, 最新版本virtualenv把把访问全局<code>site-packages</code>作为默认行为<br>                        default behavior.</p>
+</blockquote>
+<p>##2.1. 激活virtualenv</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">#ENV目录下使用如下命令</div><div class="line">➜  ENV git:(master) ✗ source ./bin/activate  #激活当前virtualenv</div><div class="line">(ENV)➜  ENV git:(master) ✗ #注意终端发生了变化</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">#使用pip查看当前库</div><div class="line">(ENV)➜  ENV git:(master) ✗ pip list</div><div class="line">pip (1.5.6)</div><div class="line">setuptools (3.6)</div><div class="line">wsgiref (0.1.2) #发现在只有这三个</div><div class="line">pip freeze  #显示所有依赖</div><div class="line">pip freeze &gt; requirement.txt  #生成requirement.txt文件</div><div class="line">pip install -r requirement.txt  #根据requirement.txt生成相同的环境</div></pre></td></tr></table></figure>
+<p>##2.2. 关闭virtualenv</p>
+<p>使用下面命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ deactivate</div></pre></td></tr></table></figure>
+<p>##2.3. 指定python版本</p>
+<p>可以使用<code>-p PYTHON_EXE</code>选项在创建虚拟环境的时候指定python版本<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">#创建python2.7虚拟环境</div><div class="line">➜  Test git:(master) ✗ virtualenv -p /usr/bin/python2.7 ENV2.7</div><div class="line">Running virtualenv with interpreter /usr/bin/python2.7</div><div class="line">New python executable in ENV2.7/bin/python</div><div class="line">Installing setuptools, pip...done.</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">#创建python3.4虚拟环境</div><div class="line">➜  Test git:(master) ✗ virtualenv -p /usr/local/bin/python3.4 ENV3.4</div><div class="line">Running virtualenv with interpreter /usr/local/bin/python3.4</div><div class="line">Using base prefix &apos;/Library/Frameworks/Python.framework/Versions/3.4&apos;</div><div class="line">New python executable in ENV3.4/bin/python3.4</div><div class="line">Also creating executable in ENV3.4/bin/python</div><div class="line">Installing setuptools, pip...done.</div></pre></td></tr></table></figure>
+<blockquote>
+<p>到此已经可以解决python版本冲突问题和python库不同版本的问题</p>
+</blockquote>
+<p>#3. 其他</p>
+<p>##3.1. 生成可打包环境</p>
+<p>某些特殊需求下,可能没有网络, 我们期望直接打包一个ENV, 可以解压后直接使用, 这时候可以使用<code>virtualenv -relocatable</code>指令将ENV修改为可更改位置的ENV</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">#对当前已经创建的虚拟环境更改为可迁移</div><div class="line">➜  ENV3.4 git:(master) ✗ virtualenv --relocatable ./</div><div class="line">Making script ./bin/easy_install relative</div><div class="line">Making script ./bin/easy_install-3.4 relative</div><div class="line">Making script ./bin/pip relative</div><div class="line">Making script ./bin/pip3 relative</div><div class="line">Making script ./bin/pip3.4 relative</div></pre></td></tr></table></figure>
+<p>##3.2. 获得帮助</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ virtualenv -h</div></pre></td></tr></table></figure>
+<p>当前的ENV都被修改为相对路径, 可以打包当前目录, 上传到其他位置使用</p>
+<blockquote>
+<p>这并不能使虚拟环境跨平台使用</p>
+</blockquote>
+<p>#4. 参考链接</p>
+<p><a href="http://virtualenv.readthedocs.org/en/latest/virtualenv.html" target="_blank" rel="external">virtualenv官方文档</a></p>
+</div></article></div></section><footer><div class="paginator"><a href="/2014/12/10/Python-Socket网络编程/" class="prev">PREV</a><a href="/2014/12/06/IOS之控制器数据传递和代理总结/" class="next">NEXT</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>

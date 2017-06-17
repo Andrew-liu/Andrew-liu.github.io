@@ -1,0 +1,117 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> UNIX高级环境编程读书笔记 · Snow Memory | Andrew Liu</title><meta name="description" content="UNIX高级环境编程读书笔记 - Andrew Liu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://andrewliu.in/atom.xml" title="Snow Memory | Andrew Liu"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/dinosaurliu" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/Andrew-liu" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/about" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">UNIX高级环境编程读书笔记</h1><div class="post-info">Oct 31, 2015</div><div class="post-content"><p>本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh" target="_blank" rel="external">署名-非商业用途-保持一致</a>的创作共用协议.</p>
+<blockquote>
+<p>书只看了一半就扔在学校了, 等过段时间回学校再继续看吧, 经典图书, 墙裂推荐!</p>
+</blockquote>
+<h2 id="文件系统"><a href="#文件系统" class="headerlink" title="文件系统"></a>文件系统</h2><blockquote>
+<p>对文件操作的进程</p>
+</blockquote>
+<p><strong>文件共享</strong>:每个进程在进程表中都有一个记录项,记录项中包含一张<code>打开文件描述符表</code>, 每个描述符占一行, 并有一个指向<code>内核中文件表项的指针</code>. 内核为所有开发打开文件位置一张文件表. 每个打开文件都有一个<code>i-node结构</code>.</p>
+<a id="more"></a>
+<blockquote>
+<p>书中有个描述很详细的图, 没能摘下来</p>
+</blockquote>
+<p>文件空洞是由所设置的偏移量超过文件尾端, 并写入了某些数据后造成</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">#include &lt;unistd.h&gt;</div><div class="line">off_t lseek(int fd, off_t offset, int whence);</div><div class="line">int truncate(const char* pathname, off_t length);</div><div class="line">int fruncate(int fd, off_t length);</div></pre></td></tr></table></figure>
+<p>i节点的所有信息都是与文件的实际内容分开存放的.其中更改文件的访问权限, 更改用户ID, 更改链接数等都会修改i节点, write函数操作则更改文件的实际内容.</p>
+<h2 id="标准I-O库"><a href="#标准I-O库" class="headerlink" title="标准I/O库"></a>标准I/O库</h2><p>当用标准I/O库打开或者创建一个文件时, 已经使一个流与一个文件相关联.</p>
+<p>使用fopen打开一个流时, 返回值FILE指针包含了<code>标准I/O</code>库为管理流需要的所有信息(<code>实际I/O的文件描述符, 指向用于该流缓冲区的指针, 缓冲区的长度, 当前缓冲区的字节数和出错标志等</code>)</p>
+<p>标准I/O库三种类型的缓冲:</p>
+<ul>
+<li>全缓冲. 填满I/O缓冲区后才进行实际的I/O操作(磁盘文件通常使用全缓冲)</li>
+<li>行缓冲. 当在输入和输出中遇到换行符时, 标准I/O库执行I/O操作(终端通常使用行缓冲)</li>
+<li>不带缓冲. 标准I/O不对字符进行缓冲存储(标准错误流stderr通常不带缓冲)</li>
+</ul>
+<p>标准I/O库的不足是效率不高, 每次fgets和fputs通常需要赋值两次数据, <code>一次是内核和标准I/O缓冲区之间, 第二次是在标准I/O缓冲区和用户程序的行缓冲区之间</code></p>
+<h2 id="进程环境"><a href="#进程环境" class="headerlink" title="进程环境"></a>进程环境</h2><p>当内核执行c程序main函数之前, 先调用一个<code>特殊的启动例程</code>, 可执行文件将此启动例程指定为程序的起始地址. 启动例程从内核取得命令行参数和环境变量, 然后调用main函数</p>
+<p><strong>C程序的存储空间布局</strong></p>
+<ul>
+<li>正文段: CPU执行的机器指令部分(<code>由exec从程序文件中读入</code>), 通常是可共享的</li>
+<li>初始化数据段: 数据段包含程序中需明确地赋处置的变量</li>
+<li>未初始化数据段: 程序执行前, 内核将此段数据初始化为0或者空指针</li>
+<li><code>栈</code>: 自动变量及每次函数调用时所需保存的信息都存放在栈上. 每次函数调用时, 其返回地址及调用者环境信息都存放在栈上. <code>递归函数每次调用自身, 都会用一个新的栈帧</code>. <strong>栈从高地址向低地址方向增长</strong></li>
+<li><code>堆</code>: 对中进行动态存储分配(位于未初始化数据段和栈之间). <code>使用malloc分配动态内存空间使用sbrk系统调用</code></li>
+<li>环境表和命令行参数: 位于进程存储空间的顶部(栈的上面)</li>
+</ul>
+<h2 id="进程控制"><a href="#进程控制" class="headerlink" title="进程控制"></a>进程控制</h2><ul>
+<li>进程ID为0的是调用进程(也称交换进程), 是内核的一部分, 不执行磁盘上的程序. <code>系统进程</code></li>
+<li>进程ID为1的是init进程(Mac上是launchd)系统子句结束后由内核调用, 读取与系统有关的初始化文件, 并将系统引导到某状态.<code>用户进程</code></li>
+</ul>
+<blockquote>
+<p>fork()创建子进程, 子进程获得父进程数据空间、堆和栈的<code>副本</code>(不是共享), 父子进程<code>共享正文段</code>. 父子进程执行的先后顺序由系统调度决定. 父子进程每个相同的打开的描述符共享一个文件表项</p>
+</blockquote>
+<p>父进程和子进程的区别:</p>
+<ol>
+<li>fork后的返回值不同</li>
+<li>父子进程的进程ID不同</li>
+<li>子进程不继承父进程设置的文件锁</li>
+<li>子进程的未处理的信号集被设置为空集(<code>但子进程会继承父进程的信号处理方式</code>)</li>
+<li>子进程的未处理闹钟被清除</li>
+</ol>
+<p><strong>vfork和fork的主要区别</strong>在于<code>vfork保证子进程先运行</code>, 在vfork调用exec或exit后父进程(子进程运行时, 处理休眠)才可能被调度运行. fork运行先后顺序由系统调度决定.</p>
+<blockquote>
+<p>fork子进程常执行exec函数,<br><code>exec函数将原先设置为要捕捉的信号都更改为默认动作</code><br>system函数的执行过程类似与shell中命令的处理, system()创建子进程exec逻辑, 并进行信号处理, 父进程用于资源的回收</p>
+</blockquote>
+<ul>
+<li>父进程先于子进程终止, init进程会收养这些子进程. 一个进程终止, 内核会组个检查所有活动进程, 判断是否为正要终止进程的子进程, 如果是就把该子进程的父进程ID更改为1</li>
+<li>一个子进程终止, 但父进程未对其进程资源回收的进程称为<code>僵尸进程</code></li>
+<li>当进程调用一种exec函数时, 该进程执行的程序完全替换为新程序,<code>但在exec前后实际用户ID和实际组ID保持不变</code></li>
+</ul>
+<p>使用waitpid回收子进程的资源</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//waitpid的非阻塞版本</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/wait.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span> </span>&#123;</div><div class="line">    <span class="keyword">pid_t</span> ret_pid;</div><div class="line">    <span class="keyword">int</span> status;</div><div class="line">    ret_pid = waitpid(<span class="number">-1</span>, &amp;status, WNOHANG);</div><div class="line">    <span class="comment">/*</span></div><div class="line">        -1表示等待任一子进程, WNOHANG将函数置为非阻塞.</div><div class="line">        ret_pid = -1 表示当前进程无子进程</div><div class="line">        ret_pid = 0 表示子进程尚未结束</div><div class="line">        ret_pid = XXX 表示回收资源的子进程的进程ID</div><div class="line">     */</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="信号"><a href="#信号" class="headerlink" title="信号"></a>信号</h2><blockquote>
+<p>信号属于软件中断. </p>
+<p>在网络编程中, 使用阻塞函数时(描述可能不切当, 使用阻塞描述符调用这种函数时), 阻塞期间捕捉到信号, <code>系统调用</code>会被中断不在继续执行, 该系统调用返回出错, 其error设置为EINTR(<code>处理这种情况, 我们希望重新启动</code>)</p>
+</blockquote>
+<p><strong>常见信号</strong>:</p>
+<ul>
+<li>SIGABRT: 由abort产生</li>
+<li>SIGALRM: alarm设置的定时器超时产生的信号</li>
+<li>SIGINT: 由Ctrl + C产生的中断信号</li>
+<li>SIGQUIT: 由Ctrl + \产生的退出信号</li>
+<li>SIGTSTP: 由Ctrl + Z产生的挂起信号</li>
+<li>SIGURG: 网络编程中接收到外带数据产生的信号(详见UNP卷一)</li>
+</ul>
+<p><strong>信号的处理:</strong></p>
+<ul>
+<li>忽略信号, SIGKILL和SIGSTOP不能忽略(不能被捕捉到信号, <code>为内核和超级用户提供可靠的进程终止方法</code>)</li>
+<li>捕捉信号, 调用某用户函数</li>
+<li>执行系统默认行为</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">#include &lt;signal.h&gt;</div><div class="line">void (*signal(int signo, void (*func)(int))) (int);</div><div class="line">/*</div><div class="line">    函数名为signal, 参数为int型signo信号, func是一个参数为int返回值为void的函数指针</div><div class="line">    signal的返回值为参数为int, 返回值为void的函数指针. 若函数成功,返回以前的信号处理函数, 若出错返回SIG_ERR</div><div class="line"> */</div><div class="line"> </div><div class="line">// 使用sigaction函数代替signal</div><div class="line"># include &lt;signal.h&gt;</div><div class="line">typedef void Sigfunc(int); </div><div class="line">Sigfunc* singal(int signo, Sigfunc* func) &#123;</div><div class="line">    struct sigaction act, oact;</div><div class="line">    act.sa_handler = func; //填装新的信号处理函数</div><div class="line">    sigemptyset(&amp;act.sa_mask); //使用此函数将将要屏蔽的信号集合置空</div><div class="line">    act.sa_flags = 0;</div><div class="line">    if(signo == SIGALAM) &#123;</div><div class="line">#ifdef SA_INTERRUPT</div><div class="line">        act.sa_flags |= SA_INTERRUPT;</div><div class="line">#endif</div><div class="line">    &#125; else &#123;</div><div class="line">        act.sa_flags |= SA_RESTART;  //信号中断系统调用时, 自动重启动</div><div class="line">    &#125;</div><div class="line">    if(sigaction(signo, &amp;act, &amp;oact) &lt; 0)&#123;</div><div class="line">        return SIG_ERR;</div><div class="line">    &#125;</div><div class="line">    return oact.sa_handler; //返回原来的信号处理函数</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="线程"><a href="#线程" class="headerlink" title="线程"></a>线程</h2><blockquote>
+<p>线程包含执行环境必须的信息: 线程ID(<code>只有在所属进程上下文中才有意义</code>), 一组寄存器值, 栈, 调度优先级, 信号屏蔽字, errno变量, 线程私有数据</p>
+</blockquote>
+<p>线程的引入使<code>进程在某个时刻(广义)能够做不止一件事</code></p>
+<ul>
+<li>多个线程可以自动地访问相同的存储地址空间和文件描述符</li>
+<li>多个线程的引入方便<code>并发</code>, 能够更好的利用多核CPU的特性</li>
+<li>多个线程之间切换的代价远小于多个进程</li>
+</ul>
+<p><strong>线程退出方式:</strong></p>
+<ol>
+<li>线程从启动例程中返回, 返回值是线程的退出码</li>
+<li>线程可以被同一个进程中的其他线程取消</li>
+<li>线程调用<code>pthread_exit</code></li>
+</ol>
+<h3 id="线程同步"><a href="#线程同步" class="headerlink" title="线程同步"></a>线程同步</h3><p>线程的同步问题是因为多个线程读取或修改变量, 导致数据的不一致性, 常见的方法是使用<code>锁</code></p>
+<p><strong>5种基本的同步机制:</strong></p>
+<ul>
+<li>muetx(互斥量)本质是一把锁, 访问共享资源前对互斥量加锁, 访问完后释放锁. 多个线程试图再次对互斥量加锁的时候, 线程会被阻塞(阻塞队列), 直到互斥量被释放, 阻塞线程变为可执行状态(抢锁)</li>
+<li>reader-writer lock(读写锁), 是一种读者写者同步模式的演化, 多个进程可以同时占有读模式的读写锁(处理读加锁状态时, 视图读加锁的线程可以得到访问权, 视图写加锁的线程会阻塞), 但只有一个进程可以占有写模式的读写锁(处于写加锁状态时, 所有视图获得锁的线程都会被阻塞)</li>
+<li>condition(条件变量), 条件变量常与互斥量搭配使用, 使线程以无竞争的方式等待特定的条件发生.<code>条件本身由互斥量保护</code>. 线程首先锁住互斥量, 然后把锁住的互斥量传给函数<code>pthread_cond_wait</code>, 函数然后自动把调用线程放到等待条件的线程列表上, <code>对互斥量解锁</code>. 直到<code>pthread_cond_wait</code>返回时, 互斥量再次被锁. <code>pthread_cond_singal</code>用于至少唤醒一个等待某条件满足的线程, <code>pthread_cond_broadcast</code>则唤醒等待某条件的所有线程.</li>
+<li>spin lock(自旋锁). <code>试图获取自旋锁失败后, 不像mutex通过休眠使进程阻塞, 而是在获取锁之前一直处于忙等(自旋, 线程自旋锁变为可用时, 单核CPU无法做任何事情)阻塞状态</code>. 常用于处理处理耗时短, 占用锁的时间少, 线程不希望重新调度</li>
+<li>barrier(屏障). </li>
+</ul>
+<h3 id="重入"><a href="#重入" class="headerlink" title="重入"></a>重入</h3><blockquote>
+<p>如果一个函数在相同的时间点可以被多个线程安全地调用, 就称该函数是<code>线程安全</code>的. 如果一个函数对多个线程是可重入的, 则这个函数就是线程安全的.</p>
+</blockquote>
+<p><strong>不可重入的函数特点</strong>: </p>
+<ol>
+<li>使用了静态数据结构</li>
+<li>调用malloc或free</li>
+<li>标准I/O函数</li>
+</ol>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li>UNIX高级环境编程</li>
+</ul>
+</div></article></div></section><footer><div class="paginator"><a href="/2015/11/07/Buildout使用小结/" class="prev">PREV</a><a href="/2015/10/25/段错误-Segmentation-fault-产生原因及调试/" class="next">NEXT</a></div><div class="copyright"><p>© 2014 - 2017 <a href="http://andrewliu.in">Andrew Liu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-58158116-2",'auto');ga('send','pageview');</script></body></html>
