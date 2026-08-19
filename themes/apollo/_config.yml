@@ -1,0 +1,22 @@
+menu:
+    Blog: /
+    Archive: /archives/
+    Weibo: http://weibo.com/dinosaurliu
+    GitHub: https://github.com/Andrew-liu
+    About: /about
+    Rss: /atom.xml
+
+favicon: /favicon.png
+logo: /favicon.png
+
+# Comment
+# e.g disqus: seansun
+disqus:
+duoshuo:
+
+# Analytics
+# google-analytics:
+ga: UA-58158116-2
+
+# Copyright Infomation
+startyear: 2014
