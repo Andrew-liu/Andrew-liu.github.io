@@ -13,8 +13,4 @@ date: 2016-09-16 16:43:46
 
 > 已经逐渐走上了造轮子之路, 开始造一些拙劣的轮子.
 
-当前用的VPS:
-
-<a href="https://www.vultr.com/?ref=6921418-3B"><img src="https://www.vultr.com/media/banner_1.png" width="728" height="90"></a>
-
 ---
