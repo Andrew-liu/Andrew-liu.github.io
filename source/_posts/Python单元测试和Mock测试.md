@@ -158,7 +158,7 @@ if __name__ == '__main__':
 - 我们首先集成TestCase创建了一个单元测试
 - `# 1`位置, 我们通过mock提供的函数给obj的method方法设置返回值(可以看到类中并不包含method方法). 最后通过断言来判断返回值等于我们通过`MagicMock`设置的返回值
 - `# 2`位置, 我们通过mock提供的装饰器, `patch()可以作为函数做装饰, 类装饰器, 上下文管理器` 将module中的foo函数给mock掉, `并且并mock的函数生成的Mock对象作为类成员函数参数传入`,  指定了foo函数的返回值, 并通过了断言测试
-- `# 3`位置, 将patch()作为一个上下文管理, 关于上下文管理器可以看我另一篇文章[Python奇技淫巧](http://andrewliu.in/2015/11/14/Python%E5%A5%87%E6%8A%80%E6%B7%AB%E5%B7%A7/#with的魔力), 用法和作为装饰器基本类似
+- `# 3`位置, 将patch()作为一个上下文管理, 关于上下文管理器可以看我另一篇文章[Python奇技淫巧](https://blog.dinosaurliu.com/2015/11/14/Python%E5%A5%87%E6%8A%80%E6%B7%AB%E5%B7%A7/#with的魔力), 用法和作为装饰器基本类似
 - `# 4`位置, 我们调用`module.foo`函数, 而我们并不关系foo()调用了那些函数, 我只关心在成功调用`module.give_me_five`后, foo函数的逻辑正确性. 所以此次我们通过Mock函数给`module.give_me_five`指定我们希望的返回值. 这样就能独立的测试`module.foo`的逻辑
 
 

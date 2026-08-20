@@ -7,7 +7,7 @@ desc: protobuf c++ google
 
 本博客采用创作共用版权协议, 要求署名、非商业用途和保持一致. 转载本博客文章必须也遵循[署名-非商业用途-保持一致](http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh)的创作共用协议.
 
-> 很久之前写过一篇[Google protobuf(C++) 学习笔记](http://andrewliu.in/2016/06/05/Google-protobuf-C-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/). `google protobuf`被大量用于公司的RPC通信中作为序列化和序列化工具, 高于JSON和XML的性能值得拥有. 刚好最近有时间, 准备强读一发`google protobuf源码`
+> 很久之前写过一篇[Google protobuf(C++) 学习笔记](https://blog.dinosaurliu.com/2016/06/05/Google-protobuf-C-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/). `google protobuf`被大量用于公司的RPC通信中作为序列化和序列化工具, 高于JSON和XML的性能值得拥有. 刚好最近有时间, 准备强读一发`google protobuf源码`
 
 ## 前提
 

@@ -151,7 +151,7 @@ $ apm install linter-flake8
 $ apm install emmet
 ```
 
-不多说了, [传送门: 使用emmet](http://andrewliu.in/2014/11/25/Sublime-Text-3%E4%BD%BF%E7%94%A8%E5%BF%83%E5%BE%97/#5-2-_其他插件)
+不多说了, [传送门: 使用emmet](https://blog.dinosaurliu.com/2014/11/25/Sublime-Text-3%E4%BD%BF%E7%94%A8%E5%BF%83%E5%BE%97/#5-2-_其他插件)
 
 - 函数定义跳转 [python-tools](https://atom.io/packages/python-tools)
 
@@ -191,5 +191,5 @@ $ apm install script
 ## 参考链接
 
 [Atom官方文档直通车](https://atom.io/docs)
-[Sublime Text 2/3使用心得](http://andrewliu.in/2014/11/25/Sublime-Text-3%E4%BD%BF%E7%94%A8%E5%BF%83%E5%BE%97/#0-_设置subl命令行)
+[Sublime Text 2/3使用心得](https://blog.dinosaurliu.com/2014/11/25/Sublime-Text-3%E4%BD%BF%E7%94%A8%E5%BF%83%E5%BE%97/#0-_设置subl命令行)
 

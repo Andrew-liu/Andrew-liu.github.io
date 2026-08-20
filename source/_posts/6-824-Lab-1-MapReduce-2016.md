@@ -54,7 +54,7 @@ DoReduce功能简述:
 注意事项: 应该保证`schedule`中所有的goroutine全部完成后才能返回. 所以应该使函数阻塞直到所有的goroutine完成. 
 
 **Go中有两种方法可以保证进行同步程序**:
-参考文章: [Go goroutine同步](http://andrewliu.in/2016/04/08/Go-goroutine%E5%90%8C%E6%AD%A5/)
+参考文章: [Go goroutine同步](https://blog.dinosaurliu.com/2016/04/08/Go-goroutine%E5%90%8C%E6%AD%A5/)
 
 
 ## Part IV: Handling worker failures
