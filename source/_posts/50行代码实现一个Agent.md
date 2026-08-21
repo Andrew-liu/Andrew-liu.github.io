@@ -20,6 +20,8 @@ tags: [Agent, Tool Calling, OpenAI SDK, mini-agent]
 
 ![](/image/01-小黑拆解Agent外壳.png)
 
+<!-- more -->
+
 ## 02｜50 行 Agent 的骨架
 
 压缩到最小，一个 Agent 大概长这样：
