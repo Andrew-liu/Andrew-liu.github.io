@@ -4,12 +4,13 @@ date: 2016-09-16 16:43:46
 ---
 
 <div class="tip">
-    C++ Developer, Pythoner, Gopher, 谷粉兼果粉, 强迫症患者, 非处女座.
+    🤖 AI Builder | 程序员 | AI 工具实践<br>
+    🎮 游戏服务器开发 | Steam游戏收集控<br>
+    🚀 专注美股 | 纳斯达克信仰者<br>
+    🥳 热爱生活 | 偶尔写段子
 </div>
 
 - Email : liu.bin.coder@gmail.com
-- Zhihu: https://www.zhihu.com/people/dinosaurliu
-- 简书: http://www.jianshu.com/users/4ee453b72aff/latest_articles
 
 > 已经逐渐走上了造轮子之路, 开始造一些拙劣的轮子.
 
