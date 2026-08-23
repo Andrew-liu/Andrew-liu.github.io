@@ -1,6 +1,6 @@
 ---
 title: 没有海外银行卡，如何搞定ChatGPT、Claude等海外订阅？Starryblu使用攻略
-date: 2026-08-20 12:00:00
+date: 2026-08-23 12:00:00
 tags: [Starryblu, 海外支付, ChatGPT, Claude, AI工具]
 ---
 
